@@ -18,10 +18,10 @@ export default function Reports() {
         <div style={sb.pageSubheading}>Generated summaries ready to share</div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 16 }}>
+      <div className="sb-grid sb-grid-cards">
         {REPORTS.map((r) => (
-          <div key={r.id} style={{ background: "#fff", borderRadius: 18, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,.05)", display: "flex", flexDirection: "column", gap: 8 }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="1.8">
+          <div className="sb-card-hover" key={r.id} style={{ ...sb.card, display: "flex", flexDirection: "column", gap: 8 }}>
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={sb.colors.ink} strokeWidth="1.8">
               <path d="M6 2h9l5 5v15H6z" />
               <path d="M14 2v6h6" />
             </svg>
@@ -29,7 +29,7 @@ export default function Reports() {
             <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)" }}>Generated {r.date}</div>
             <button
               onClick={() => markDownloaded(r.id)}
-              style={{ marginTop: 6, background: "#0a0a0a", color: "#fff", border: "none", borderRadius: 100, padding: "9px 14px", fontWeight: 700, fontSize: 12.5, cursor: "pointer" }}
+              style={{ ...sb.primaryButton, marginTop: 10 }}
             >
               Download PDF
             </button>

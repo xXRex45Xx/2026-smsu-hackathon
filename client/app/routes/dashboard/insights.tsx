@@ -37,22 +37,22 @@ export default function Insights() {
         <div style={sb.pageSubheading}>Organization-wide skills and workforce composition</div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 16 }}>
-        <div style={sb.card}>
+      <div className="sb-grid sb-grid-metrics">
+        <div className="sb-card-hover" style={sb.card}>
           <div style={{ fontSize: 36, fontWeight: 800 }}>42</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Skills Tracked</div>
         </div>
-        <div style={sb.card}>
+        <div className="sb-card-hover" style={sb.card}>
           <div style={{ fontSize: 36, fontWeight: 800 }}>5</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Departments</div>
         </div>
-        <div style={sb.card}>
+        <div className="sb-card-hover" style={sb.card}>
           <div style={{ fontSize: 36, fontWeight: 800 }}>61%</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Avg. Proficiency</div>
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1.3fr) minmax(0,1fr)", gap: 16, alignItems: "start" }}>
+      <div className="sb-grid sb-grid-2">
         <div style={sb.card}>
           <div style={{ ...sb.cardTitle, marginBottom: 14 }}>Skill Coverage by Department</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -62,8 +62,8 @@ export default function Insights() {
                   <span>{c.dept}</span>
                   <span>{c.skills} skills</span>
                 </div>
-                <div style={{ height: 10, background: "#f0f0ee", borderRadius: 5 }}>
-                  <div style={{ height: "100%", width: `${c.pct}%`, background: "#0a0a0a", borderRadius: 5 }} />
+                <div aria-label={`${c.dept} coverage ${c.pct} percent`} style={sb.progressTrack}>
+                  <div style={{ height: "100%", width: `${c.pct}%`, background: sb.colors.ink, borderRadius: 999 }} />
                 </div>
               </div>
             ))}
@@ -74,6 +74,7 @@ export default function Insights() {
           <div style={sb.cardTitle}>Workforce Composition</div>
           <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
             <div
+              aria-label="Workforce composition chart"
               style={{
                 width: 120,
                 height: 120,
@@ -97,9 +98,9 @@ export default function Insights() {
 
       <div style={sb.card}>
         <div style={{ ...sb.cardTitle, marginBottom: 14 }}>Top Trending Skills</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 14 }}>
+        <div className="sb-grid sb-grid-cards">
           {TRENDING.map((t) => (
-            <div key={t.skill}>
+            <div className="sb-card-hover" key={t.skill} style={{ border: `1px solid ${sb.colors.border}`, borderRadius: 12, padding: 14, background: sb.colors.surface }}>
               <div style={{ fontSize: 13, fontWeight: 600 }}>{t.skill}</div>
               <div style={{ fontSize: 12, color: "#1a7a3c", fontWeight: 700, marginTop: 4 }}>{t.change}</div>
             </div>

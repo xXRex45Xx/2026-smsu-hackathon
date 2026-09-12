@@ -36,27 +36,26 @@ const GAPS = [
 export default function DashboardHome() {
   return (
     <div style={sb.page}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 18 }}>
+      <div className="sb-page-header">
         <div>
           <h1 style={sb.pageHeading}>Talent Readiness Dashboard</h1>
           <div style={sb.pageSubheading}>Schwan's SkillBridge — workforce capability overview</div>
         </div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <select style={sb.select}>
+        <div className="sb-controls" aria-label="Dashboard filters">
+          <select aria-label="Facility filter" style={sb.select}>
             <option>All Facilities</option>
           </select>
-          <select style={sb.select}>
+          <select aria-label="Department filter" style={sb.select}>
             <option>All Departments</option>
           </select>
-          <select style={{ ...sb.select, background: "#0a0a0a", color: "#fff" }}>
+          <select aria-label="Time range filter" style={{ ...sb.select, background: sb.colors.ink, color: "#fff" }}>
             <option>Next 3 Years</option>
           </select>
         </div>
       </div>
 
-      {/* Top metric cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))", gap: 16 }}>
-        <div style={{ background: "#0a0a0a", color: "#fff", borderRadius: 20, padding: 22, display: "flex", alignItems: "center", gap: 16 }}>
+      <div className="sb-grid sb-grid-metrics">
+        <div style={{ background: sb.colors.ink, color: "#fff", borderRadius: 14, padding: 22, display: "flex", alignItems: "center", gap: 16, boxShadow: "0 18px 40px rgba(17,24,39,.18)" }}>
           <div
             style={{
               width: 60,
@@ -74,7 +73,7 @@ export default function DashboardHome() {
                 width: 46,
                 height: 46,
                 borderRadius: "50%",
-                background: "#0a0a0a",
+                background: sb.colors.ink,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -92,7 +91,7 @@ export default function DashboardHome() {
           </div>
         </div>
 
-        <div style={sb.card}>
+        <div className="sb-card-hover" style={sb.card}>
           <div style={{ width: 38, height: 38, borderRadius: "50%", background: "#fdeceb", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c81e1e" strokeWidth="1.8">
               <path d="M12 4l9 16H3z" />
@@ -105,7 +104,7 @@ export default function DashboardHome() {
           <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>Across 5 departments</div>
         </div>
 
-        <div style={sb.card}>
+        <div className="sb-card-hover" style={sb.card}>
           <div style={{ width: 38, height: 38, borderRadius: "50%", background: "#fdeceb", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c81e1e" strokeWidth="1.8">
               <path d="M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6z" />
@@ -117,7 +116,7 @@ export default function DashboardHome() {
           <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>High risk skills</div>
         </div>
 
-        <div style={sb.card}>
+        <div className="sb-card-hover" style={sb.card}>
           <div style={{ width: 38, height: 38, borderRadius: "50%", background: "#f0f0ee", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="1.8">
               <circle cx="9" cy="8" r="3" />
@@ -133,8 +132,9 @@ export default function DashboardHome() {
         </div>
       </div>
 
-      {/* Heat map / capability gaps / succession preview */}
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1.7fr) minmax(0,1.2fr) minmax(0,1fr)", gap: 16, alignItems: "start" }}>
+      <div className="sb-home-content">
+        <div className="sb-home-main">
+          <div className="sb-home-top-grid">
         <div style={sb.card}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10, marginBottom: 6 }}>
             <div>
@@ -153,7 +153,8 @@ export default function DashboardHome() {
               </div>
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "96px repeat(5,minmax(0,1fr))", gap: 4, marginTop: 14 }}>
+          <div style={{ overflowX: "auto", paddingBottom: 2 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "108px repeat(5,minmax(68px,1fr))", gap: 5, marginTop: 14, minWidth: 500 }}>
             <div />
             {DEPTS.map((d) => (
               <div key={d} style={{ fontSize: 9, lineHeight: 1.15, fontWeight: 700, textAlign: "center", color: "rgba(10,10,10,.55)", alignSelf: "end", paddingBottom: 4, overflowWrap: "break-word" }}>
@@ -164,10 +165,11 @@ export default function DashboardHome() {
               <Fragment key={r.skill}>
                 <div style={{ fontSize: 12.5, fontWeight: 600, display: "flex", alignItems: "center" }}>{r.skill}</div>
                 {r.row.map((level, i) => (
-                  <div key={i} style={{ height: 30, borderRadius: 6, background: heatBg[level] }} />
+                  <div key={i} aria-label={`${r.skill} ${DEPTS[i]} ${level}`} style={{ height: 30, borderRadius: 6, background: heatBg[level] }} />
                 ))}
               </Fragment>
             ))}
+          </div>
           </div>
         </div>
 
@@ -189,21 +191,68 @@ export default function DashboardHome() {
                   <span>{g.skill}</span>
                   <span style={{ color: "rgba(10,10,10,.5)", fontWeight: 500 }}>{g.current}% → {g.target}%</span>
                 </div>
-                <div style={{ position: "relative", height: 9, background: "#f0f0ee", borderRadius: 5 }}>
-                  <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${g.current}%`, background: "#0a0a0a", borderRadius: 5 }} />
+                <div aria-label={`${g.skill}: current ${g.current} percent, target ${g.target} percent`} style={{ ...sb.progressTrack, position: "relative" }}>
+                  <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${g.current}%`, background: sb.colors.ink, borderRadius: 999 }} />
                   <div style={{ position: "absolute", left: `${g.target}%`, top: -2, width: 2, height: 13, background: "#c81e1e" }} />
                 </div>
               </div>
             ))}
           </div>
         </div>
+          </div>
 
-        <div style={{ ...sb.card, display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={sb.card}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+            <div>
+              <div style={sb.cardTitle}>Development Plan</div>
+              <div style={sb.cardSubtitle}>Personalized recommendations to build critical skills</div>
+            </div>
+            <Link to="/development" style={{ fontSize: 12, fontWeight: 700, color: sb.colors.red, whiteSpace: "nowrap" }}>View All Plans →</Link>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 20, flexWrap: "wrap", margin: "18px 0", paddingBottom: 18, borderBottom: "1px solid rgba(10,10,10,.08)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ width: 46, height: 46, borderRadius: "50%", background: "#0a0a0a", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>EP</div>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 14 }}>Emily Park</div>
+                <div style={{ fontSize: 12, color: "rgba(10,10,10,.55)" }}>Production Supervisor · Manufacturing, Marshall MN</div>
+              </div>
+            </div>
+            <div style={{ minWidth: 220, flex: 1 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 5 }}>
+                <span style={{ color: "rgba(10,10,10,.55)" }}>Career Goal: Move into Operations Manager role within 2 years</span>
+                <span style={{ fontWeight: 700 }}>60%</span>
+              </div>
+              <div aria-label="Development plan progress 60 percent" style={{ ...sb.progressTrack, height: 8 }}>
+                <div style={{ height: "100%", width: "60%", background: sb.colors.ink, borderRadius: 999 }} />
+              </div>
+            </div>
+          </div>
+          <div className="sb-grid sb-grid-cards">
+            {[
+              { kind: "Training", title: "Advanced Automation Systems", detail: "8 weeks · Online", d: <><path d="M4 5c2-1 5-1 7 0v14c-2-1-5-1-7 0z" /><path d="M20 5c-2-1-5-1-7 0v14c2-1 5-1 7 0z" /></> },
+              { kind: "Mentoring", title: "Pair with Senior Ops Manager", detail: "6 months", d: <><path d="M2 9l10-4 10 4-10 4z" /><path d="M6 11v5c0 1 3 2 6 2s6-1 6-2v-5" /></> },
+              { kind: "Certification", title: "Lean Six Sigma Green Belt", detail: "12 weeks", d: <><circle cx="12" cy="8" r="5" /><path d="M9 12l-2 8 5-3 5 3-2-8" /></> },
+              { kind: "Job Rotation", title: "Cross-functional Supply Chain", detail: "3 months", d: <><path d="M4 7h11a4 4 0 014 4v1" /><path d="M20 17H9a4 4 0 01-4-4v-1" /><path d="M7 4L4 7l3 3M17 20l3-3-3-3" /></> },
+              { kind: "Project Experience", title: "Lead Packaging Line Optimization", detail: "Q3 2025", d: <><rect x="3" y="8" width="18" height="12" /><path d="M8 8V6a2 2 0 012-2h4a2 2 0 012 2v2" /></> },
+            ].map((item) => (
+              <div className="sb-card-hover" key={item.kind} style={{ border: `1px solid ${sb.colors.border}`, borderRadius: 12, padding: 14, background: "#fff" }}>
+                <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" strokeWidth="1.8">{item.d}</svg>
+                <div style={{ fontWeight: 700, fontSize: 13, marginTop: 8 }}>{item.kind}</div>
+                <div style={{ fontSize: 12, color: "rgba(10,10,10,.65)", marginTop: 2 }}>{item.title}</div>
+                <div style={{ fontSize: 11, color: "rgba(10,10,10,.45)", marginTop: 6 }}>{item.detail}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+        </div>
+
+        <div className="sb-home-sidebar">
+          <div style={{ ...sb.card, display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
             <div style={sb.cardTitle}>Succession Risk</div>
-            <Link to="/succession" style={{ fontSize: 12, fontWeight: 700, color: "#c81e1e" }}>View All →</Link>
+            <Link to="/succession" style={{ fontSize: 12, fontWeight: 700, color: sb.colors.red }}>View All →</Link>
           </div>
-          <div style={{ background: "#0a0a0a", color: "#fff", borderRadius: 16, padding: 18, display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ background: sb.colors.ink, color: "#fff", borderRadius: 12, padding: 18, display: "flex", flexDirection: "column", gap: 8 }}>
             <span style={{ alignSelf: "flex-start", fontSize: 10, fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase", background: "#c81e1e", color: "#fff", padding: "3px 10px", borderRadius: 100 }}>
               High Risk
             </span>
@@ -212,7 +261,7 @@ export default function DashboardHome() {
             <p style={{ fontSize: 12, opacity: 0.75, margin: 0 }}>
               2 of 2 subject matter experts are eligible to retire within 3 years. No identified successors.
             </p>
-            <button style={{ marginTop: 4, width: "100%", background: "#c81e1e", color: "#fff", border: "none", borderRadius: 100, padding: "10px 12px", fontWeight: 700, fontSize: 12.5, cursor: "pointer", whiteSpace: "nowrap" }}>
+            <button style={{ ...sb.primaryButton, marginTop: 4, width: "100%", background: sb.colors.red, whiteSpace: "nowrap", boxShadow: "none" }}>
               Create Development Plan
             </button>
           </div>
@@ -237,54 +286,7 @@ export default function DashboardHome() {
               ))}
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Development plan + process improvement finder */}
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1.7fr) minmax(0,1fr)", gap: 16, alignItems: "start" }}>
-        <div style={sb.card}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-            <div>
-              <div style={sb.cardTitle}>Development Plan</div>
-              <div style={sb.cardSubtitle}>Personalized recommendations to build critical skills</div>
-            </div>
-            <Link to="/development" style={{ fontSize: 12, fontWeight: 700, color: "#c81e1e", whiteSpace: "nowrap" }}>View All Plans →</Link>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 20, flexWrap: "wrap", margin: "18px 0", paddingBottom: 18, borderBottom: "1px solid rgba(10,10,10,.08)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 46, height: 46, borderRadius: "50%", background: "#0a0a0a", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>EP</div>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: 14 }}>Emily Park</div>
-                <div style={{ fontSize: 12, color: "rgba(10,10,10,.55)" }}>Production Supervisor · Manufacturing, Marshall MN</div>
-              </div>
-            </div>
-            <div style={{ minWidth: 220, flex: 1 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 5 }}>
-                <span style={{ color: "rgba(10,10,10,.55)" }}>Career Goal: Move into Operations Manager role within 2 years</span>
-                <span style={{ fontWeight: 700 }}>60%</span>
-              </div>
-              <div style={{ height: 8, background: "#f0f0ee", borderRadius: 5 }}>
-                <div style={{ height: "100%", width: "60%", background: "#0a0a0a", borderRadius: 5 }} />
-              </div>
-            </div>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(150px,1fr))", gap: 12 }}>
-            {[
-              { kind: "Training", title: "Advanced Automation Systems", detail: "8 weeks · Online", d: <><path d="M4 5c2-1 5-1 7 0v14c-2-1-5-1-7 0z" /><path d="M20 5c-2-1-5-1-7 0v14c2-1 5-1 7 0z" /></> },
-              { kind: "Mentoring", title: "Pair with Senior Ops Manager", detail: "6 months", d: <><path d="M2 9l10-4 10 4-10 4z" /><path d="M6 11v5c0 1 3 2 6 2s6-1 6-2v-5" /></> },
-              { kind: "Certification", title: "Lean Six Sigma Green Belt", detail: "12 weeks", d: <><circle cx="12" cy="8" r="5" /><path d="M9 12l-2 8 5-3 5 3-2-8" /></> },
-              { kind: "Job Rotation", title: "Cross-functional Supply Chain", detail: "3 months", d: <><path d="M4 7h11a4 4 0 014 4v1" /><path d="M20 17H9a4 4 0 01-4-4v-1" /><path d="M7 4L4 7l3 3M17 20l3-3-3-3" /></> },
-              { kind: "Project Experience", title: "Lead Packaging Line Optimization", detail: "Q3 2025", d: <><rect x="3" y="8" width="18" height="12" /><path d="M8 8V6a2 2 0 012-2h4a2 2 0 012 2v2" /></> },
-            ].map((item) => (
-              <div key={item.kind} style={{ border: "1px solid rgba(10,10,10,.08)", borderRadius: 14, padding: 14 }}>
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" strokeWidth="1.8">{item.d}</svg>
-                <div style={{ fontWeight: 700, fontSize: 13, marginTop: 8 }}>{item.kind}</div>
-                <div style={{ fontSize: 12, color: "rgba(10,10,10,.65)", marginTop: 2 }}>{item.title}</div>
-                <div style={{ fontSize: 11, color: "rgba(10,10,10,.45)", marginTop: 6 }}>{item.detail}</div>
-              </div>
-            ))}
-          </div>
-        </div>
 
         <div style={{ ...sb.card, display: "flex", flexDirection: "column", gap: 14 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
@@ -294,8 +296,8 @@ export default function DashboardHome() {
             </span>
           </div>
           <div style={{ fontSize: 12, color: "rgba(10,10,10,.55)", marginTop: -8 }}>Surface opportunities to apply skill data to operations</div>
-          <div style={{ background: "#f5f4f2", borderRadius: 14, padding: 14, display: "flex", flexDirection: "column", gap: 8 }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" strokeWidth="1.8">
+          <div style={{ background: sb.colors.surfaceSoft, borderRadius: 12, padding: 14, display: "flex", flexDirection: "column", gap: 8 }}>
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" strokeWidth="1.8">
               <path d="M9 18h6M10 21h4" />
               <path d="M12 3a6 6 0 00-3 11c.6.5 1 1.3 1 2h4c0-.7.4-1.5 1-2a6 6 0 00-3-11z" />
             </svg>
@@ -304,7 +306,7 @@ export default function DashboardHome() {
               Analyze operator interviews and documentation to identify opportunities to reduce changeover time.
             </p>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, textAlign: "center" }}>
+          <div className="sb-grid sb-grid-compact-3" style={{ gap: 8, textAlign: "center" }}>
             <div>
               <div style={{ fontSize: 18, fontWeight: 800 }}>$420K</div>
               <div style={{ fontSize: 10, color: "rgba(10,10,10,.5)" }}>Est. Value</div>
@@ -318,9 +320,10 @@ export default function DashboardHome() {
               <div style={{ fontSize: 10, color: "rgba(10,10,10,.5)", marginTop: 4 }}>Complexity</div>
             </div>
           </div>
-          <Link to="/use-cases" style={{ marginTop: 2, background: "#0a0a0a", color: "#fff", border: "none", borderRadius: 100, padding: "12px 16px", fontWeight: 700, fontSize: 13, cursor: "pointer", textAlign: "center" }}>
+          <Link to="/use-cases" style={{ ...sb.primaryButton, marginTop: 2, textAlign: "center" }}>
             See All Ideas →
           </Link>
+        </div>
         </div>
       </div>
     </div>

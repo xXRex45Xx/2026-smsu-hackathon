@@ -21,10 +21,11 @@ export default function Succession() {
             <div
               key={row.role}
               style={{
-                background: "#fff",
-                borderRadius: 16,
+                background: sb.colors.surface,
+                border: `1px solid ${sb.colors.border}`,
+                borderRadius: 14,
                 padding: "18px 20px",
-                boxShadow: "0 2px 12px rgba(0,0,0,.05)",
+                boxShadow: "0 14px 34px rgba(15,23,42,.07)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",

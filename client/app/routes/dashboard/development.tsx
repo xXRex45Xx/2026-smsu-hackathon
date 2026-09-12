@@ -14,7 +14,7 @@ export default function Development() {
         <div style={sb.pageSubheading}>All active and completed career development plans</div>
       </div>
 
-      <div style={{ background: "#fff", borderRadius: 20, padding: "8px 24px", boxShadow: "0 2px 12px rgba(0,0,0,.05)", overflowX: "auto" }}>
+      <div className="sb-table-card">
         <table>
           <thead>
             <tr style={{ borderBottom: "1px solid rgba(10,10,10,.08)" }}>
@@ -29,7 +29,7 @@ export default function Development() {
             {DEV_PLANS.map((row) => {
               const st = statusColors(row.status);
               return (
-                <tr key={row.name} style={{ borderBottom: "1px solid rgba(10,10,10,.06)" }}>
+                <tr key={row.name} style={{ borderBottom: `1px solid ${sb.colors.border}` }}>
                   <td style={{ ...sb.td, fontWeight: 600 }}>{row.name}</td>
                   <td style={{ ...sb.td, color: "rgba(10,10,10,.65)" }}>{row.from}</td>
                   <td style={{ ...sb.td, color: "rgba(10,10,10,.65)" }}>{row.to}</td>

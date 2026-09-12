@@ -15,12 +15,12 @@ export default function Skills() {
 
   return (
     <div style={sb.page}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16 }}>
+      <div className="sb-page-header">
         <div>
           <h1 style={sb.pageHeading}>Skills & Capabilities</h1>
           <div style={sb.pageSubheading}>Full skills inventory across the workforce</div>
         </div>
-        <select style={sb.select} value={filterDept} onChange={(e) => setFilterDept(e.target.value)}>
+        <select aria-label="Department filter" style={sb.select} value={filterDept} onChange={(e) => setFilterDept(e.target.value)}>
           {DEPARTMENTS.map((d) => (
             <option key={d} value={d}>
               {d === "All" ? "All Departments" : d}
@@ -29,7 +29,7 @@ export default function Skills() {
         </select>
       </div>
 
-      <div style={{ background: "#fff", borderRadius: 20, padding: "8px 24px", boxShadow: "0 2px 12px rgba(0,0,0,.05)", overflowX: "auto" }}>
+      <div className="sb-table-card">
         <table>
           <thead>
             <tr style={{ borderBottom: "1px solid rgba(10,10,10,.08)" }}>
@@ -44,7 +44,7 @@ export default function Skills() {
             {filtered.map((row) => {
               const lvl = levelColors(row.level);
               return (
-                <tr key={row.skill} style={{ borderBottom: "1px solid rgba(10,10,10,.06)" }}>
+                <tr key={row.skill} style={{ borderBottom: `1px solid ${sb.colors.border}` }}>
                   <td style={{ ...sb.td, fontWeight: 600 }}>{row.skill}</td>
                   <td style={{ ...sb.td, color: "rgba(10,10,10,.65)" }}>{row.dept}</td>
                   <td style={{ ...sb.td, textAlign: "right" }}>{row.employees}</td>
