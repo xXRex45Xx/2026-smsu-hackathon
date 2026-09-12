@@ -30,6 +30,15 @@ export interface SuccessionRisk {
   successors: number;
 }
 
+export interface FutureSkillNeed {
+  skill: string;
+  strategy: string;
+  current: number;
+  target: number;
+  priority: Risk;
+  businessImpact: string;
+}
+
 export interface Course {
   id: string;
   title: string;
@@ -91,6 +100,49 @@ export const SUCCESSION: SuccessionRisk[] = [
   { role: "Demand Forecasting", experts: 5, risk: "Medium", retireYrs: 5, successors: 2 },
   { role: "SAP Supply Chain", experts: 4, risk: "Medium", retireYrs: 3, successors: 1 },
   { role: "Predictive Maintenance Modeling", experts: 3, risk: "Medium", retireYrs: 4, successors: 2 },
+];
+
+export const FUTURE_SKILLS: FutureSkillNeed[] = [
+  {
+    skill: "AI Fluency",
+    strategy: "AI-enabled operations",
+    current: 32,
+    target: 75,
+    priority: "High",
+    businessImpact: "Managers and frontline teams can use AI tools to summarize issues, spot patterns, and improve decisions.",
+  },
+  {
+    skill: "Automation",
+    strategy: "Smart manufacturing lines",
+    current: 60,
+    target: 85,
+    priority: "High",
+    businessImpact: "Plants need more employees who can support automated packaging, controls, and line optimization.",
+  },
+  {
+    skill: "Predictive Maintenance",
+    strategy: "Reliability and uptime",
+    current: 45,
+    target: 80,
+    priority: "High",
+    businessImpact: "Maintenance teams need sensor, work-order, and failure-pattern skills to reduce unplanned downtime.",
+  },
+  {
+    skill: "Cloud Security",
+    strategy: "Secure digital platforms",
+    current: 40,
+    target: 70,
+    priority: "Medium",
+    businessImpact: "Technology teams need stronger cloud governance as more workforce and plant systems move online.",
+  },
+  {
+    skill: "Data Analysis",
+    strategy: "Data-driven supply chain",
+    current: 52,
+    target: 78,
+    priority: "Medium",
+    businessImpact: "Supply chain teams need stronger forecasting and dashboard skills to improve planning accuracy.",
+  },
 ];
 
 export const COURSES: Course[] = [

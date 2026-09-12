@@ -1,4 +1,5 @@
 import * as sb from "../../styles/skillbridge";
+import { FUTURE_SKILLS, riskColors } from "../../data/skillbridge";
 import type { Route } from "./+types/insights";
 
 export function meta({}: Route.MetaArgs) {
@@ -94,6 +95,42 @@ export default function Insights() {
               ))}
             </div>
           </div>
+        </div>
+      </div>
+
+      <div style={sb.card}>
+        <div style={{ ...sb.cardTitle, marginBottom: 4 }}>Future Strategy Skill Map</div>
+        <div style={{ ...sb.cardSubtitle, marginBottom: 14 }}>
+          Skills needed to support AI-enabled operations, smart manufacturing, secure cloud platforms, and data-driven planning
+        </div>
+        <div className="sb-table-card" style={{ boxShadow: "none", padding: 0, borderRadius: 12 }}>
+          <table>
+            <thead>
+              <tr style={{ borderBottom: `1px solid ${sb.colors.border}` }}>
+                <th style={sb.th}>Future Skill</th>
+                <th style={sb.th}>Strategic Driver</th>
+                <th style={{ ...sb.th, textAlign: "right" }}>Today</th>
+                <th style={{ ...sb.th, textAlign: "right" }}>Needed</th>
+                <th style={{ ...sb.th, textAlign: "right" }}>Priority</th>
+              </tr>
+            </thead>
+            <tbody>
+              {FUTURE_SKILLS.map((item) => {
+                const priority = riskColors(item.priority);
+                return (
+                  <tr key={item.skill} style={{ borderBottom: `1px solid ${sb.colors.border}` }}>
+                    <td style={{ ...sb.td, fontWeight: 700 }}>{item.skill}</td>
+                    <td style={{ ...sb.td, color: sb.colors.inkSoft }}>{item.strategy}</td>
+                    <td style={{ ...sb.td, textAlign: "right" }}>{item.current}%</td>
+                    <td style={{ ...sb.td, textAlign: "right", fontWeight: 700 }}>{item.target}%</td>
+                    <td style={{ ...sb.td, textAlign: "right" }}>
+                      <span style={{ ...sb.pill, background: priority.bg, color: priority.color }}>{item.priority}</span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
 

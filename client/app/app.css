@@ -182,6 +182,10 @@ table {
   grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
 }
 
+.sb-future-skills-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+}
+
 .sb-grid-2 {
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
   align-items: start;
@@ -375,6 +379,7 @@ table {
   }
 
   .sb-grid-metrics,
+  .sb-future-skills-grid,
   .sb-grid-cards {
     grid-template-columns: 1fr;
   }

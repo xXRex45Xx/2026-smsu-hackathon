@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { Link } from "react-router";
 import * as sb from "../../styles/skillbridge";
+import { FUTURE_SKILLS, riskColors } from "../../data/skillbridge";
 import type { Route } from "./+types/home";
 
 export function meta({}: Route.MetaArgs) {
@@ -133,6 +134,45 @@ export default function DashboardHome() {
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Active Development Plans</div>
           <div style={{ fontSize: 12, color: "#1a7a3c", fontWeight: 700, marginTop: 8 }}>↑ 12% from last quarter</div>
           <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>Across all departments</div>
+        </div>
+      </div>
+
+      <div style={sb.card}>
+        <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ marginBottom: 14 }}>
+          <div>
+            <div style={sb.cardTitle}>Future Skills Needed</div>
+            <div style={sb.cardSubtitle}>Business and technology strategies mapped to required workforce capabilities</div>
+          </div>
+          <Link to="/insights" style={{ fontSize: 12, fontWeight: 700, color: sb.colors.red, whiteSpace: "nowrap" }}>View Strategy Map →</Link>
+        </div>
+        <div className="sb-grid sb-future-skills-grid">
+          {FUTURE_SKILLS.slice(0, 4).map((item) => {
+            const priority = riskColors(item.priority);
+            const gap = item.target - item.current;
+            return (
+              <div key={item.skill} className="sb-card-hover" style={{ border: `1px solid ${sb.colors.border}`, borderRadius: 12, padding: 14, background: sb.colors.surface, minWidth: 0 }}>
+                <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ gap: 8, marginBottom: 8 }}>
+                  <div className="sb-wrap-text">
+                    <div style={{ fontSize: 14, fontWeight: 800, lineHeight: 1.25 }}>{item.skill}</div>
+                    <div style={{ fontSize: 11, color: sb.colors.inkFaint, marginTop: 3 }}>{item.strategy}</div>
+                  </div>
+                  <span style={{ ...sb.pill, background: priority.bg, color: priority.color }}>{item.priority}</span>
+                </div>
+                <div style={{ fontSize: 12, color: sb.colors.inkSoft, lineHeight: 1.45, minHeight: 50 }}>{item.businessImpact}</div>
+                <div style={{ marginTop: 12 }}>
+                  <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ fontSize: 11, fontWeight: 700, marginBottom: 5 }}>
+                    <span>{item.current}% today</span>
+                    <span>{item.target}% needed</span>
+                  </div>
+                  <div aria-label={`${item.skill}: ${item.current} percent today, ${item.target} percent needed`} style={{ ...sb.progressTrack, position: "relative", height: 8 }}>
+                    <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${item.current}%`, background: sb.colors.ink, borderRadius: 999 }} />
+                    <div style={{ position: "absolute", left: `${item.target}%`, top: -2, width: 2, height: 12, background: sb.colors.red }} />
+                  </div>
+                  <div style={{ fontSize: 11, color: sb.colors.red, fontWeight: 700, marginTop: 6 }}>Close {gap} point gap</div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
