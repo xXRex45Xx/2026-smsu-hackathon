@@ -5,8 +5,12 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "dev": "node --watch src/index.js",
-    "start": "node src/index.js"
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "node src/db/migrate.js",
+    "db:seed": "node src/db/seed.js",
+    "dev": "npm run db:migrate && node --watch src/index.js",
+    "start": "node src/index.js",
+    "test": "node --test"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1131.0",
@@ -14,6 +18,12 @@
     "@clerk/express": "^2.1.67",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.21.2"
+    "drizzle-orm": "^0.44.7",
+    "express": "^4.21.2",
+    "pg": "^8.16.3",
+    "zod": "^4.6.2"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.5"
   }
 }

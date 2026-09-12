@@ -1,11 +1,10 @@
-import type { CourseFormat } from "../data/skillbridge";
 import * as sb from "../styles/skillbridge";
 
 export interface CourseCardProps {
   title: string;
   provider: string;
   duration: string;
-  format: CourseFormat;
+  format: string;
   count: number;
   enrolled?: boolean;
   onToggleEnroll?: () => void;

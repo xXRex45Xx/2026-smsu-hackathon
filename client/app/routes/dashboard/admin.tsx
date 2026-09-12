@@ -1,12 +1,18 @@
 import * as sb from "../../styles/skillbridge";
-import { SCHEMA } from "../../data/skillbridge";
+import { api } from "../../lib/api";
 import type { Route } from "./+types/admin";
+
+type SchemaTable = { name: string; fields: string[] };
+
+export async function loader() {
+  return api<{ data: SchemaTable[] }>("/api/v1/admin/schema");
+}
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Administration — SkillBridge" }];
 }
 
-export default function Admin() {
+export default function Admin({ loaderData }: Route.ComponentProps) {
   return (
     <div style={sb.page}>
       <div>
@@ -17,7 +23,7 @@ export default function Admin() {
       <div style={sb.card}>
         <div style={{ ...sb.cardTitle, marginBottom: 14 }}>Data Model</div>
         <div className="sb-grid sb-grid-cards">
-          {SCHEMA.map((tbl) => (
+          {loaderData.data.map((tbl) => (
             <div key={tbl.name} style={{ border: `1px solid ${sb.colors.border}`, borderRadius: 12, padding: 14, background: sb.colors.surfaceSoft }}>
               <div className="sb-wrap-text" style={{ fontSize: 13, fontWeight: 800, fontFamily: "monospace", color: "#1e3a5f", marginBottom: 6 }}>{tbl.name}</div>
               {tbl.fields.map((f) => (

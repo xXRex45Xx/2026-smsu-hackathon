@@ -1,8 +1,22 @@
 import { Fragment } from "react";
 import { Link } from "react-router";
 import * as sb from "../../styles/skillbridge";
+import { api } from "../../lib/api";
 import { FUTURE_SKILLS, riskColors } from "../../data/skillbridge";
 import type { Route } from "./+types/home";
+
+type Summary = {
+  workforceReadiness: number;
+  employeeCount: number;
+  criticalSkillGaps: number;
+  knowledgeConcentrationRisks: number;
+  activeDevelopmentPlans: number;
+  gaps: { skill?: string; current: number; target: number }[];
+};
+
+export async function loader() {
+  return api<{ data: Summary }>("/api/v1/analytics/dashboard");
+}
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -30,15 +44,8 @@ const heatStyles = {
   low: { bg: sb.colors.surfaceSoft, border: sb.colors.borderStrong, color: sb.colors.inkFaint },
 };
 
-const GAPS = [
-  { skill: "Automation", current: 60, target: 85 },
-  { skill: "AI Fluency", current: 32, target: 75 },
-  { skill: "Cloud Security", current: 40, target: 70 },
-  { skill: "Food Safety", current: 68, target: 85 },
-  { skill: "Predictive Maintenance", current: 45, target: 80 },
-];
-
-export default function DashboardHome() {
+export default function DashboardHome({ loaderData }: Route.ComponentProps) {
+  const summary = loaderData.data;
   return (
     <div style={sb.page}>
       <div className="sb-page-header">
@@ -86,13 +93,13 @@ export default function DashboardHome() {
                 fontSize: 14,
               }}
             >
-              72%
+               {summary.workforceReadiness}%
             </div>
           </div>
           <div className="sb-wrap-text">
             <div style={{ fontSize: 13, fontWeight: 600, opacity: 0.7 }}>Workforce Readiness</div>
             <div style={{ fontSize: 12, color: "#f2b544", fontWeight: 700, marginTop: 6 }}>↑ 6% from last quarter</div>
-            <div style={{ fontSize: 11, opacity: 0.55, marginTop: 2 }}>1,842 employees</div>
+            <div style={{ fontSize: 11, opacity: 0.55, marginTop: 2 }}>{summary.employeeCount} employees</div>
           </div>
         </div>
 
@@ -103,7 +110,7 @@ export default function DashboardHome() {
               <path d="M12 10v4M12 17h.01" />
             </svg>
           </div>
-          <div className="sb-metric-value">8</div>
+          <div className="sb-metric-value">{summary.criticalSkillGaps}</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Critical Skill Gaps</div>
           <div style={{ fontSize: 12, color: "#c81e1e", fontWeight: 700, marginTop: 8 }}>↑ 2 from last quarter</div>
           <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>Across 5 departments</div>
@@ -115,7 +122,7 @@ export default function DashboardHome() {
               <path d="M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6z" />
             </svg>
           </div>
-          <div className="sb-metric-value">14</div>
+          <div className="sb-metric-value">{summary.knowledgeConcentrationRisks}</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Knowledge Concentration Risks</div>
           <div style={{ fontSize: 12, color: "#c81e1e", fontWeight: 700, marginTop: 8 }}>↑ 4 from last quarter</div>
           <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>High risk skills</div>
@@ -130,7 +137,7 @@ export default function DashboardHome() {
               <path d="M15 13.5c2.8.4 5 2.9 5 6.5" />
             </svg>
           </div>
-          <div className="sb-metric-value">186</div>
+          <div className="sb-metric-value">{summary.activeDevelopmentPlans}</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Active Development Plans</div>
           <div style={{ fontSize: 12, color: "#1a7a3c", fontWeight: 700, marginTop: 8 }}>↑ 12% from last quarter</div>
           <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>Across all departments</div>
@@ -244,7 +251,7 @@ export default function DashboardHome() {
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {GAPS.map((g) => (
+            {summary.gaps.map((g) => (
               <div key={g.skill}>
                 <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ fontSize: 13, fontWeight: 600, marginBottom: 5 }}>
                   <span className="sb-wrap-text">{g.skill}</span>

@@ -1,16 +1,26 @@
 import { useState } from "react";
+import { useRevalidator } from "react-router";
 import * as sb from "../../styles/skillbridge";
-import { IDEAS, ideaRiskColors, complexityColors } from "../../data/skillbridge";
+import { ideaRiskColors, complexityColors } from "../../data/skillbridge";
+import { api, type ApiList } from "../../lib/api";
 import type { Route } from "./+types/use-cases";
+
+type UseCase = { id: string; title: string; desc: string; value: string; riskLabel: "Low" | "Medium" | "High"; complexityLabel: "Low" | "Medium" | "High" };
+
+export async function loader() {
+  return api<ApiList<UseCase>>("/api/v1/ai-use-cases?limit=100");
+}
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Use Case Ideas — SkillBridge" }];
 }
 
-export default function UseCases() {
+export default function UseCases({ loaderData }: Route.ComponentProps) {
   const [count, setCount] = useState(2);
-  const visible = IDEAS.slice(0, count);
-  const canAddMore = count < IDEAS.length;
+  const revalidator = useRevalidator();
+  const visible = loaderData.data.slice(0, count);
+  const [generating, setGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   return (
     <div style={sb.page}>
@@ -21,10 +31,10 @@ export default function UseCases() {
 
       <div className="sb-grid sb-grid-cards">
         {visible.map((idea) => {
-          const rc = ideaRiskColors(idea.risk);
-          const cc = complexityColors(idea.complexity);
+          const rc = ideaRiskColors(idea.riskLabel);
+          const cc = complexityColors(idea.complexityLabel);
           return (
-            <div className="sb-card-hover" key={idea.title} style={{ ...sb.card, display: "flex", flexDirection: "column", gap: 10 }}>
+            <div className="sb-card-hover" key={idea.id} style={{ ...sb.card, display: "flex", flexDirection: "column", gap: 10 }}>
               <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" strokeWidth="1.8">
                 <path d="M9 18h6M10 21h4" />
                 <path d="M12 3a6 6 0 00-3 11c.6.5 1 1.3 1 2h4c0-.7.4-1.5 1-2a6 6 0 00-3-11z" />
@@ -37,11 +47,11 @@ export default function UseCases() {
                   <div style={{ fontSize: 10, color: "rgba(10,10,10,.5)" }}>Est. Value</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: rc.bg, color: rc.color, display: "inline-block" }}>{idea.risk}</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: rc.bg, color: rc.color, display: "inline-block" }}>{idea.riskLabel}</div>
                   <div style={{ fontSize: 10, color: "rgba(10,10,10,.5)", marginTop: 4 }}>Risk</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: cc.bg, color: cc.color, display: "inline-block" }}>{idea.complexity}</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: cc.bg, color: cc.color, display: "inline-block" }}>{idea.complexityLabel}</div>
                   <div style={{ fontSize: 10, color: "rgba(10,10,10,.5)", marginTop: 4 }}>Complexity</div>
                 </div>
               </div>
@@ -50,12 +60,26 @@ export default function UseCases() {
         })}
       </div>
 
-      {canAddMore && (
+      {error && <div role="alert">{error}</div>}
+      {(
         <button
-          onClick={() => setCount((c) => Math.min(c + 1, IDEAS.length))}
+          disabled={generating}
+          onClick={async () => {
+            setGenerating(true);
+            setError(null);
+            try {
+            await api("/api/v1/ai-use-cases/generate", { method: "POST", body: { name: "Workforce Opportunity" } });
+            setCount((c) => c + 1);
+            await revalidator.revalidate();
+            } catch (error) {
+              setError(error instanceof Error ? error.message : "Unable to generate ideas.");
+            } finally {
+              setGenerating(false);
+            }
+          }}
           style={{ ...sb.primaryButton, alignSelf: "flex-start", paddingInline: 20 }}
         >
-          Generate More Ideas
+          {generating ? "Generating…" : "Generate More Ideas"}
         </button>
       )}
     </div>

@@ -1,12 +1,19 @@
 import * as sb from "../../styles/skillbridge";
-import { DEV_PLANS, statusColors } from "../../data/skillbridge";
+import { statusColors } from "../../data/skillbridge";
+import { api, type ApiList } from "../../lib/api";
 import type { Route } from "./+types/development";
+
+type Plan = { name: string; from: string; to: string; status: string; progress: number };
+
+export async function loader() {
+  return api<ApiList<Plan>>("/api/v1/development-plans?limit=100");
+}
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Development Plans — SkillBridge" }];
 }
 
-export default function Development() {
+export default function Development({ loaderData }: Route.ComponentProps) {
   return (
     <div style={sb.page}>
       <div>
@@ -26,8 +33,8 @@ export default function Development() {
             </tr>
           </thead>
           <tbody>
-            {DEV_PLANS.map((row) => {
-              const st = statusColors(row.status);
+            {loaderData.data.map((row) => {
+              const st = statusColors(row.status === "ACTIVE" ? "In Progress" : row.status === "COMPLETE" ? "Complete" : "Not Started");
               return (
                 <tr key={row.name} style={{ borderBottom: `1px solid ${sb.colors.border}` }}>
                   <td style={{ ...sb.td, fontWeight: 600 }}>{row.name}</td>

@@ -1,43 +1,35 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { api } from "../../lib/api";
 import * as sb from "../../styles/skillbridge";
 import { FUTURE_SKILLS, riskColors } from "../../data/skillbridge";
 import type { Route } from "./+types/insights";
+
+type InsightsData = {
+  summary: { skillCount: number; averageProficiency: number };
+  coverage: { department: string; skills: number; coverage: number }[];
+  composition: { label: string; count: number }[];
+  trending: { skill: string; prof: number }[];
+};
+
+export async function loader() {
+  return api<{ data: InsightsData }>("/api/v1/analytics/insights");
+}
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Talent Insights — SkillBridge" }];
 }
 
-const COVERAGE = [
-  { dept: "Manufacturing", skills: 15, pct: 88 },
-  { dept: "Maintenance", skills: 9, pct: 53 },
-  { dept: "Food Safety", skills: 7, pct: 41 },
-  { dept: "Supply Chain", skills: 8, pct: 47 },
-  { dept: "Technology", skills: 3, pct: 18 },
-];
+const DEPARTMENT_COLORS = ["#2563EB", "#D97706", "#16A34A", "#7C3AED", "#DC2626"];
 
-const COMPOSITION = [
-  { label: "Manufacturing", count: 640, color: "#2563EB" },
-  { label: "Supply Chain", count: 210, color: "#D97706" },
-  { label: "Food Safety", count: 180, color: "#16A34A" },
-  { label: "Maintenance", count: 260, color: "#7C3AED" },
-  { label: "Technology", count: 552, color: "#DC2626" },
-];
-
-const TRENDING = [
-  { skill: "AI Fluency", change: "↑ 18%" },
-  { skill: "Cloud Security", change: "↑ 14%" },
-  { skill: "Data Analysis", change: "↑ 9%" },
-  { skill: "Automation", change: "↑ 7%" },
-  { skill: "Predictive Maintenance", change: "↑ 5%" },
-];
-
-export default function Insights() {
+export default function Insights({ loaderData }: Route.ComponentProps) {
+  const { summary, coverage, composition, trending } = loaderData.data;
   const [hoveredDept, setHoveredDept] = useState<string | null>(null);
-  const totalEmployees = useMemo(() => COMPOSITION.reduce((sum, dept) => sum + dept.count, 0), []);
+  const COMPOSITION = composition.map((dept, index) => ({ ...dept, color: DEPARTMENT_COLORS[index % DEPARTMENT_COLORS.length] }));
+  const totalEmployees = composition.reduce((sum, dept) => sum + dept.count, 0);
   const activeDept = COMPOSITION.find((dept) => dept.label === hoveredDept);
   const centerValue = activeDept?.count ?? totalEmployees;
   const centerLabel = activeDept?.label ?? "Total Workforce";
-  const centerPct = activeDept ? Math.round((activeDept.count / totalEmployees) * 100) : 100;
+  const centerPct = activeDept ? Math.round((activeDept.count / Math.max(totalEmployees, 1)) * 100) : totalEmployees ? 100 : 0;
 
   return (
     <div style={sb.page}>
@@ -48,15 +40,15 @@ export default function Insights() {
 
       <div className="sb-grid sb-grid-metrics">
         <div className="sb-card-hover" style={sb.card}>
-          <div className="sb-metric-value">42</div>
+          <div className="sb-metric-value">{summary.skillCount}</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Skills Tracked</div>
         </div>
         <div className="sb-card-hover" style={sb.card}>
-          <div className="sb-metric-value">5</div>
+          <div className="sb-metric-value">{coverage.length}</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Departments</div>
         </div>
         <div className="sb-card-hover" style={sb.card}>
-          <div className="sb-metric-value">61%</div>
+          <div className="sb-metric-value">{summary.averageProficiency}%</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Avg. Proficiency</div>
         </div>
       </div>
@@ -65,14 +57,14 @@ export default function Insights() {
         <div style={sb.card}>
           <div style={{ ...sb.cardTitle, marginBottom: 14 }}>Skill Coverage by Department</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {COVERAGE.map((c) => (
-              <div key={c.dept}>
+            {coverage.map((c) => (
+              <div key={c.department}>
                 <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
-                  <span className="sb-wrap-text">{c.dept}</span>
+                  <span className="sb-wrap-text">{c.department}</span>
                   <span>{c.skills} skills</span>
                 </div>
-                <div aria-label={`${c.dept} coverage ${c.pct} percent`} style={sb.progressTrack}>
-                  <div style={{ height: "100%", width: `${c.pct}%`, background: sb.colors.ink, borderRadius: 999 }} />
+                <div aria-label={`${c.department} coverage ${c.coverage} percent`} style={sb.progressTrack}>
+                  <div style={{ height: "100%", width: `${c.coverage}%`, background: sb.colors.ink, borderRadius: 999 }} />
                 </div>
               </div>
             ))}
@@ -95,7 +87,7 @@ export default function Insights() {
                 {COMPOSITION.reduce(
                   (segments, dept) => {
                     const circumference = 2 * Math.PI * 68;
-                    const dash = (dept.count / totalEmployees) * circumference;
+                    const dash = (dept.count / Math.max(totalEmployees, 1)) * circumference;
                     const isActive = hoveredDept === dept.label;
                     segments.nodes.push(
                       <circle
@@ -131,7 +123,7 @@ export default function Insights() {
             </div>
             <div className="sb-wrap-text" style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 12.5, fontWeight: 600, flex: 1, minWidth: 180 }}>
               {COMPOSITION.map((dept) => {
-                const pct = Math.round((dept.count / totalEmployees) * 100);
+                const pct = Math.round((dept.count / Math.max(totalEmployees, 1)) * 100);
                 const isActive = hoveredDept === dept.label;
                 return (
                   <button
@@ -216,10 +208,10 @@ export default function Insights() {
       <div style={sb.card}>
         <div style={{ ...sb.cardTitle, marginBottom: 14 }}>Top Trending Skills</div>
         <div className="sb-grid sb-grid-cards">
-          {TRENDING.map((t) => (
+          {trending.map((t) => (
             <div className="sb-card-hover" key={t.skill} style={{ border: `1px solid ${sb.colors.border}`, borderRadius: 12, padding: 14, background: sb.colors.surface }}>
               <div className="sb-wrap-text" style={{ fontSize: 13, fontWeight: 600 }}>{t.skill}</div>
-              <div style={{ fontSize: 12, color: "#1a7a3c", fontWeight: 700, marginTop: 4 }}>{t.change}</div>
+              <div style={{ fontSize: 12, color: "#1a7a3c", fontWeight: 700, marginTop: 4 }}>{t.prof}% average proficiency</div>
             </div>
           ))}
         </div>

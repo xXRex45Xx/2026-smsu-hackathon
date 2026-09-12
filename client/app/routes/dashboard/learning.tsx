@@ -1,16 +1,29 @@
 import { useState } from "react";
 import * as sb from "../../styles/skillbridge";
-import { COURSES } from "../../data/skillbridge";
+import { api, type ApiList } from "../../lib/api";
 import CourseCard from "../../components/CourseCard";
 import type { Route } from "./+types/learning";
+
+type Course = { id: string; title: string; provider: string; duration: string; format: string; count: number };
+
+export async function loader() {
+  return api<ApiList<Course>>("/api/v1/courses?limit=100");
+}
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Learning & Training — SkillBridge" }];
 }
 
-export default function Learning() {
+export default function Learning({ loaderData }: Route.ComponentProps) {
   const [enrolled, setEnrolled] = useState<Record<string, boolean>>({});
-  const toggle = (id: string) => setEnrolled((prev) => ({ ...prev, [id]: !prev[id] }));
+  const toggle = async (id: string) => {
+    if (enrolled[id]) {
+      await api(`/api/v1/courses/${id}/enrollments/e1`, { method: "DELETE" });
+    } else {
+      await api(`/api/v1/courses/${id}/enrollments`, { method: "POST", body: { employeeId: "e1" } });
+    }
+    setEnrolled((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   return (
     <div style={sb.page}>
@@ -20,7 +33,7 @@ export default function Learning() {
       </div>
 
       <div className="sb-grid sb-grid-cards">
-        {COURSES.map((c) => (
+        {loaderData.data.map((c) => (
           <CourseCard
             key={c.id}
             title={c.title}
