@@ -5,3 +5,4 @@ node_modules/
 # React Router
 client/.react-router/
 client/build/
+.playwright-mcp
