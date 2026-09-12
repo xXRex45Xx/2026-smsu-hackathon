@@ -27,10 +27,10 @@ export default function Skills({ loaderData }: Route.ComponentProps) {
           <h1 style={sb.pageHeading}>Skills & Capabilities</h1>
           <div style={sb.pageSubheading}>Full skills inventory across the workforce</div>
         </div>
-        <select aria-label="Department filter" style={sb.select} value={filterDept} onChange={(e) => setFilterDept(e.target.value)}>
+        <select aria-label="Category filter" style={sb.select} value={filterDept} onChange={(e) => setFilterDept(e.target.value)}>
           {departments.map((d) => (
             <option key={d} value={d}>
-              {d === "All" ? "All Departments" : d}
+              {d === "All" ? "All Categories" : d}
             </option>
           ))}
         </select>
@@ -41,7 +41,7 @@ export default function Skills({ loaderData }: Route.ComponentProps) {
           <thead>
             <tr style={{ borderBottom: "1px solid rgba(10,10,10,.08)" }}>
               <th style={sb.th}>Skill</th>
-              <th style={sb.th}>Department</th>
+              <th style={sb.th}>Category</th>
               <th style={{ ...sb.th, textAlign: "right" }}>Employees</th>
               <th style={{ ...sb.th, textAlign: "right" }}>Avg. Proficiency</th>
               <th style={{ ...sb.th, textAlign: "right" }}>Level</th>

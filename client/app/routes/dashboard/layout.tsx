@@ -1,5 +1,24 @@
 import { NavLink, Outlet } from "react-router";
+
+/* Temporarily disabled notification loader and dynamic profile dependencies.
+import { NavLink, Outlet, useRevalidator } from "react-router";
 import { useUser } from "@clerk/react-router";
+
+import { api } from "../../lib/api";
+import type { Route } from "./+types/layout";
+
+type Notice = { id: string; title: string; message: string; readAt: string | null };
+
+export async function loader() {
+  try {
+    const response = await api<{ data: Notice[] }>("/api/v1/notifications/organization");
+    return { notices: response.data, notificationError: false };
+  } catch {
+    return { notices: [] as Notice[], notificationError: true };
+  }
+}
+
+*/
 
 const NAV_ITEMS = [
   { to: "/", label: "Home", end: true },
@@ -13,21 +32,30 @@ const NAV_ITEMS = [
   // { to: "/admin", label: "Admin" },
 ];
 
+/* Dynamic profile helper retained for restoration.
 function initialsFromName(name: string | null | undefined): string {
-  if (!name) return "JD";
+  if (!name) return "—";
   const parts = name.trim().split(/\s+/);
   const initials = parts
     .slice(0, 2)
     .map((p) => p[0]?.toUpperCase() ?? "")
     .join("");
-  return initials || "JD";
+  return initials || "—";
 }
 
+*/
+
 export default function DashboardLayout() {
+  /* Temporarily disabled notification and dynamic profile state.
+  const revalidator = useRevalidator();
+  const { notices, notificationError } = loaderData;
+  const unread = notices.filter((notice) => !notice.readAt).length;
   const { user, isLoaded } = useUser();
   const initials = isLoaded
     ? initialsFromName(user?.fullName ?? user?.primaryEmailAddress?.emailAddress)
-    : "JD";
+    : "—";
+
+  */
 
   return (
     <div
@@ -75,45 +103,24 @@ export default function DashboardLayout() {
           </nav>
 
           <div className="sb-actions">
-            <div
-              aria-label="Notifications"
-              style={{
-                position: "relative",
-                width: 38,
-                height: 38,
-                borderRadius: 12,
-                background: "#f1f5f9",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="1.8">
-                <path d="M6 9a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6z" />
-                <path d="M10 20a2 2 0 004 0" />
-              </svg>
-              <div
-                style={{
-                  position: "absolute",
-                  top: -2,
-                  right: -2,
-                  width: 16,
-                  height: 16,
-                  background: "#c81e1e",
-                  color: "#fff",
-                  fontSize: 9,
-                  fontWeight: 700,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: "50%",
-                }}
-              >
-                3
+            {/* Temporarily disabled: navbar notifications.
+            <details style={{ position: "relative" }}>
+              <summary aria-label="Organization notifications" style={{ cursor: "pointer", padding: "8px 12px", borderRadius: 12, background: "#f1f5f9", fontSize: 12 }}>
+                Notifications{unread > 0 ? ` (${unread})` : ""}
+              </summary>
+              <div style={{ position: "absolute", right: 0, top: "100%", marginTop: 8, width: "min(320px, 85vw)", maxHeight: "60vh", overflowY: "auto", background: "#fff", padding: 16, border: "1px solid #e2e8f0", borderRadius: 12, boxShadow: "0 8px 24px rgba(0,0,0,.08)", zIndex: 20 }}>
+                <strong>Organization notifications</strong>
+                {notificationError ? <p role="status">Notifications could not be loaded.</p> : notices.length === 0 ? <p>No organization notifications.</p> : notices.map((notice) => (
+                  <div key={notice.id} style={{ padding: "12px 0", borderBottom: "1px solid #e2e8f0", overflowWrap: "anywhere" }}>
+                    <div style={{ fontWeight: notice.readAt ? 500 : 700 }}>{notice.title}</div>
+                    <div style={{ marginTop: 4, fontSize: 12 }}>{notice.message}</div>
+                  </div>
+                ))}
+                <button type="button" disabled={revalidator.state !== "idle"} onClick={() => revalidator.revalidate()} style={{ marginTop: 12 }}>Refresh</button>
               </div>
-            </div>
+            </details>
+            */}
             <div
-              title={isLoaded && user ? user.fullName ?? user.primaryEmailAddress?.emailAddress ?? undefined : undefined}
               aria-label="User profile"
               style={{
                 width: 38,
@@ -128,7 +135,7 @@ export default function DashboardLayout() {
                 fontSize: 12,
               }}
             >
-              {initials}
+              JD
             </div>
           </div>
         </div>

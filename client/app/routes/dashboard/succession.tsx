@@ -18,7 +18,7 @@ export default function Succession({ loaderData }: Route.ComponentProps) {
     <div style={sb.page}>
       <div>
         <h1 style={sb.pageHeading}>Succession & Risk</h1>
-        <div style={sb.pageSubheading}>Critical roles with concentrated expertise and retirement exposure</div>
+        <div style={sb.pageSubheading}>Recorded succession risk profiles; maintained separately from employee assessments</div>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -40,7 +40,7 @@ export default function Succession({ loaderData }: Route.ComponentProps) {
               <div className="sb-wrap-text">
                 <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.35 }}>{row.name}</div>
                 <div style={{ fontSize: 12, color: "rgba(10,10,10,.55)", marginTop: 3 }}>
-                  {row.experts} experts · {row.successors} successors identified · retiring within {row.retireWithinYears} yrs
+                  {row.experts} experts · {row.successors} successors identified · retirement horizon: {row.retireWithinYears} yrs
                 </div>
               </div>
               <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 12px", borderRadius: 100, background: rc.bg, color: rc.color }}>

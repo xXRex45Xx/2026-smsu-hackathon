@@ -3,7 +3,7 @@ import { statusColors } from "../../data/skillbridge";
 import { api, type ApiList } from "../../lib/api";
 import type { Route } from "./+types/development";
 
-type Plan = { name: string; from: string; to: string; status: string; progress: number };
+type Plan = { id: string; name: string; from: string; to: string; status: string; progress: number };
 
 export async function loader() {
   return api<ApiList<Plan>>("/api/v1/development-plans?limit=100");
@@ -34,9 +34,9 @@ export default function Development({ loaderData }: Route.ComponentProps) {
           </thead>
           <tbody>
             {loaderData.data.map((row) => {
-              const st = statusColors(row.status === "ACTIVE" ? "In Progress" : row.status === "COMPLETE" ? "Complete" : "Not Started");
+              const st = statusColors(row.status === "ACTIVE" ? "In Progress" : ["COMPLETE", "COMPLETED"].includes(row.status) ? "Complete" : "Not Started");
               return (
-                <tr key={row.name} style={{ borderBottom: `1px solid ${sb.colors.border}` }}>
+                <tr key={row.id} style={{ borderBottom: `1px solid ${sb.colors.border}` }}>
                   <td style={{ ...sb.td, fontWeight: 600 }}>{row.name}</td>
                   <td style={{ ...sb.td, color: "rgba(10,10,10,.65)" }}>{row.from}</td>
                   <td style={{ ...sb.td, color: "rgba(10,10,10,.65)" }}>{row.to}</td>

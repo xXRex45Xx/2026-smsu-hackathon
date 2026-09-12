@@ -67,7 +67,7 @@ docker compose exec -T server npm run db:seed:demo
 
 For a local Node server, run `npm run db:seed:demo --prefix server` with its database connection configured.
 
-The demo adds 16 employees across the existing five departments, 3 skills, 62 assessments, 4 development plans, 6 course enrollments, and one workforce scenario. It preserves existing records and uses stable IDs, so rerunning it does not create duplicates. All inserts run in one transaction. The dashboard's hardcoded Development example does not change when this data is seeded. Succession Risk reads stored risk profiles; these profiles are not automatically recalculated from employee assessments.
+The demo adds 16 employees across the existing five departments, 3 skills, 62 assessments, 4 development plans, 6 course enrollments, and one workforce scenario. It preserves existing records and uses stable IDs, so rerunning it does not create duplicates. All inserts run in one transaction. Dashboard Development reads recorded plans and activities. Succession Risk reads stored risk profiles; these profiles are not automatically recalculated from employee assessments.
 
 ## Building for Production
 

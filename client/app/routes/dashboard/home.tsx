@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, Form, useNavigation } from "react-router";
 import * as sb from "../../styles/skillbridge";
 import { api } from "../../lib/api";
 import type { FutureSkill } from "../../lib/future-skills";
@@ -42,7 +42,16 @@ function countLabel(count: number, noun: string) {
   return `${count} ${noun}${count === 1 ? "" : "s"}`;
 }
 
+type DevelopmentPlan = {
+  id: string; name: string; title: string; currentRole: string; targetRole: string | null; status: string; progress: number;
+  items: { skillId: string; skill: string; type: string; currentLevel: number; targetLevel: number; status: string }[];
+};
+
 type Summary = {
+  departments: { id: string; name: string }[];
+  facilities: { id: string; name: string }[];
+  scenarios: { id: string; name: string }[];
+  developmentPlans: DevelopmentPlan[];
   successionRisks: SuccessionRisk[];
   skillHeatmap: SkillHeatmap;
   futureSkills: FutureSkill[];
@@ -54,8 +63,15 @@ type Summary = {
   gaps: { skill?: string; current: number; target: number }[];
 };
 
-export async function loader() {
-  return api<{ data: Summary }>("/api/v1/analytics/dashboard");
+export async function loader({ request }: Route.LoaderArgs) {
+  const url = new URL(request.url);
+  const filters = new URLSearchParams();
+  for (const key of ["facilityId", "departmentId", "scenarioId"]) {
+    const value = url.searchParams.get(key);
+    if (value) filters.set(key, value);
+  }
+  const response = await api<{ data: Summary }>(`/api/v1/analytics/dashboard?${filters}`);
+  return { ...response, filters: Object.fromEntries(filters) };
 }
 
 export function meta({}: Route.MetaArgs) {
@@ -74,6 +90,10 @@ const heatStyles = {
 
 export default function DashboardHome({ loaderData }: Route.ComponentProps) {
   const summary = loaderData.data;
+  const navigation = useNavigation();
+  const filters = loaderData.filters;
+  const scoped = Boolean(filters.departmentId || filters.facilityId);
+  const plan = summary.developmentPlans.find((item) => item.status === "ACTIVE") ?? summary.developmentPlans[0];
   const [featuredRisk, ...additionalRisks] = summary.successionRisks;
   const featuredStyle = featuredRisk ? successionRiskStyle(featuredRisk.risk) : null;
   return (
@@ -83,17 +103,22 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
           <h1 style={sb.pageHeading}>Talent Readiness Dashboard</h1>
           <div style={sb.pageSubheading}>Schwan's SkillBridge — workforce capability overview</div>
         </div>
-        <div className="sb-controls" aria-label="Dashboard filters">
-          <select aria-label="Facility filter" style={sb.select}>
-            <option>All Facilities</option>
+        <Form method="get" className="sb-controls" aria-label="Dashboard filters" key={JSON.stringify(filters)}>
+          <select name="facilityId" aria-label="Facility filter" style={sb.select} defaultValue={filters.facilityId ?? ""}>
+            <option value="">All Facilities</option>
+            {summary.facilities.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
           </select>
-          <select aria-label="Department filter" style={sb.select}>
-            <option>All Departments</option>
+          <select name="departmentId" aria-label="Department filter" style={sb.select} defaultValue={filters.departmentId ?? ""}>
+            <option value="">All Departments</option>
+            {summary.departments.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
           </select>
-          <select aria-label="Time range filter" style={{ ...sb.select, background: sb.colors.ink, color: "#fff" }}>
-            <option>Next 3 Years</option>
+          <select name="scenarioId" aria-label="Scenario filter" style={sb.select} defaultValue={filters.scenarioId ?? ""}>
+            <option value="">All Scenarios</option>
+            {summary.scenarios.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
           </select>
-        </div>
+          <button type="submit" style={sb.primaryButton} disabled={navigation.state !== "idle"}>{navigation.state !== "idle" ? "Applying…" : "Apply filters"}</button>
+          <Link to="/" style={{ color: sb.colors.red }}>Reset</Link>
+        </Form>
       </div>
 
       <div className="sb-grid sb-grid-metrics">
@@ -104,7 +129,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
               height: 60,
               borderRadius: "50%",
               flex: "none",
-              background: "conic-gradient(#d97706 0turn .72turn,rgba(255,255,255,.15) .72turn 1turn)",
+              background: `conic-gradient(#d97706 0turn ${summary.workforceReadiness / 100}turn,rgba(255,255,255,.15) ${summary.workforceReadiness / 100}turn 1turn)`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -127,8 +152,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
             </div>
           </div>
           <div className="sb-wrap-text">
-            <div style={{ fontSize: 13, fontWeight: 600, opacity: 0.7 }}>Workforce Readiness</div>
-            <div style={{ fontSize: 12, color: "#f2b544", fontWeight: 700, marginTop: 6 }}>↑ 6% from last quarter</div>
+            <div style={{ fontSize: 13, fontWeight: 600, opacity: 0.7 }}>{scoped ? "Coverage of organization targets" : "Workforce Readiness"}</div>
             <div style={{ fontSize: 11, opacity: 0.55, marginTop: 2 }}>{summary.employeeCount} employees</div>
           </div>
         </div>
@@ -142,8 +166,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
           </div>
           <div className="sb-metric-value">{summary.criticalSkillGaps}</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Critical Skill Gaps</div>
-          <div style={{ fontSize: 12, color: "#c81e1e", fontWeight: 700, marginTop: 8 }}>↑ 2 from last quarter</div>
-          <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>Across 5 departments</div>
+          <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>{filters.departmentId ? "Selected department" : `Across ${summary.departments.length} departments`}</div>
         </div>
 
         <div className="sb-card-hover" style={sb.card}>
@@ -154,7 +177,6 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
           </div>
           <div className="sb-metric-value">{summary.knowledgeConcentrationRisks}</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Knowledge Concentration Risks</div>
-          <div style={{ fontSize: 12, color: "#c81e1e", fontWeight: 700, marginTop: 8 }}>↑ 4 from last quarter</div>
           <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>High risk skills</div>
         </div>
 
@@ -169,8 +191,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
           </div>
           <div className="sb-metric-value">{summary.activeDevelopmentPlans}</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Active Development Plans</div>
-          <div style={{ fontSize: 12, color: "#1a7a3c", fontWeight: 700, marginTop: 8 }}>↑ 12% from last quarter</div>
-          <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>Across all departments</div>
+          <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>{scoped ? "Selected workforce" : "Across all departments"}</div>
         </div>
       </div>
 
@@ -178,7 +199,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
         <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ marginBottom: 14 }}>
           <div>
             <div style={sb.cardTitle}>Future Skills Needed</div>
-            <div style={sb.cardSubtitle}>Workforce scenario requirements, ordered by largest employee shortage</div>
+            <div style={sb.cardSubtitle}>{scoped ? "Selected employees compared with organization-wide staffing targets" : "Workforce scenario requirements, ordered by largest employee shortage"}</div>
           </div>
           <Link to="/insights" style={{ fontSize: 12, fontWeight: 700, color: sb.colors.red, whiteSpace: "nowrap" }}>View Strategy Map →</Link>
         </div>
@@ -293,51 +314,40 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
           <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ gap: 8 }}>
             <div>
               <div style={sb.cardTitle}>Development Plan</div>
-              <div style={sb.cardSubtitle}>Personalized recommendations to build critical skills</div>
+              <div style={sb.cardSubtitle}>Current development plan and recorded activities</div>
             </div>
             <Link to="/development" style={{ fontSize: 12, fontWeight: 700, color: sb.colors.red, whiteSpace: "nowrap" }}>View All Plans →</Link>
           </div>
-          <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ alignItems: "center", gap: 20, margin: "18px 0", paddingBottom: 18, borderBottom: "1px solid rgba(10,10,10,.08)" }}>
-            <div className="sb-fluid-row" style={{ alignItems: "center" }}>
-              <div style={{ width: 46, height: 46, flexShrink: 0, borderRadius: "50%", background: "#0a0a0a", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>EP</div>
-              <div className="sb-wrap-text">
-                <div style={{ fontWeight: 700, fontSize: 14 }}>Emily Park</div>
-                <div style={{ fontSize: 12, color: "rgba(10,10,10,.55)" }}>Production Supervisor · Manufacturing, Marshall MN</div>
+          {plan ? (
+            <>
+              <div style={{ margin: "18px 0", display: "grid", gap: 8 }}>
+                <div style={{ fontWeight: 700 }}>{plan.name} · {plan.currentRole}</div>
+                <div>{plan.title}</div>
+                <div style={sb.cardSubtitle}>Target role: {plan.targetRole ?? "Not assigned"} · {plan.status}</div>
+                <div role="progressbar" aria-label="Development plan progress" aria-valuenow={plan.progress} aria-valuemin={0} aria-valuemax={100} style={sb.progressTrack}>
+                  <div style={{ height: "100%", width: `${plan.progress}%`, background: sb.colors.ink, borderRadius: 999 }} />
+                </div>
+                <div>{plan.progress}% progress</div>
               </div>
-            </div>
-            <div style={{ minWidth: "min(220px, 100%)", flex: 1 }}>
-              <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ fontSize: 12, marginBottom: 5 }}>
-                <span className="sb-wrap-text" style={{ color: "rgba(10,10,10,.55)" }}>Career Goal: Move into Operations Manager role within 2 years</span>
-                <span style={{ fontWeight: 700 }}>60%</span>
+              <div className="sb-grid sb-grid-cards">
+                {plan.items.map((item) => (
+                  <div key={item.skillId} style={{ padding: 14, border: `1px solid ${sb.colors.border}`, borderRadius: 12 }}>
+                    <div style={{ fontWeight: 700 }}>{item.skill}</div>
+                    <div style={sb.cardSubtitle}>{item.type} · {item.status}</div>
+                    <div>Level {item.currentLevel} of {item.targetLevel} required</div>
+                  </div>
+                ))}
               </div>
-              <div aria-label="Development plan progress 60 percent" style={{ ...sb.progressTrack, height: 8 }}>
-                <div style={{ height: "100%", width: "60%", background: sb.colors.ink, borderRadius: 999 }} />
-              </div>
-            </div>
-          </div>
-          <div className="sb-grid sb-grid-cards">
-            {[
-              { kind: "Training", title: "Advanced Automation Systems", detail: "8 weeks · Online", d: <><path d="M4 5c2-1 5-1 7 0v14c-2-1-5-1-7 0z" /><path d="M20 5c-2-1-5-1-7 0v14c2-1 5-1 7 0z" /></> },
-              { kind: "Mentoring", title: "Pair with Senior Ops Manager", detail: "6 months", d: <><path d="M2 9l10-4 10 4-10 4z" /><path d="M6 11v5c0 1 3 2 6 2s6-1 6-2v-5" /></> },
-              { kind: "Certification", title: "Lean Six Sigma Green Belt", detail: "12 weeks", d: <><circle cx="12" cy="8" r="5" /><path d="M9 12l-2 8 5-3 5 3-2-8" /></> },
-              { kind: "Job Rotation", title: "Cross-functional Supply Chain", detail: "3 months", d: <><path d="M4 7h11a4 4 0 014 4v1" /><path d="M20 17H9a4 4 0 01-4-4v-1" /><path d="M7 4L4 7l3 3M17 20l3-3-3-3" /></> },
-              { kind: "Project Experience", title: "Lead Packaging Line Optimization", detail: "Q3 2025", d: <><rect x="3" y="8" width="18" height="12" /><path d="M8 8V6a2 2 0 012-2h4a2 2 0 012 2v2" /></> },
-            ].map((item) => (
-              <div className="sb-card-hover" key={item.kind} style={{ border: `1px solid ${sb.colors.border}`, borderRadius: 12, padding: 14, background: "#fff" }}>
-                <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" strokeWidth="1.8">{item.d}</svg>
-                <div style={{ fontWeight: 700, fontSize: 13, marginTop: 8 }}>{item.kind}</div>
-                <div style={{ fontSize: 12, color: "rgba(10,10,10,.65)", marginTop: 2 }}>{item.title}</div>
-                <div style={{ fontSize: 11, color: "rgba(10,10,10,.45)", marginTop: 6 }}>{item.detail}</div>
-              </div>
-            ))}
-          </div>
+              {plan.items.length === 0 && <p style={sb.cardSubtitle}>No activities have been added to this plan.</p>}
+            </>
+          ) : <p style={sb.cardSubtitle}>No development plans for the selected workforce.</p>}
         </div>
 
         </div>
 
           <div className="sb-home-succession" style={{ ...sb.card, display: "flex", flexDirection: "column", gap: 16 }}>
           <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ alignItems: "baseline" }}>
-            <div style={sb.cardTitle}>Succession Risk</div>
+            <div><div style={sb.cardTitle}>Succession Risk</div><div style={sb.cardSubtitle}>Organization-wide risk profiles</div></div>
             <Link to="/succession" style={{ fontSize: 12, fontWeight: 700, color: sb.colors.red }}>View All →</Link>
           </div>
           {featuredRisk && featuredStyle ? (
