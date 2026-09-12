@@ -9,7 +9,7 @@ router.get("/", async (req, res, next) => {
     await db.execute(sql`select 1`);
     res.json({ status: "ok", database: "ok", timestamp: new Date().toISOString() });
   } catch (error) {
-    next(error);
+    res.status(503).json({ status: "degraded", database: "unavailable", timestamp: new Date().toISOString() });
   }
 });
 

@@ -6,16 +6,22 @@ Build backend with Express.js, PostgreSQL, and Drizzle ORM. Use Docker and Docke
 
 Clerk authentication is outside this plan. API routes remain open during backend development. Do not expose this configuration publicly before authentication is added.
 
+## Phase Status
+
+- [x] Phase 1: Docker and Express Foundation
+- [x] Phase 2: Drizzle Schema and Seed Data
+- [x] Phase 3: Read APIs and Analytics
+- [x] Phase 4: Mutations and Client Integration
+- [x] Phase 5: Testing and Deployment Hardening
+
 ## Current Project Status
 
 - Client uses React Router v8, Vite, SSR, and Clerk UI components.
-- Express server contains only `GET /api/health` and protected `GET /api/me`.
-- No database or ORM exists.
-- No `docker-compose.yml` exists.
-- Client pages use hardcoded data from `client/app/data/skillbridge.ts`.
-- Client routes have no loaders, actions, or API calls.
-- Course enrollment, report downloads, and idea generation use local UI state only.
-- Dashboard metrics and charts are hardcoded inside route components.
+- Express server exposes workforce read and mutation APIs.
+- PostgreSQL and Drizzle ORM are configured with migrations and seed data.
+- Docker Compose runs PostgreSQL, server, and client services.
+- Client dashboard routes load data through the Express API.
+- Course enrollment, report download, and use-case generation call backend mutations.
 
 ## Dataset Model
 

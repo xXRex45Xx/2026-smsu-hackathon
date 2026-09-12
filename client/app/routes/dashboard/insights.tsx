@@ -1,35 +1,24 @@
 import * as sb from "../../styles/skillbridge";
+import { api } from "../../lib/api";
 import type { Route } from "./+types/insights";
+
+type InsightsData = {
+  summary: { skillCount: number; averageProficiency: number };
+  coverage: { department: string; skills: number; coverage: number }[];
+  composition: { label: string; count: number }[];
+  trending: { skill: string; prof: number }[];
+};
+
+export async function loader() {
+  return api<{ data: InsightsData }>("/api/v1/analytics/insights");
+}
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Talent Insights — SkillBridge" }];
 }
 
-const COVERAGE = [
-  { dept: "Manufacturing", skills: 15, pct: 88 },
-  { dept: "Maintenance", skills: 9, pct: 53 },
-  { dept: "Food Safety", skills: 7, pct: 41 },
-  { dept: "Supply Chain", skills: 8, pct: 47 },
-  { dept: "Technology", skills: 3, pct: 18 },
-];
-
-const COMPOSITION = [
-  { label: "Manufacturing", count: 640, color: "#0a0a0a" },
-  { label: "Supply Chain", count: 210, color: "#d97706" },
-  { label: "Food Safety", count: 180, color: "#94a3b8" },
-  { label: "Maintenance", count: 260, color: "#1e3a5f" },
-  { label: "Technology", count: 552, color: "#c81e1e" },
-];
-
-const TRENDING = [
-  { skill: "AI Fluency", change: "↑ 18%" },
-  { skill: "Cloud Security", change: "↑ 14%" },
-  { skill: "Data Analysis", change: "↑ 9%" },
-  { skill: "Automation", change: "↑ 7%" },
-  { skill: "Predictive Maintenance", change: "↑ 5%" },
-];
-
-export default function Insights() {
+export default function Insights({ loaderData }: Route.ComponentProps) {
+  const { summary, coverage, composition, trending } = loaderData.data;
   return (
     <div style={sb.page}>
       <div>
@@ -39,15 +28,15 @@ export default function Insights() {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 16 }}>
         <div style={sb.card}>
-          <div style={{ fontSize: 36, fontWeight: 800 }}>42</div>
+           <div style={{ fontSize: 36, fontWeight: 800 }}>{summary.skillCount}</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Skills Tracked</div>
         </div>
         <div style={sb.card}>
-          <div style={{ fontSize: 36, fontWeight: 800 }}>5</div>
+           <div style={{ fontSize: 36, fontWeight: 800 }}>{coverage.length}</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Departments</div>
         </div>
         <div style={sb.card}>
-          <div style={{ fontSize: 36, fontWeight: 800 }}>61%</div>
+           <div style={{ fontSize: 36, fontWeight: 800 }}>{summary.averageProficiency}%</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Avg. Proficiency</div>
         </div>
       </div>
@@ -56,14 +45,14 @@ export default function Insights() {
         <div style={sb.card}>
           <div style={{ ...sb.cardTitle, marginBottom: 14 }}>Skill Coverage by Department</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {COVERAGE.map((c) => (
-              <div key={c.dept}>
+             {coverage.map((c) => (
+               <div key={c.department}>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
-                  <span>{c.dept}</span>
+                   <span>{c.department}</span>
                   <span>{c.skills} skills</span>
                 </div>
                 <div style={{ height: 10, background: "#f0f0ee", borderRadius: 5 }}>
-                  <div style={{ height: "100%", width: `${c.pct}%`, background: "#0a0a0a", borderRadius: 5 }} />
+                   <div style={{ height: "100%", width: `${c.coverage}%`, background: "#0a0a0a", borderRadius: 5 }} />
                 </div>
               </div>
             ))}
@@ -84,9 +73,9 @@ export default function Insights() {
               }}
             />
             <div style={{ display: "flex", flexDirection: "column", gap: 7, fontSize: 12.5, fontWeight: 600 }}>
-              {COMPOSITION.map((c) => (
+               {composition.map((c, index) => (
                 <div key={c.label} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ width: 10, height: 10, borderRadius: 3, background: c.color }} />
+                   <span style={{ width: 10, height: 10, borderRadius: 3, background: ["#0a0a0a", "#d97706", "#94a3b8", "#1e3a5f", "#c81e1e"][index % 5] }} />
                   {c.label} — {c.count}
                 </div>
               ))}
@@ -98,10 +87,10 @@ export default function Insights() {
       <div style={sb.card}>
         <div style={{ ...sb.cardTitle, marginBottom: 14 }}>Top Trending Skills</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 14 }}>
-          {TRENDING.map((t) => (
+           {trending.map((t) => (
             <div key={t.skill}>
               <div style={{ fontSize: 13, fontWeight: 600 }}>{t.skill}</div>
-              <div style={{ fontSize: 12, color: "#1a7a3c", fontWeight: 700, marginTop: 4 }}>{t.change}</div>
+               <div style={{ fontSize: 12, color: "#1a7a3c", fontWeight: 700, marginTop: 4 }}>{t.prof}% average proficiency</div>
             </div>
           ))}
         </div>

@@ -1,16 +1,25 @@
 import { useState } from "react";
+import { useRevalidator } from "react-router";
 import * as sb from "../../styles/skillbridge";
-import { IDEAS, ideaRiskColors, complexityColors } from "../../data/skillbridge";
+import { ideaRiskColors, complexityColors } from "../../data/skillbridge";
+import { api, type ApiList } from "../../lib/api";
 import type { Route } from "./+types/use-cases";
+
+type UseCase = { id: string; title: string; desc: string; value: string; riskLabel: "Low" | "Medium" | "High"; complexityLabel: "Low" | "Medium" | "High" };
+
+export async function loader() {
+  return api<ApiList<UseCase>>("/api/v1/ai-use-cases?limit=100");
+}
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Use Case Ideas — SkillBridge" }];
 }
 
-export default function UseCases() {
+export default function UseCases({ loaderData }: Route.ComponentProps) {
   const [count, setCount] = useState(2);
-  const visible = IDEAS.slice(0, count);
-  const canAddMore = count < IDEAS.length;
+  const revalidator = useRevalidator();
+  const visible = loaderData.data.slice(0, count);
+  const canAddMore = count < loaderData.data.length;
 
   return (
     <div style={sb.page}>
@@ -21,8 +30,8 @@ export default function UseCases() {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 16 }}>
         {visible.map((idea) => {
-          const rc = ideaRiskColors(idea.risk);
-          const cc = complexityColors(idea.complexity);
+          const rc = ideaRiskColors(idea.riskLabel);
+          const cc = complexityColors(idea.complexityLabel);
           return (
             <div key={idea.title} style={{ background: "#fff", borderRadius: 18, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,.05)", display: "flex", flexDirection: "column", gap: 10 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" strokeWidth="1.8">
@@ -37,11 +46,11 @@ export default function UseCases() {
                   <div style={{ fontSize: 10, color: "rgba(10,10,10,.5)" }}>Est. Value</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: rc.bg, color: rc.color, display: "inline-block" }}>{idea.risk}</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: rc.bg, color: rc.color, display: "inline-block" }}>{idea.riskLabel}</div>
                   <div style={{ fontSize: 10, color: "rgba(10,10,10,.5)", marginTop: 4 }}>Risk</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: cc.bg, color: cc.color, display: "inline-block" }}>{idea.complexity}</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: cc.bg, color: cc.color, display: "inline-block" }}>{idea.complexityLabel}</div>
                   <div style={{ fontSize: 10, color: "rgba(10,10,10,.5)", marginTop: 4 }}>Complexity</div>
                 </div>
               </div>
@@ -52,7 +61,11 @@ export default function UseCases() {
 
       {canAddMore && (
         <button
-          onClick={() => setCount((c) => Math.min(c + 1, IDEAS.length))}
+           onClick={async () => {
+             await api("/api/v1/ai-use-cases/generate", { method: "POST", body: { name: "Workforce Opportunity" } });
+             setCount((c) => c + 1);
+             revalidator.revalidate();
+           }}
           style={{ alignSelf: "flex-start", background: "#0a0a0a", color: "#fff", border: "none", borderRadius: 100, padding: "12px 20px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}
         >
           Generate More Ideas
