@@ -1,4 +1,3 @@
-import { useState } from "react";
 import * as sb from "../../styles/skillbridge";
 import { COURSES } from "../../data/skillbridge";
 import { getLessonByCourseTitle } from "../../data/lessons";
@@ -10,9 +9,6 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Learning() {
-  const [enrolled, setEnrolled] = useState<Record<string, boolean>>({});
-  const toggle = (id: string) => setEnrolled((prev) => ({ ...prev, [id]: !prev[id] }));
-
   return (
     <div style={sb.page}>
       <div>
@@ -29,8 +25,6 @@ export default function Learning() {
             duration={c.duration}
             format={c.format}
             count={c.count}
-            enrolled={!!enrolled[c.id]}
-            onToggleEnroll={() => toggle(c.id)}
             lessonSlug={getLessonByCourseTitle(c.title)?.slug}
           />
         ))}

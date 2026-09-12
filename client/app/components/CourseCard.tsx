@@ -7,22 +7,11 @@ export interface CourseCardProps {
   duration: string;
   format: string;
   count: number;
-  enrolled?: boolean;
-  onToggleEnroll?: () => void;
   /** When set, renders a "Start Lesson" link to /lesson/:slug. */
   lessonSlug?: string;
 }
 
-export default function CourseCard({
-  title,
-  provider,
-  duration,
-  format,
-  count,
-  enrolled = false,
-  onToggleEnroll,
-  lessonSlug,
-}: CourseCardProps) {
+export default function CourseCard({ title, provider, duration, format, count, lessonSlug }: CourseCardProps) {
   return (
     <div
       className="sb-card-hover"
@@ -38,23 +27,8 @@ export default function CourseCard({
         {provider} · {duration} · {format}
       </div>
       <div style={{ fontSize: 11, color: "rgba(10,10,10,.45)" }}>{count} enrolled</div>
-      {onToggleEnroll && (
-        <button
-          onClick={onToggleEnroll}
-          style={{
-            ...sb.primaryButton,
-            marginTop: 10,
-            background: enrolled ? "#e6f7ea" : "#0a0a0a",
-            color: enrolled ? "#1a7a3c" : "#fff",
-            boxShadow: enrolled ? "none" : sb.primaryButton.boxShadow,
-            width: "100%",
-          }}
-        >
-          {enrolled ? "Enrolled ✓" : "Enroll"}
-        </button>
-      )}
       {lessonSlug && (
-        <Link to={`/lesson/${lessonSlug}`} style={{ ...sb.secondaryButton, textAlign: "center", width: "100%" }}>
+        <Link to={`/lesson/${lessonSlug}`} style={{ ...sb.primaryButton, marginTop: 10, textAlign: "center", width: "100%" }}>
           Start Lesson →
         </Link>
       )}
