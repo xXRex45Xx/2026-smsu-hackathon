@@ -77,14 +77,10 @@ export default function DashboardLayout() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 9, flex: "none" }}>
-            <div
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: "50%",
-                background: "radial-gradient(circle at 30% 30%,#ff5b52,#c81e1e)",
-                flex: "none",
-              }}
+            <img
+              src="/CJ_Schwans_logo.svg"
+              alt="Schwan's"
+              style={{ width: 30, height: 30, flex: "none", objectFit: "contain" }}
             />
             <span style={{ fontWeight: 800, fontSize: 16, letterSpacing: "-.01em" }}>SkillBridge</span>
           </div>
