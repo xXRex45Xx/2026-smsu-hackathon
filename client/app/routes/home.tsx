@@ -1,3 +1,4 @@
+import { useAuth, SignInButton, UserButton } from "@clerk/react-router";
 import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
 
@@ -22,8 +23,12 @@ export async function loader() {
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
+  const { isSignedIn } = useAuth();
   return (
     <>
+      <div style={{ display: "flex", justifyContent: "flex-end", padding: "1rem" }}>
+        {isSignedIn ? <UserButton /> : <SignInButton />}
+      </div>
       <Welcome />
       <p style={{ textAlign: "center", fontSize: "0.8rem", opacity: 0.6 }}>
         API status: {loaderData.health ? loaderData.health.status : "unreachable"}
