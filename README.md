@@ -1,87 +1,70 @@
-# Welcome to React Router!
+# 2026 SMSU Hackathon
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Two-server project: React Router frontend (`client/`) + Express API backend (`server/`).
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## Structure
 
-## Features
-
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+```
+├── client/    # React Router v7 app (SSR, Vite, TailwindCSS)
+└── server/    # Express API server
+```
 
 ## Getting Started
 
 ### Installation
 
-Install the dependencies:
+Install dependencies for both servers:
 
 ```bash
-npm install
+npm run install:all
 ```
+
+### Environment variables
+
+Copy the example env files:
+
+```bash
+cp client/.env.example client/.env
+cp server/.env.example server/.env
+```
+
+`client/.env` sets `API_URL` (where the React Router server calls the backend from loaders).
+`server/.env` sets `PORT` and `CLIENT_ORIGIN` (CORS).
 
 ### Development
 
-Start the development server with HMR:
+Run both servers together:
 
 ```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+- Client: `http://localhost:5173`
+- Server: `http://localhost:3001`
+
+Run them separately if needed:
+
+```bash
+npm run dev:client
+npm run dev:server
+```
+
+## Client (`client/`)
+
+React Router v7, SSR on by default. See [client/README.md](client/README.md) for details, or [reactrouter.com](https://reactrouter.com/).
+
+## Server (`server/`)
+
+Plain Express app. Routes live in `server/src/routes/`. `GET /api/health` is the example route.
 
 ## Building for Production
-
-Create a production build:
 
 ```bash
 npm run build
 ```
 
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+Builds the client only; the server has no build step (plain Node/Express).
 
 ---
 
-Built with ❤️ using React Router.
+Built with ❤️ using React Router + Express.
