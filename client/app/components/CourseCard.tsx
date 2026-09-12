@@ -1,4 +1,5 @@
 import type { CourseFormat } from "../data/skillbridge";
+import * as sb from "../styles/skillbridge";
 
 export interface CourseCardProps {
   title: string;
@@ -21,11 +22,9 @@ export default function CourseCard({
 }: CourseCardProps) {
   return (
     <div
+      className="sb-card-hover"
       style={{
-        background: "#fff",
-        borderRadius: 18,
-        padding: 20,
-        boxShadow: "0 2px 12px rgba(0,0,0,.05)",
+        ...sb.card,
         display: "flex",
         flexDirection: "column",
         gap: 8,
@@ -39,18 +38,14 @@ export default function CourseCard({
       {onToggleEnroll && (
         <button
           onClick={onToggleEnroll}
-          style={{
-            marginTop: 6,
-            background: enrolled ? "#e6f7ea" : "#0a0a0a",
-            color: enrolled ? "#1a7a3c" : "#fff",
-            border: "none",
-            borderRadius: 100,
-            padding: "9px 14px",
-            fontWeight: 700,
-            fontSize: 12.5,
-            cursor: "pointer",
-          }}
-        >
+            style={{
+              ...sb.primaryButton,
+              marginTop: 10,
+              background: enrolled ? "#e6f7ea" : "#0a0a0a",
+              color: enrolled ? "#1a7a3c" : "#fff",
+              boxShadow: enrolled ? "none" : sb.primaryButton.boxShadow,
+            }}
+          >
           {enrolled ? "Enrolled ✓" : "Enroll"}
         </button>
       )}
