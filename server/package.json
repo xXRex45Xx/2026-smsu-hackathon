@@ -5,13 +5,20 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "node src/db/migrate.js",
+    "db:seed": "node src/db/seed.js",
     "dev": "node --watch src/index.js",
     "start": "node src/index.js"
   },
   "dependencies": {
-    "@clerk/express": "^2.1.67",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.21.2"
+    "drizzle-orm": "^0.44.7",
+    "express": "^4.21.2",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.5"
   }
 }
