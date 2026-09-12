@@ -11,7 +11,6 @@ import {
   employees,
   facilities,
   futureSkillRequirements,
-  learningCourses,
   processPainPoints,
   reports,
   roleSkillRequirements,
@@ -129,15 +128,6 @@ const useCaseRequirementRows = [
   { useCaseId: "ai2", skillId: "s5", requiredLevel: 3, requiredPeople: 1 },
 ];
 
-const courseRows = [
-  { id: "c1", title: "Advanced Automation Systems", provider: "Internal Academy", duration: "8 weeks", format: "Online", demoEnrollmentCount: 134 },
-  { id: "c2", title: "Lean Six Sigma Green Belt", provider: "ASQ", duration: "12 weeks", format: "Hybrid", demoEnrollmentCount: 88 },
-  { id: "c3", title: "Cloud Security Fundamentals", provider: "Coursera", duration: "6 weeks", format: "Online", demoEnrollmentCount: 52 },
-  { id: "c4", title: "AI & Data Fluency for Ops", provider: "Internal Academy", duration: "4 weeks", format: "Online", demoEnrollmentCount: 201 },
-  { id: "c5", title: "Supply Chain Leadership", provider: "APICS", duration: "10 weeks", format: "In-person", demoEnrollmentCount: 41 },
-  { id: "c6", title: "Food Safety Management (HACCP)", provider: "SQF Institute", duration: "3 weeks", format: "In-person", demoEnrollmentCount: 96 },
-];
-
 const reportRows = [
   { id: "rpt1", title: "Workforce Readiness Summary", generatedAt: new Date("2026-09-01T00:00:00Z") },
   { id: "rpt2", title: "Skills Gap Analysis", generatedAt: new Date("2026-08-28T00:00:00Z") },
@@ -172,7 +162,6 @@ async function seed() {
     await tx.insert(processPainPoints).values(painPointRows).onConflictDoNothing();
     await tx.insert(aiUseCases).values(useCaseRows).onConflictDoNothing();
     await tx.insert(aiUseCaseSkillRequirements).values(useCaseRequirementRows).onConflictDoNothing();
-    await tx.insert(learningCourses).values(courseRows).onConflictDoNothing();
     await tx.insert(reports).values(reportRows).onConflictDoNothing();
     await tx.insert(successionRiskProfiles).values(successionRows).onConflictDoNothing();
   });

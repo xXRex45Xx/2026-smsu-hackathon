@@ -3,7 +3,6 @@ import {
   aiUseCases,
   aiUseCaseSkillRequirements,
   businessProcesses,
-  courseEnrollments,
   departments,
   developmentPlanItems,
   developmentPlans,
@@ -11,7 +10,6 @@ import {
   employees,
   facilities,
   futureSkillRequirements,
-  learningCourses,
   reports,
   roleSkillRequirements,
   roles,
@@ -38,7 +36,7 @@ function qualifiedCount(employees, employeeSkills, skillId, requiredLevel) {
 }
 
 export async function getSnapshot(filters = {}) {
-  const [employeeRows, skillRows, employeeSkillRows, departmentRows, facilityRows, teamRows, planRows, planItemRows, roleRows, roleRequirementRows, scenarioRows, futureRows, useCaseRows, useCaseRequirementRows, processRows, courseRows, enrollmentRows, reportRows, successionRows] = await Promise.all([
+  const [employeeRows, skillRows, employeeSkillRows, departmentRows, facilityRows, teamRows, planRows, planItemRows, roleRows, roleRequirementRows, scenarioRows, futureRows, useCaseRows, useCaseRequirementRows, processRows, reportRows, successionRows] = await Promise.all([
     db.select().from(employees),
     db.select().from(skills),
     db.select().from(employeeSkills),
@@ -54,8 +52,6 @@ export async function getSnapshot(filters = {}) {
     db.select().from(aiUseCases),
     db.select().from(aiUseCaseSkillRequirements),
     db.select().from(businessProcesses),
-    db.select().from(learningCourses),
-    db.select().from(courseEnrollments),
     db.select().from(reports),
     db.select().from(successionRiskProfiles),
   ]);
@@ -136,11 +132,6 @@ export async function getSnapshot(filters = {}) {
     };
   });
 
-  const courses = courseRows.map((course) => ({
-    ...course,
-    count: course.demoEnrollmentCount + enrollmentRows.filter((item) => item.courseId === course.id).length,
-  }));
-
   const readiness = gaps.length
     ? Math.round(gaps.reduce((sum, gap) => sum + gap.current, 0) / gaps.length)
     : visibleSkills.length
@@ -159,7 +150,6 @@ export async function getSnapshot(filters = {}) {
     scenarios: scenarioRows,
     useCases: useCaseData,
     processes: processRows,
-    courses,
     reports: reportRows,
     successionRisks: successionRows,
     employeeSkills: visibleSkills,
