@@ -5,5 +5,9 @@ node_modules/
 # React Router
 client/.react-router/
 client/build/
+<<<<<<< HEAD
 .react-router/
 .playwright-mcp/
+=======
+.playwright-mcp
+>>>>>>> main

@@ -39,9 +39,9 @@ const HEATMAP: { skill: string; row: ("high" | "medium" | "low")[] }[] = [
 ];
 
 const heatStyles = {
-  high: { bg: sb.colors.redLight, border: "rgba(200, 30, 30, .26)", color: sb.colors.red },
+  high: { bg: sb.colors.greenBg, border: "rgba(26, 122, 60, .28)", color: sb.colors.green },
   medium: { bg: sb.colors.amberBg, border: "rgba(217, 119, 6, .28)", color: sb.colors.amberText },
-  low: { bg: sb.colors.surfaceSoft, border: sb.colors.borderStrong, color: sb.colors.inkFaint },
+  low: { bg: sb.colors.redLight, border: "rgba(200, 30, 30, .26)", color: sb.colors.red },
 };
 
 export default function DashboardHome({ loaderData }: Route.ComponentProps) {
