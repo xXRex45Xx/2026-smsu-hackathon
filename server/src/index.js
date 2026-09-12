@@ -4,6 +4,7 @@ import cors from "cors";
 import { clerkMiddleware } from "@clerk/express";
 import healthRouter from "./routes/health.js";
 import meRouter from "./routes/me.js";
+import uploadsRouter from "./routes/uploads.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -14,6 +15,7 @@ app.use(clerkMiddleware());
 
 app.use("/api/health", healthRouter);
 app.use("/api/me", meRouter);
+app.use("/api/uploads", uploadsRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
