@@ -30,20 +30,34 @@ export default function DashboardLayout() {
     : "JD";
 
   return (
-    <div className="sb-shell">
-      <div className="sb-topbar-wrap">
-        <div className="sb-topbar">
-          <div className="sb-brand">
-            <div
-              aria-hidden="true"
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: 10,
-                background: "linear-gradient(135deg,#c81e1e,#f59e0b)",
-                boxShadow: "0 10px 18px rgba(200,30,30,.2)",
-                flex: "none",
-              }}
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f5f4f2",
+        color: "#0a0a0a",
+        fontFamily: "'Inter',system-ui,sans-serif",
+      }}
+    >
+      <div style={{ position: "sticky", top: 0, zIndex: 10, padding: "18px 28px 0" }}>
+        <div
+          style={{
+            maxWidth: 1400,
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            gap: 20,
+            background: "#fff",
+            borderRadius: 100,
+            boxShadow: "0 8px 24px rgba(0,0,0,.08)",
+            padding: "10px 12px 10px 14px",
+            flexWrap: "wrap",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 9, flex: "none" }}>
+            <img
+              src="/CJ_Schwans_logo.svg"
+              alt="Schwan's"
+              style={{ width: 30, height: 30, flex: "none", objectFit: "contain" }}
             />
             <span style={{ fontWeight: 850, fontSize: 16, letterSpacing: 0, color: "#111827" }}>SkillBridge</span>
           </div>
