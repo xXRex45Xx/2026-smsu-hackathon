@@ -14,6 +14,7 @@ import notifications from "./notifications.js";
 import successionRisks from "./succession-risks.js";
 import analytics from "./analytics.js";
 import admin from "./admin.js";
+import quiz from "./quiz.js";
 
 const router = Router();
 router.use("/employees", employees);
@@ -31,4 +32,5 @@ router.use("/notifications", notifications);
 router.use("/succession-risks", successionRisks);
 router.use("/analytics", analytics);
 router.use("/admin", admin);
+router.use("/quiz", quiz);
 export default router;
