@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Link, useParams } from "react-router";
 import * as sb from "../../styles/skillbridge";
 import { getLessonBySlug } from "../../data/lessons";
@@ -11,6 +11,10 @@ export function meta({ params }: Route.MetaArgs) {
 
 type Tab = "content" | "quiz";
 
+// Offset for the sticky dashboard topbar, so scrolled-to sections and the
+// scrollspy threshold both land below it instead of underneath it.
+const TOPBAR_OFFSET = 130;
+
 export default function Lesson() {
   const { slug } = useParams();
   const lesson = getLessonBySlug(slug ?? "");
@@ -19,6 +23,31 @@ export default function Lesson() {
   const [contentDone, setContentDone] = useState(false);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(false);
+
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [activeHeading, setActiveHeading] = useState<string | undefined>(lesson?.sections?.[0]?.heading);
+
+  // Book-index scrollspy: track which section heading is currently at/above
+  // the topbar offset, and highlight that one in the side panel.
+  useEffect(() => {
+    if (tab !== "content" || lesson?.contentType !== "text" || !lesson.sections) return;
+
+    const headings = lesson.sections.map((s) => s.heading);
+    function onScroll() {
+      let current = headings[0];
+      for (const heading of headings) {
+        const el = sectionRefs.current[heading];
+        if (el && el.getBoundingClientRect().top - TOPBAR_OFFSET <= 0) {
+          current = heading;
+        }
+      }
+      setActiveHeading(current);
+    }
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [tab, lesson]);
 
   if (!lesson) {
     return (
@@ -39,9 +68,13 @@ export default function Lesson() {
   const score = submitted ? lesson.quiz.filter((q, i) => answers[i] === q.correctIndex).length : 0;
   const complete = contentDone && submitted;
 
-  const markContentDone = () => {
+  const takeQuiz = () => {
     setContentDone(true);
     setTab("quiz");
+  };
+
+  const scrollToSection = (heading: string) => {
+    sectionRefs.current[heading]?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const selectAnswer = (qIndex: number, optIndex: number) => {
@@ -102,33 +135,51 @@ export default function Lesson() {
       </div>
 
       {tab === "content" && (
-        <div style={sb.card}>
-          {lesson.contentType === "text" &&
-            lesson.sections?.map((section) => (
-              <div key={section.heading} style={{ marginBottom: 22 }}>
-                <div style={{ ...sb.cardTitle, fontSize: 16, marginBottom: 8 }}>{section.heading}</div>
-                {section.paragraphs.map((p, i) => (
-                  <p key={i} style={{ fontSize: 14, color: sb.colors.inkSoft, lineHeight: 1.6, margin: "0 0 10px" }}>
-                    {p}
-                  </p>
-                ))}
-              </div>
-            ))}
-
-          {lesson.contentType === "video" && lesson.videoUrl && (
-            <video controls style={{ width: "100%", borderRadius: 10 }} src={lesson.videoUrl} />
+        <div className="sb-lesson-layout">
+          {lesson.contentType === "text" && lesson.sections && (
+            <nav className="sb-lesson-toc" aria-label="Table of contents">
+              {lesson.sections.map((section) => (
+                <button
+                  key={section.heading}
+                  className={
+                    activeHeading === section.heading ? "sb-lesson-toc-link sb-lesson-toc-link-active" : "sb-lesson-toc-link"
+                  }
+                  onClick={() => scrollToSection(section.heading)}
+                >
+                  {section.heading}
+                </button>
+              ))}
+            </nav>
           )}
 
-          <div style={{ marginTop: 8, paddingTop: 18, borderTop: `1px solid ${sb.colors.border}` }}>
-            {contentDone ? (
-              <span style={{ ...sb.pill, background: sb.colors.greenBg, color: sb.colors.green }}>
-                ✓ Marked as read — quiz unlocked
-              </span>
-            ) : (
-              <button style={sb.primaryButton} onClick={markContentDone}>
-                Mark as Complete → Take Quiz
-              </button>
+          <div style={sb.card}>
+            {lesson.contentType === "text" &&
+              lesson.sections?.map((section) => (
+                <div
+                  key={section.heading}
+                  ref={(el) => {
+                    sectionRefs.current[section.heading] = el;
+                  }}
+                  style={{ marginBottom: 22, scrollMarginTop: TOPBAR_OFFSET }}
+                >
+                  <div style={{ ...sb.cardTitle, fontSize: 16, marginBottom: 8 }}>{section.heading}</div>
+                  {section.paragraphs.map((p, i) => (
+                    <p key={i} style={{ fontSize: 14, color: sb.colors.inkSoft, lineHeight: 1.6, margin: "0 0 10px" }}>
+                      {p}
+                    </p>
+                  ))}
+                </div>
+              ))}
+
+            {lesson.contentType === "video" && lesson.videoUrl && (
+              <video controls style={{ width: "100%", borderRadius: 10 }} src={lesson.videoUrl} />
             )}
+
+            <div style={{ marginTop: 8, paddingTop: 18, borderTop: `1px solid ${sb.colors.border}`, display: "flex", justifyContent: "flex-end" }}>
+              <button style={sb.primaryButton} onClick={takeQuiz}>
+                Take Quiz
+              </button>
+            </div>
           </div>
         </div>
       )}

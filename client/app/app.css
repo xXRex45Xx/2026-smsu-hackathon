@@ -436,3 +436,78 @@ table {
     min-width: 560px;
   }
 }
+
+.sb-lesson-layout {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.sb-lesson-toc {
+  position: sticky;
+  top: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sb-lesson-toc-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: none;
+  border-left: 2px solid transparent;
+  background: none;
+  color: #64748b;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+
+.sb-lesson-toc-link:hover {
+  background: #f1f5f9;
+  color: #111827;
+}
+
+.sb-lesson-toc-link-active {
+  color: #111827;
+  border-left-color: #c81e1e;
+  background: #f1f5f9;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .sb-lesson-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sb-lesson-toc {
+    position: static;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 4px;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sb-lesson-toc-link {
+    width: auto;
+    white-space: nowrap;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+  }
+
+  .sb-lesson-toc-link-active {
+    border-left-color: transparent;
+    border-bottom-color: #c81e1e;
+  }
+}
