@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import * as sb from "../styles/skillbridge";
 
 export interface CourseCardProps {
@@ -8,6 +9,8 @@ export interface CourseCardProps {
   count: number;
   enrolled?: boolean;
   onToggleEnroll?: () => void;
+  /** When set, renders a "Start Lesson" link to /lesson/:slug. */
+  lessonSlug?: string;
 }
 
 export default function CourseCard({
@@ -18,6 +21,7 @@ export default function CourseCard({
   count,
   enrolled = false,
   onToggleEnroll,
+  lessonSlug,
 }: CourseCardProps) {
   return (
     <div
@@ -48,6 +52,11 @@ export default function CourseCard({
         >
           {enrolled ? "Enrolled ✓" : "Enroll"}
         </button>
+      )}
+      {lessonSlug && (
+        <Link to={`/lesson/${lessonSlug}`} style={{ ...sb.secondaryButton, textAlign: "center", width: "100%" }}>
+          Start Lesson →
+        </Link>
       )}
     </div>
   );

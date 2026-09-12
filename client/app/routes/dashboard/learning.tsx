@@ -1,6 +1,7 @@
 import { useState } from "react";
 import * as sb from "../../styles/skillbridge";
 import { api, type ApiList } from "../../lib/api";
+import { getLessonByCourseTitle } from "../../data/lessons";
 import CourseCard from "../../components/CourseCard";
 import type { Route } from "./+types/learning";
 
@@ -43,6 +44,7 @@ export default function Learning({ loaderData }: Route.ComponentProps) {
             count={c.count}
             enrolled={!!enrolled[c.id]}
             onToggleEnroll={() => toggle(c.id)}
+            lessonSlug={getLessonByCourseTitle(c.title)?.slug}
           />
         ))}
       </div>
