@@ -4,6 +4,7 @@
 export type Level = "High" | "Medium" | "Low";
 export type Status = "In Progress" | "Not Started" | "Complete";
 export type Risk = "High" | "Medium" | "Low";
+export type CourseFormat = "Online" | "In-person" | "Hybrid";
 
 export interface Skill {
   skill: string;
@@ -34,7 +35,7 @@ export interface Course {
   title: string;
   provider: string;
   duration: string;
-  format: string;
+  format: CourseFormat;
   count: number;
 }
 

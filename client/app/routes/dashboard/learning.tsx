@@ -1,6 +1,7 @@
 import { useState } from "react";
 import * as sb from "../../styles/skillbridge";
 import { COURSES } from "../../data/skillbridge";
+import CourseCard from "../../components/CourseCard";
 import type { Route } from "./+types/learning";
 
 export function meta({}: Route.MetaArgs) {
@@ -19,34 +20,18 @@ export default function Learning() {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 16 }}>
-        {COURSES.map((c) => {
-          const isEnrolled = !!enrolled[c.id];
-          return (
-            <div key={c.id} style={{ background: "#fff", borderRadius: 18, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,.05)", display: "flex", flexDirection: "column", gap: 8 }}>
-              <div style={{ fontSize: 15, fontWeight: 700 }}>{c.title}</div>
-              <div style={{ fontSize: 12, color: "rgba(10,10,10,.55)" }}>
-                {c.provider} · {c.duration} · {c.format}
-              </div>
-              <div style={{ fontSize: 11, color: "rgba(10,10,10,.45)" }}>{c.count} enrolled</div>
-              <button
-                onClick={() => toggle(c.id)}
-                style={{
-                  marginTop: 6,
-                  background: isEnrolled ? "#e6f7ea" : "#0a0a0a",
-                  color: isEnrolled ? "#1a7a3c" : "#fff",
-                  border: "none",
-                  borderRadius: 100,
-                  padding: "9px 14px",
-                  fontWeight: 700,
-                  fontSize: 12.5,
-                  cursor: "pointer",
-                }}
-              >
-                {isEnrolled ? "Enrolled ✓" : "Enroll"}
-              </button>
-            </div>
-          );
-        })}
+        {COURSES.map((c) => (
+          <CourseCard
+            key={c.id}
+            title={c.title}
+            provider={c.provider}
+            duration={c.duration}
+            format={c.format}
+            count={c.count}
+            enrolled={!!enrolled[c.id]}
+            onToggleEnroll={() => toggle(c.id)}
+          />
+        ))}
       </div>
     </div>
   );
