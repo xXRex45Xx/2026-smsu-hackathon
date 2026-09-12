@@ -14,11 +14,11 @@ const COVERAGE = [
 ];
 
 const COMPOSITION = [
-  { label: "Manufacturing", count: 640, color: "#0a0a0a" },
-  { label: "Supply Chain", count: 210, color: "#d97706" },
-  { label: "Food Safety", count: 180, color: "#94a3b8" },
-  { label: "Maintenance", count: 260, color: "#1e3a5f" },
-  { label: "Technology", count: 552, color: "#c81e1e" },
+  { label: "Manufacturing", count: 640, color: "#BFDBFE" },
+  { label: "Supply Chain", count: 210, color: "#FED7AA" },
+  { label: "Food Safety", count: 180, color: "#BBF7D0" },
+  { label: "Maintenance", count: 260, color: "#DDD6FE" },
+  { label: "Technology", count: 552, color: "#FECACA" },
 ];
 
 const TRENDING = [
@@ -39,15 +39,15 @@ export default function Insights() {
 
       <div className="sb-grid sb-grid-metrics">
         <div className="sb-card-hover" style={sb.card}>
-          <div style={{ fontSize: 36, fontWeight: 800 }}>42</div>
+          <div className="sb-metric-value">42</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Skills Tracked</div>
         </div>
         <div className="sb-card-hover" style={sb.card}>
-          <div style={{ fontSize: 36, fontWeight: 800 }}>5</div>
+          <div className="sb-metric-value">5</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Departments</div>
         </div>
         <div className="sb-card-hover" style={sb.card}>
-          <div style={{ fontSize: 36, fontWeight: 800 }}>61%</div>
+          <div className="sb-metric-value">61%</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Avg. Proficiency</div>
         </div>
       </div>
@@ -58,8 +58,8 @@ export default function Insights() {
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {COVERAGE.map((c) => (
               <div key={c.dept}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
-                  <span>{c.dept}</span>
+                <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
+                  <span className="sb-wrap-text">{c.dept}</span>
                   <span>{c.skills} skills</span>
                 </div>
                 <div aria-label={`${c.dept} coverage ${c.pct} percent`} style={sb.progressTrack}>
@@ -72,7 +72,7 @@ export default function Insights() {
 
         <div style={{ ...sb.card, display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={sb.cardTitle}>Workforce Composition</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
+          <div className="sb-fluid-row sb-fluid-row-wrap" style={{ alignItems: "center", gap: 20 }}>
             <div
               aria-label="Workforce composition chart"
               style={{
@@ -81,13 +81,14 @@ export default function Insights() {
                 borderRadius: "50%",
                 flex: "none",
                 background:
-                  "conic-gradient(#0a0a0a 0turn .347turn,#d97706 .347turn .461turn,#94a3b8 .461turn .559turn,#1e3a5f .559turn .70turn,#c81e1e .70turn 1turn)",
+                  "conic-gradient(#BFDBFE 0turn .347turn,#FED7AA .347turn .461turn,#BBF7D0 .461turn .559turn,#DDD6FE .559turn .70turn,#FECACA .70turn 1turn)",
+                boxShadow: "inset 0 0 0 1px rgba(15,23,42,.08)",
               }}
             />
-            <div style={{ display: "flex", flexDirection: "column", gap: 7, fontSize: 12.5, fontWeight: 600 }}>
+            <div className="sb-wrap-text" style={{ display: "flex", flexDirection: "column", gap: 7, fontSize: 12.5, fontWeight: 600 }}>
               {COMPOSITION.map((c) => (
-                <div key={c.label} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ width: 10, height: 10, borderRadius: 3, background: c.color }} />
+                <div key={c.label} className="sb-fluid-row" style={{ alignItems: "center", gap: 6 }}>
+                  <span style={{ width: 10, height: 10, borderRadius: 3, backgroundColor: c.color, border: "1px solid rgba(15,23,42,.12)", flex: "none" }} />
                   {c.label} — {c.count}
                 </div>
               ))}
@@ -101,7 +102,7 @@ export default function Insights() {
         <div className="sb-grid sb-grid-cards">
           {TRENDING.map((t) => (
             <div className="sb-card-hover" key={t.skill} style={{ border: `1px solid ${sb.colors.border}`, borderRadius: 12, padding: 14, background: sb.colors.surface }}>
-              <div style={{ fontSize: 13, fontWeight: 600 }}>{t.skill}</div>
+              <div className="sb-wrap-text" style={{ fontSize: 13, fontWeight: 600 }}>{t.skill}</div>
               <div style={{ fontSize: 12, color: "#1a7a3c", fontWeight: 700, marginTop: 4 }}>{t.change}</div>
             </div>
           ))}

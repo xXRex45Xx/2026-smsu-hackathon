@@ -27,16 +27,18 @@ export const colors = {
 export const page: CSSProperties = {
   display: "flex",
   flexDirection: "column",
-  gap: 22,
+  gap: "clamp(16px, 2vw, 22px)",
+  minWidth: 0,
 };
 
 export const pageHeading: CSSProperties = {
-  fontSize: "clamp(28px, 4vw, 38px)",
+  fontSize: "clamp(26px, 4vw, 38px)",
   fontWeight: 800,
   letterSpacing: 0,
-  lineHeight: 1.08,
+  lineHeight: 1.1,
   margin: 0,
   color: colors.ink,
+  overflowWrap: "anywhere",
 };
 
 export const pageSubheading: CSSProperties = {
@@ -44,28 +46,32 @@ export const pageSubheading: CSSProperties = {
   color: colors.inkFaint,
   marginTop: 6,
   lineHeight: 1.5,
+  maxWidth: 720,
 };
 
 export const card: CSSProperties = {
   background: colors.surface,
   border: `1px solid ${colors.border}`,
   borderRadius: 14,
-  padding: 24,
+  padding: "clamp(16px, 2vw, 24px)",
   boxShadow: "0 14px 34px rgba(15,23,42,.07)",
+  minWidth: 0,
 };
 
 export const cardTitle: CSSProperties = {
-  fontSize: 19,
+  fontSize: "clamp(16px, 2vw, 19px)",
   fontWeight: 800,
   letterSpacing: 0,
   lineHeight: 1.2,
   color: colors.ink,
+  overflowWrap: "anywhere",
 };
 
 export const cardSubtitle: CSSProperties = {
   fontSize: 13,
   color: colors.inkFaint,
   lineHeight: 1.45,
+  overflowWrap: "anywhere",
 };
 
 export const pill: CSSProperties = {
@@ -75,6 +81,9 @@ export const pill: CSSProperties = {
   borderRadius: 999,
   lineHeight: 1.2,
   whiteSpace: "nowrap",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
 };
 
 export const select: CSSProperties = {
@@ -92,6 +101,7 @@ export const select: CSSProperties = {
   backgroundRepeat: "no-repeat",
   boxShadow: "0 10px 24px rgba(15,23,42,.06)",
   color: colors.ink,
+  maxWidth: "100%",
 };
 
 export const th: CSSProperties = {
@@ -103,6 +113,7 @@ export const th: CSSProperties = {
   color: colors.inkFainter,
   fontWeight: 800,
   whiteSpace: "nowrap",
+  lineHeight: 1.25,
 };
 
 export const td: CSSProperties = {
@@ -110,6 +121,7 @@ export const td: CSSProperties = {
   fontSize: 13,
   color: colors.inkSoft,
   verticalAlign: "middle",
+  lineHeight: 1.4,
 };
 
 export const primaryButton: CSSProperties = {
@@ -124,6 +136,7 @@ export const primaryButton: CSSProperties = {
   lineHeight: 1,
   minHeight: 40,
   boxShadow: "0 12px 24px rgba(17,24,39,.16)",
+  maxWidth: "100%",
 };
 
 export const secondaryButton: CSSProperties = {

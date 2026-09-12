@@ -26,15 +26,11 @@ export default function Succession() {
                 borderRadius: 14,
                 padding: "18px 20px",
                 boxShadow: "0 14px 34px rgba(15,23,42,.07)",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 16,
-                flexWrap: "wrap",
               }}
+              className="sb-fluid-row-between sb-fluid-row-wrap"
             >
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 700 }}>{row.role}</div>
+              <div className="sb-wrap-text">
+                <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.35 }}>{row.role}</div>
                 <div style={{ fontSize: 12, color: "rgba(10,10,10,.55)", marginTop: 3 }}>
                   {row.experts} experts · {row.successors} successors identified · retiring within {row.retireYrs} yrs
                 </div>

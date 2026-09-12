@@ -29,11 +29,11 @@ export default function UseCases() {
                 <path d="M9 18h6M10 21h4" />
                 <path d="M12 3a6 6 0 00-3 11c.6.5 1 1.3 1 2h4c0-.7.4-1.5 1-2a6 6 0 00-3-11z" />
               </svg>
-              <div style={{ fontWeight: 700, fontSize: 14 }}>{idea.title}</div>
-              <p style={{ fontSize: 12, color: "rgba(10,10,10,.65)", margin: 0 }}>{idea.desc}</p>
+              <div className="sb-wrap-text" style={{ fontWeight: 700, fontSize: 14, lineHeight: 1.35 }}>{idea.title}</div>
+              <p className="sb-wrap-text" style={{ fontSize: 12, color: "rgba(10,10,10,.65)", margin: 0, lineHeight: 1.45 }}>{idea.desc}</p>
               <div className="sb-grid sb-grid-compact-3" style={{ gap: 8, textAlign: "center", marginTop: 4 }}>
                 <div>
-                  <div style={{ fontSize: 16, fontWeight: 800 }}>{idea.value}</div>
+                  <div style={{ fontSize: "clamp(15px, 4vw, 16px)", fontWeight: 800 }}>{idea.value}</div>
                   <div style={{ fontSize: 10, color: "rgba(10,10,10,.5)" }}>Est. Value</div>
                 </div>
                 <div>

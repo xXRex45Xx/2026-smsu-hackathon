@@ -13,6 +13,7 @@ html,
 body {
   margin: 0;
   min-width: 320px;
+  overflow-x: hidden;
   @apply bg-white dark:bg-gray-950;
 
   @media (prefers-color-scheme: dark) {
@@ -31,6 +32,11 @@ a {
   text-decoration: none;
 }
 
+img,
+svg {
+  max-width: 100%;
+}
+
 button,
 select {
   font: inherit;
@@ -45,7 +51,6 @@ a:focus-visible {
 
 table {
   width: 100%;
-  min-width: 680px;
   border-collapse: collapse;
   border-spacing: 0;
 }
@@ -78,6 +83,7 @@ table {
   box-shadow: 0 18px 45px rgba(15, 23, 42, 0.09);
   padding: 10px 12px 10px 14px;
   backdrop-filter: blur(16px);
+  min-width: 0;
 }
 
 .sb-brand {
@@ -86,6 +92,7 @@ table {
   gap: 10px;
   flex: none;
   min-height: 40px;
+  min-width: 0;
 }
 
 .sb-nav {
@@ -97,6 +104,7 @@ table {
   overflow-x: auto;
   padding: 3px;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .sb-nav::-webkit-scrollbar {
@@ -135,6 +143,7 @@ table {
 }
 
 .sb-main {
+  width: 100%;
   max-width: 1400px;
   margin: 0 auto;
   padding: 34px 28px 56px;
@@ -149,25 +158,28 @@ table {
   align-items: flex-end;
   flex-wrap: wrap;
   gap: 18px;
+  min-width: 0;
 }
 
 .sb-controls {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 .sb-grid {
   display: grid;
   gap: 16px;
+  min-width: 0;
 }
 
 .sb-grid-metrics {
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
 }
 
 .sb-grid-cards {
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
 }
 
 .sb-grid-2 {
@@ -184,6 +196,52 @@ table {
   grid-template-columns: repeat(3, 1fr);
 }
 
+.sb-metric-value {
+  font-size: clamp(30px, 5vw, 36px);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.sb-fluid-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.sb-fluid-row-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.sb-fluid-row-wrap {
+  flex-wrap: wrap;
+}
+
+.sb-legend {
+  display: flex;
+  align-items: center;
+  gap: 10px 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.sb-scroll-panel {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  padding-bottom: 2px;
+}
+
+.sb-wrap-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .sb-home-content {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
@@ -196,6 +254,7 @@ table {
   display: grid;
   gap: 16px;
   align-items: start;
+  min-width: 0;
 }
 
 .sb-home-top-grid {
@@ -212,6 +271,17 @@ table {
   padding: 6px 20px;
   box-shadow: 0 14px 34px rgba(15, 23, 42, 0.07);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+.sb-table-card table {
+  min-width: 680px;
+}
+
+.sb-table-card th,
+.sb-table-card td {
+  overflow-wrap: anywhere;
 }
 
 .sb-card-hover {
@@ -243,6 +313,24 @@ table {
   }
 }
 
+@media (max-width: 900px) {
+  .sb-main {
+    padding: 28px 20px 44px;
+    gap: 18px;
+  }
+
+  .sb-grid,
+  .sb-home-main,
+  .sb-home-sidebar,
+  .sb-home-top-grid {
+    gap: 14px;
+  }
+
+  .sb-table-card {
+    padding: 4px 14px;
+  }
+}
+
 @media (max-width: 700px) {
   .sb-topbar-wrap {
     padding: 10px 12px 0;
@@ -251,6 +339,7 @@ table {
   .sb-topbar {
     border-radius: 14px;
     gap: 10px;
+    padding: 10px;
   }
 
   .sb-brand span {
@@ -263,6 +352,7 @@ table {
 
   .sb-main {
     padding: 22px 12px 36px;
+    gap: 16px;
   }
 
   .sb-page-header {
@@ -274,7 +364,70 @@ table {
     width: 100%;
   }
 
+  .sb-nav {
+    margin-inline: -3px;
+    padding-bottom: 5px;
+  }
+
+  .sb-nav-link {
+    font-size: 12px;
+    padding: 9px 11px;
+  }
+
+  .sb-grid-metrics,
+  .sb-grid-cards {
+    grid-template-columns: 1fr;
+  }
+
   .sb-grid-compact-3 {
     grid-template-columns: 1fr;
+  }
+
+  .sb-fluid-row,
+  .sb-fluid-row-between {
+    align-items: stretch;
+  }
+
+  .sb-fluid-row-between {
+    flex-direction: column;
+  }
+
+  .sb-table-card {
+    margin-inline: -2px;
+    padding: 0 10px;
+    border-radius: 12px;
+  }
+
+  .sb-table-card table {
+    min-width: 620px;
+  }
+}
+
+@media (max-width: 430px) {
+  .sb-topbar-wrap {
+    padding-inline: 8px;
+  }
+
+  .sb-topbar {
+    border-radius: 12px;
+  }
+
+  .sb-actions {
+    gap: 6px;
+  }
+
+  .sb-main {
+    padding: 18px 10px 32px;
+  }
+
+  .sb-grid,
+  .sb-home-main,
+  .sb-home-sidebar,
+  .sb-home-top-grid {
+    gap: 12px;
+  }
+
+  .sb-table-card table {
+    min-width: 560px;
   }
 }

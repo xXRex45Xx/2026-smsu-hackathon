@@ -25,11 +25,11 @@ export default function Reports() {
               <path d="M6 2h9l5 5v15H6z" />
               <path d="M14 2v6h6" />
             </svg>
-            <div style={{ fontWeight: 700, fontSize: 14 }}>{r.title}</div>
+            <div className="sb-wrap-text" style={{ fontWeight: 700, fontSize: 14, lineHeight: 1.35 }}>{r.title}</div>
             <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)" }}>Generated {r.date}</div>
             <button
               onClick={() => markDownloaded(r.id)}
-              style={{ ...sb.primaryButton, marginTop: 10 }}
+              style={{ ...sb.primaryButton, marginTop: 10, width: "100%" }}
             >
               Download PDF
             </button>

@@ -30,22 +30,23 @@ export default function CourseCard({
         gap: 8,
       }}
     >
-      <div style={{ fontSize: 15, fontWeight: 700 }}>{title}</div>
-      <div style={{ fontSize: 12, color: "rgba(10,10,10,.55)" }}>
+      <div className="sb-wrap-text" style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.3 }}>{title}</div>
+      <div className="sb-wrap-text" style={{ fontSize: 12, color: "rgba(10,10,10,.55)", lineHeight: 1.4 }}>
         {provider} · {duration} · {format}
       </div>
       <div style={{ fontSize: 11, color: "rgba(10,10,10,.45)" }}>{count} enrolled</div>
       {onToggleEnroll && (
         <button
           onClick={onToggleEnroll}
-            style={{
-              ...sb.primaryButton,
-              marginTop: 10,
-              background: enrolled ? "#e6f7ea" : "#0a0a0a",
-              color: enrolled ? "#1a7a3c" : "#fff",
-              boxShadow: enrolled ? "none" : sb.primaryButton.boxShadow,
-            }}
-          >
+          style={{
+            ...sb.primaryButton,
+            marginTop: 10,
+            background: enrolled ? "#e6f7ea" : "#0a0a0a",
+            color: enrolled ? "#1a7a3c" : "#fff",
+            boxShadow: enrolled ? "none" : sb.primaryButton.boxShadow,
+            width: "100%",
+          }}
+        >
           {enrolled ? "Enrolled ✓" : "Enroll"}
         </button>
       )}

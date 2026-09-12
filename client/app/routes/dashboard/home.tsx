@@ -23,7 +23,11 @@ const HEATMAP: { skill: string; row: ("high" | "medium" | "low")[] }[] = [
   { skill: "Continuous Impr.", row: ["high", "medium", "medium", "high", "high"] },
 ];
 
-const heatBg = { high: sb.colors.ink, medium: sb.colors.medium, low: sb.colors.track };
+const heatStyles = {
+  high: { bg: "#86EFAC", border: "#22C55E", color: "#15803D" },
+  medium: { bg: "#FDE68A", border: "#F59E0B", color: "#A16207" },
+  low: { bg: "#FECACA", border: "#EF4444", color: "#B91C1C" },
+};
 
 const GAPS = [
   { skill: "Automation", current: 60, target: 85 },
@@ -55,7 +59,7 @@ export default function DashboardHome() {
       </div>
 
       <div className="sb-grid sb-grid-metrics">
-        <div style={{ background: sb.colors.ink, color: "#fff", borderRadius: 14, padding: 22, display: "flex", alignItems: "center", gap: 16, boxShadow: "0 18px 40px rgba(17,24,39,.18)" }}>
+        <div className="sb-fluid-row sb-fluid-row-wrap" style={{ background: sb.colors.ink, color: "#fff", borderRadius: 14, padding: "clamp(18px, 2vw, 22px)", boxShadow: "0 18px 40px rgba(17,24,39,.18)" }}>
           <div
             style={{
               width: 60,
@@ -84,7 +88,7 @@ export default function DashboardHome() {
               72%
             </div>
           </div>
-          <div style={{ minWidth: 0 }}>
+          <div className="sb-wrap-text">
             <div style={{ fontSize: 13, fontWeight: 600, opacity: 0.7 }}>Workforce Readiness</div>
             <div style={{ fontSize: 12, color: "#f2b544", fontWeight: 700, marginTop: 6 }}>↑ 6% from last quarter</div>
             <div style={{ fontSize: 11, opacity: 0.55, marginTop: 2 }}>1,842 employees</div>
@@ -98,7 +102,7 @@ export default function DashboardHome() {
               <path d="M12 10v4M12 17h.01" />
             </svg>
           </div>
-          <div style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-.02em" }}>8</div>
+          <div className="sb-metric-value">8</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Critical Skill Gaps</div>
           <div style={{ fontSize: 12, color: "#c81e1e", fontWeight: 700, marginTop: 8 }}>↑ 2 from last quarter</div>
           <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>Across 5 departments</div>
@@ -110,7 +114,7 @@ export default function DashboardHome() {
               <path d="M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6z" />
             </svg>
           </div>
-          <div style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-.02em" }}>14</div>
+          <div className="sb-metric-value">14</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Knowledge Concentration Risks</div>
           <div style={{ fontSize: 12, color: "#c81e1e", fontWeight: 700, marginTop: 8 }}>↑ 4 from last quarter</div>
           <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>High risk skills</div>
@@ -125,7 +129,7 @@ export default function DashboardHome() {
               <path d="M15 13.5c2.8.4 5 2.9 5 6.5" />
             </svg>
           </div>
-          <div style={{ fontSize: 36, fontWeight: 800, letterSpacing: "-.02em" }}>186</div>
+          <div className="sb-metric-value">186</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Active Development Plans</div>
           <div style={{ fontSize: 12, color: "#1a7a3c", fontWeight: 700, marginTop: 8 }}>↑ 12% from last quarter</div>
           <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>Across all departments</div>
@@ -136,36 +140,47 @@ export default function DashboardHome() {
         <div className="sb-home-main">
           <div className="sb-home-top-grid">
         <div style={sb.card}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10, marginBottom: 6 }}>
+          <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ marginBottom: 6 }}>
             <div>
               <div style={sb.cardTitle}>Skills Heat Map</div>
               <div style={sb.cardSubtitle}>Proficiency levels by department</div>
             </div>
-            <div style={{ display: "flex", gap: 12 }}>
+            <div className="sb-legend" aria-label="Heat map legend">
               <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 600 }}>
-                <span style={{ width: 11, height: 11, borderRadius: 3, background: "#0a0a0a" }} />High
+                <span style={{ width: 11, height: 11, borderRadius: 3, backgroundColor: heatStyles.high.bg, border: `1px solid ${heatStyles.high.border}` }} />High
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 600 }}>
-                <span style={{ width: 11, height: 11, borderRadius: 3, background: "#fbdf9d" }} />Medium
+                <span style={{ width: 11, height: 11, borderRadius: 3, backgroundColor: heatStyles.medium.bg, border: `1px solid ${heatStyles.medium.border}` }} />Medium
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 600 }}>
-                <span style={{ width: 11, height: 11, borderRadius: 3, background: "#f0f0ee" }} />Low
+                <span style={{ width: 11, height: 11, borderRadius: 3, backgroundColor: heatStyles.low.bg, border: `1px solid ${heatStyles.low.border}` }} />Low
               </div>
             </div>
           </div>
-          <div style={{ overflowX: "auto", paddingBottom: 2 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "108px repeat(5,minmax(68px,1fr))", gap: 5, marginTop: 14, minWidth: 500 }}>
+          <div className="sb-scroll-panel">
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(104px, 120px) repeat(5,minmax(46px,1fr))", gap: 5, marginTop: 14, minWidth: 380 }}>
             <div />
             {DEPTS.map((d) => (
-              <div key={d} style={{ fontSize: 9, lineHeight: 1.15, fontWeight: 700, textAlign: "center", color: "rgba(10,10,10,.55)", alignSelf: "end", paddingBottom: 4, overflowWrap: "break-word" }}>
+              <div key={d} style={{ fontSize: 10, lineHeight: 1.15, fontWeight: 800, textAlign: "center", color: sb.colors.inkFaint, alignSelf: "end", padding: "0 4px 6px", overflowWrap: "break-word" }}>
                 {d}
               </div>
             ))}
             {HEATMAP.map((r) => (
               <Fragment key={r.skill}>
-                <div style={{ fontSize: 12.5, fontWeight: 600, display: "flex", alignItems: "center" }}>{r.skill}</div>
+                <div className="sb-wrap-text" style={{ fontSize: 12.5, fontWeight: 600, display: "flex", alignItems: "center" }}>{r.skill}</div>
                 {r.row.map((level, i) => (
-                  <div key={i} aria-label={`${r.skill} ${DEPTS[i]} ${level}`} style={{ height: 30, borderRadius: 6, background: heatBg[level] }} />
+                  <div
+                    key={i}
+                    aria-label={`${r.skill} ${DEPTS[i]} ${level}`}
+                    style={{
+                      width: "100%",
+                      height: 24,
+                      borderRadius: 6,
+                      backgroundColor: heatStyles[level].bg,
+                      border: `1px solid ${heatStyles[level].border}`,
+                      boxShadow: `inset 0 0 0 1px ${heatStyles[level].color}18`,
+                    }}
+                  />
                 ))}
               </Fragment>
             ))}
@@ -176,7 +191,7 @@ export default function DashboardHome() {
         <div style={sb.card}>
           <div style={sb.cardTitle}>Capability Gaps</div>
           <div style={{ ...sb.cardSubtitle, marginBottom: 6 }}>Current vs. future required proficiency</div>
-          <div style={{ display: "flex", gap: 14, fontSize: 11, fontWeight: 600, marginBottom: 14 }}>
+          <div className="sb-legend" style={{ fontSize: 11, fontWeight: 600, marginBottom: 14 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#0a0a0a" }} />Current
             </div>
@@ -187,8 +202,8 @@ export default function DashboardHome() {
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {GAPS.map((g) => (
               <div key={g.skill}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontWeight: 600, marginBottom: 5 }}>
-                  <span>{g.skill}</span>
+                <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ fontSize: 13, fontWeight: 600, marginBottom: 5 }}>
+                  <span className="sb-wrap-text">{g.skill}</span>
                   <span style={{ color: "rgba(10,10,10,.5)", fontWeight: 500 }}>{g.current}% → {g.target}%</span>
                 </div>
                 <div aria-label={`${g.skill}: current ${g.current} percent, target ${g.target} percent`} style={{ ...sb.progressTrack, position: "relative" }}>
@@ -202,24 +217,24 @@ export default function DashboardHome() {
           </div>
 
         <div style={sb.card}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+          <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ gap: 8 }}>
             <div>
               <div style={sb.cardTitle}>Development Plan</div>
               <div style={sb.cardSubtitle}>Personalized recommendations to build critical skills</div>
             </div>
             <Link to="/development" style={{ fontSize: 12, fontWeight: 700, color: sb.colors.red, whiteSpace: "nowrap" }}>View All Plans →</Link>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 20, flexWrap: "wrap", margin: "18px 0", paddingBottom: 18, borderBottom: "1px solid rgba(10,10,10,.08)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ alignItems: "center", gap: 20, margin: "18px 0", paddingBottom: 18, borderBottom: "1px solid rgba(10,10,10,.08)" }}>
+            <div className="sb-fluid-row" style={{ alignItems: "center" }}>
               <div style={{ width: 46, height: 46, borderRadius: "50%", background: "#0a0a0a", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>EP</div>
-              <div>
+              <div className="sb-wrap-text">
                 <div style={{ fontWeight: 700, fontSize: 14 }}>Emily Park</div>
                 <div style={{ fontSize: 12, color: "rgba(10,10,10,.55)" }}>Production Supervisor · Manufacturing, Marshall MN</div>
               </div>
             </div>
-            <div style={{ minWidth: 220, flex: 1 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 5 }}>
-                <span style={{ color: "rgba(10,10,10,.55)" }}>Career Goal: Move into Operations Manager role within 2 years</span>
+            <div style={{ minWidth: "min(220px, 100%)", flex: 1 }}>
+              <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ fontSize: 12, marginBottom: 5 }}>
+                <span className="sb-wrap-text" style={{ color: "rgba(10,10,10,.55)" }}>Career Goal: Move into Operations Manager role within 2 years</span>
                 <span style={{ fontWeight: 700 }}>60%</span>
               </div>
               <div aria-label="Development plan progress 60 percent" style={{ ...sb.progressTrack, height: 8 }}>
@@ -248,7 +263,7 @@ export default function DashboardHome() {
 
         <div className="sb-home-sidebar">
           <div style={{ ...sb.card, display: "flex", flexDirection: "column", gap: 16 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+          <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ alignItems: "baseline" }}>
             <div style={sb.cardTitle}>Succession Risk</div>
             <Link to="/succession" style={{ fontSize: 12, fontWeight: 700, color: sb.colors.red }}>View All →</Link>
           </div>
@@ -274,8 +289,8 @@ export default function DashboardHome() {
                 { name: "Demand Forecasting", experts: 5, risk: "Medium" as const },
                 { name: "SAP Supply Chain", experts: 4, risk: "Medium" as const },
               ].map((r) => (
-                <div key={r.name} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
+                <div key={r.name} className="sb-fluid-row-between sb-fluid-row-wrap" style={{ alignItems: "center" }}>
+                  <div className="sb-wrap-text">
                     <div style={{ fontSize: 13, fontWeight: 600 }}>{r.name}</div>
                     <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)" }}>{r.experts} experts</div>
                   </div>
@@ -289,7 +304,7 @@ export default function DashboardHome() {
           </div>
 
         <div style={{ ...sb.card, display: "flex", flexDirection: "column", gap: 14 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+          <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ gap: 8 }}>
             <div style={sb.cardTitle}>Process Improvement Finder</div>
             <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: ".04em", textTransform: "uppercase", background: "#f0f0ee", color: "rgba(10,10,10,.65)", padding: "3px 9px", borderRadius: 100, whiteSpace: "nowrap" }}>
               Beta
