@@ -1,11 +1,51 @@
-import { Fragment } from "react";
 import { Link } from "react-router";
 import * as sb from "../../styles/skillbridge";
 import { api } from "../../lib/api";
-import { FUTURE_SKILLS, riskColors } from "../../data/skillbridge";
+import type { FutureSkill } from "../../lib/future-skills";
 import type { Route } from "./+types/home";
 
+type SkillHeatmap = {
+  departments: { id: string; name: string }[];
+  rows: {
+    skillId: string;
+    skill: string;
+    cells: {
+      departmentId: string;
+      assessedEmployees: number;
+      proficiency: number | null;
+      level: "high" | "medium" | "low" | "none";
+    }[];
+  }[];
+};
+
+type SuccessionRisk = {
+  id: string;
+  name: string;
+  experts: number;
+  successors: number;
+  risk: string;
+  retireWithinYears: number;
+};
+
+const successionRiskStyles = {
+  HIGH: { label: "High", background: "#fdeceb", color: "#c81e1e" },
+  MEDIUM: { label: "Medium", background: "#fef3e0", color: "#b45309" },
+  LOW: { label: "Low", background: "#e6f7ea", color: "#1a7a3c" },
+};
+
+function successionRiskStyle(risk: string) {
+  return successionRiskStyles[risk.toUpperCase() as keyof typeof successionRiskStyles]
+    ?? { label: "Unspecified", background: "#f0f0ee", color: "#4b5563" };
+}
+
+function countLabel(count: number, noun: string) {
+  return `${count} ${noun}${count === 1 ? "" : "s"}`;
+}
+
 type Summary = {
+  successionRisks: SuccessionRisk[];
+  skillHeatmap: SkillHeatmap;
+  futureSkills: FutureSkill[];
   workforceReadiness: number;
   employeeCount: number;
   criticalSkillGaps: number;
@@ -25,20 +65,8 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-const DEPTS = ["Mfg.", "Maint.", "Food Safety", "Supply Chain", "Technology"];
-
-const HEATMAP: { skill: string; row: ("high" | "medium" | "low")[] }[] = [
-  { skill: "Automation", row: ["high", "medium", "low", "medium", "medium"] },
-  { skill: "AI Fluency", row: ["low", "low", "low", "medium", "high"] },
-  { skill: "Cloud Security", row: ["low", "medium", "low", "medium", "high"] },
-  { skill: "Food Safety", row: ["medium", "medium", "high", "medium", "low"] },
-  { skill: "Predictive Maint.", row: ["high", "high", "low", "medium", "medium"] },
-  { skill: "Data Analysis", row: ["medium", "medium", "medium", "high", "high"] },
-  { skill: "Leadership", row: ["medium", "medium", "medium", "medium", "medium"] },
-  { skill: "Continuous Impr.", row: ["high", "medium", "medium", "high", "high"] },
-];
-
 const heatStyles = {
+  none: { bg: sb.colors.surfaceSoft, border: sb.colors.border, color: sb.colors.inkSoft },
   high: { bg: sb.colors.greenBg, border: "rgba(26, 122, 60, .28)", color: sb.colors.green },
   medium: { bg: sb.colors.amberBg, border: "rgba(217, 119, 6, .28)", color: sb.colors.amberText },
   low: { bg: sb.colors.redLight, border: "rgba(200, 30, 30, .26)", color: sb.colors.red },
@@ -46,6 +74,8 @@ const heatStyles = {
 
 export default function DashboardHome({ loaderData }: Route.ComponentProps) {
   const summary = loaderData.data;
+  const [featuredRisk, ...additionalRisks] = summary.successionRisks;
+  const featuredStyle = featuredRisk ? successionRiskStyle(featuredRisk.risk) : null;
   return (
     <div style={sb.page}>
       <div className="sb-page-header">
@@ -148,97 +178,89 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
         <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ marginBottom: 14 }}>
           <div>
             <div style={sb.cardTitle}>Future Skills Needed</div>
-            <div style={sb.cardSubtitle}>Business and technology strategies mapped to required workforce capabilities</div>
+            <div style={sb.cardSubtitle}>Workforce scenario requirements, ordered by largest employee shortage</div>
           </div>
           <Link to="/insights" style={{ fontSize: 12, fontWeight: 700, color: sb.colors.red, whiteSpace: "nowrap" }}>View Strategy Map →</Link>
         </div>
         <div className="sb-grid sb-future-skills-grid">
-          {FUTURE_SKILLS.slice(0, 4).map((item) => {
-            const priority = riskColors(item.priority);
-            const gap = item.target - item.current;
-            return (
-              <div key={item.skill} className="sb-card-hover" style={{ border: `1px solid ${sb.colors.border}`, borderRadius: 12, padding: 14, background: sb.colors.surface, minWidth: 0 }}>
-                <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ gap: 8, marginBottom: 8 }}>
-                  <div className="sb-wrap-text">
-                    <div style={{ fontSize: 14, fontWeight: 800, lineHeight: 1.25 }}>{item.skill}</div>
-                    <div style={{ fontSize: 11, color: sb.colors.inkFaint, marginTop: 3 }}>{item.strategy}</div>
-                  </div>
-                  <span style={{ ...sb.pill, background: priority.bg, color: priority.color }}>{item.priority}</span>
-                </div>
-                <div style={{ fontSize: 12, color: sb.colors.inkSoft, lineHeight: 1.45, minHeight: 50 }}>{item.businessImpact}</div>
-                <div style={{ marginTop: 10, padding: "9px 10px", borderRadius: 10, background: sb.colors.surfaceSoft }}>
-                  <div style={{ fontSize: 10, fontWeight: 800, color: sb.colors.inkFaint, textTransform: "uppercase", letterSpacing: ".04em" }}>Recommended action</div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: sb.colors.ink, marginTop: 3, lineHeight: 1.35 }}>{item.actions[0]}</div>
-                </div>
-                <div style={{ marginTop: 12 }}>
-                  <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ fontSize: 11, fontWeight: 700, marginBottom: 5 }}>
-                    <span>{item.current}% today</span>
-                    <span>{item.target}% needed</span>
-                  </div>
-                  <div aria-label={`${item.skill}: ${item.current} percent today, ${item.target} percent needed`} style={{ ...sb.progressTrack, position: "relative", height: 8 }}>
-                    <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${item.current}%`, background: sb.colors.ink, borderRadius: 999 }} />
-                    <div style={{ position: "absolute", left: `${item.target}%`, top: -2, width: 2, height: 12, background: sb.colors.red }} />
-                  </div>
-                  <div style={{ fontSize: 11, color: sb.colors.red, fontWeight: 700, marginTop: 6 }}>Close {gap} point gap</div>
-                </div>
+          {summary.futureSkills.length === 0 && (
+            <p style={sb.cardSubtitle}>No future skill requirements have been configured.</p>
+          )}
+          {summary.futureSkills.slice(0, 4).map((item) => (
+            <div key={`${item.scenarioId}:${item.skillId}`} className="sb-card-hover" style={{ border: `1px solid ${sb.colors.border}`, borderRadius: 12, padding: 14, background: sb.colors.surface, minWidth: 0 }}>
+              <div className="sb-wrap-text" style={{ fontSize: 14, fontWeight: 800 }}>{item.skill}</div>
+              <div style={{ fontSize: 12, color: sb.colors.inkSoft, marginTop: 6 }}>{item.scenario}</div>
+              <div style={{ fontSize: 12, color: sb.colors.inkSoft, marginTop: 6 }}>{item.description}</div>
+              <div style={{ fontSize: 11, color: sb.colors.inkFaint, marginTop: 8 }}>Target date: {item.targetDate ?? "Not set"}</div>
+              <div style={{ fontSize: 12, marginTop: 12 }}>{item.qualified} qualified / {item.requiredPeople} required</div>
+              <div style={{ fontSize: 11, color: sb.colors.inkFaint, marginTop: 4 }}>Required proficiency: level {item.requiredLevel} of 5</div>
+              <div role="progressbar" aria-label={`${item.skill} staffing coverage for ${item.scenario}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={item.coverage} style={{ ...sb.progressTrack, height: 8, marginTop: 10 }}>
+                <div style={{ height: "100%", width: `${item.coverage}%`, background: sb.colors.ink, borderRadius: 999 }} />
               </div>
-            );
-          })}
+              <div style={{ fontSize: 11, marginTop: 6 }}>{item.coverage}% staffing coverage</div>
+              <div style={{ fontSize: 12, color: item.shortage > 0 ? sb.colors.red : sb.colors.green, fontWeight: 700, marginTop: 8 }}>
+                {item.shortage > 0 ? `${item.shortage} more qualified employees needed` : "Target met"}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
       <div className="sb-home-content">
         <div className="sb-home-main">
-          <div className="sb-home-top-grid">
-        <div style={sb.card}>
+        <div className="sb-home-heatmap" style={sb.card}>
           <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ marginBottom: 6 }}>
             <div>
               <div style={sb.cardTitle}>Skills Heat Map</div>
-              <div style={sb.cardSubtitle}>Proficiency levels by department</div>
+              <div style={sb.cardSubtitle}>Average recorded proficiency by department. Missing assessments are excluded.</div>
             </div>
             <div className="sb-legend" aria-label="Heat map legend">
               <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 600 }}>
-                <span style={{ width: 11, height: 11, borderRadius: 3, backgroundColor: heatStyles.high.bg, border: `1px solid ${heatStyles.high.border}` }} />High
+                <span style={{ width: 11, height: 11, borderRadius: 3, backgroundColor: heatStyles.high.bg, border: `1px solid ${heatStyles.high.border}` }} />High ≥70%
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 600 }}>
-                <span style={{ width: 11, height: 11, borderRadius: 3, backgroundColor: heatStyles.medium.bg, border: `1px solid ${heatStyles.medium.border}` }} />Medium
+                <span style={{ width: 11, height: 11, borderRadius: 3, backgroundColor: heatStyles.medium.bg, border: `1px solid ${heatStyles.medium.border}` }} />Medium 50–69%
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 600 }}>
-                <span style={{ width: 11, height: 11, borderRadius: 3, backgroundColor: heatStyles.low.bg, border: `1px solid ${heatStyles.low.border}` }} />Low
+                <span style={{ width: 11, height: 11, borderRadius: 3, backgroundColor: heatStyles.low.bg, border: `1px solid ${heatStyles.low.border}` }} />Low &lt;50%
               </div>
             </div>
           </div>
-          <div className="sb-scroll-panel">
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(104px, 120px) repeat(5,minmax(46px,1fr))", gap: 5, marginTop: 14, minWidth: 380 }}>
-            <div />
-            {DEPTS.map((d) => (
-              <div key={d} style={{ fontSize: 10, lineHeight: 1.15, fontWeight: 800, textAlign: "center", color: sb.colors.inkFaint, alignSelf: "end", padding: "0 4px 6px", overflowWrap: "break-word" }}>
-                {d}
-              </div>
-            ))}
-            {HEATMAP.map((r) => (
-              <Fragment key={r.skill}>
-                <div className="sb-wrap-text" style={{ fontSize: 12.5, fontWeight: 600, display: "flex", alignItems: "center" }}>{r.skill}</div>
-                {r.row.map((level, i) => (
-                  <div
-                    key={i}
-                    aria-label={`${r.skill} ${DEPTS[i]} ${level}`}
-                    style={{
-                      width: "100%",
-                      height: 24,
-                      borderRadius: 6,
-                      backgroundColor: heatStyles[level].bg,
-                      border: `1px solid ${heatStyles[level].border}`,
-                      boxShadow: `inset 0 0 0 1px ${heatStyles[level].color}18`,
-                    }}
-                  />
-                ))}
-              </Fragment>
-            ))}
-          </div>
-          </div>
+          {summary.skillHeatmap.departments.length === 0 || summary.skillHeatmap.rows.length === 0 ? (
+            <p style={sb.cardSubtitle}>No skills or departments have been configured.</p>
+          ) : (
+            <div className="sb-scroll-panel" tabIndex={0} role="region" aria-label="Skills heat map by department" style={{ marginTop: 14 }}>
+              <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 5 }}>
+                <thead>
+                  <tr>
+                    <th scope="col" style={{ fontSize: 11, textAlign: "left", minWidth: 104 }}>Skill</th>
+                    {summary.skillHeatmap.departments.map((department) => (
+                      <th key={department.id} scope="col" style={{ fontSize: 10, minWidth: 80, maxWidth: 140, overflowWrap: "break-word" }}>{department.name}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {summary.skillHeatmap.rows.map((row) => (
+                    <tr key={row.skillId}>
+                      <th scope="row" style={{ fontSize: 12, textAlign: "left", fontWeight: 600 }}>{row.skill}</th>
+                      {row.cells.map((cell) => {
+                        const colors = heatStyles[cell.level];
+                        const detail = cell.proficiency === null ? "No recorded assessments" : `${cell.proficiency}% average proficiency; ${cell.assessedEmployees} assessed employees`;
+                        return (
+                          <td key={cell.departmentId} title={detail} style={{ height: 28, borderRadius: 6, textAlign: "center", fontSize: 11, fontWeight: 700, color: colors.color, backgroundColor: colors.bg, border: `1px solid ${colors.border}` }}>
+                            <span aria-label={detail}>{cell.proficiency === null ? "No data" : `${cell.proficiency}%`}</span>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
+        {/* Temporarily disabled: Capability Gaps duplicates future skill requirements.
         <div style={sb.card}>
           <div style={sb.cardTitle}>Capability Gaps</div>
           <div style={{ ...sb.cardSubtitle, marginBottom: 6 }}>Current vs. future required proficiency</div>
@@ -265,9 +287,9 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
             ))}
           </div>
         </div>
-          </div>
+        */}
 
-        <div style={sb.card}>
+        <div className="sb-home-development" style={sb.card}>
           <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ gap: 8 }}>
             <div>
               <div style={sb.cardTitle}>Development Plan</div>
@@ -277,7 +299,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
           </div>
           <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ alignItems: "center", gap: 20, margin: "18px 0", paddingBottom: 18, borderBottom: "1px solid rgba(10,10,10,.08)" }}>
             <div className="sb-fluid-row" style={{ alignItems: "center" }}>
-              <div style={{ width: 46, height: 46, borderRadius: "50%", background: "#0a0a0a", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>EP</div>
+              <div style={{ width: 46, height: 46, flexShrink: 0, borderRadius: "50%", background: "#0a0a0a", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>EP</div>
               <div className="sb-wrap-text">
                 <div style={{ fontWeight: 700, fontSize: 14 }}>Emily Park</div>
                 <div style={{ fontSize: 12, color: "rgba(10,10,10,.55)" }}>Production Supervisor · Manufacturing, Marshall MN</div>
@@ -310,50 +332,57 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
             ))}
           </div>
         </div>
+
         </div>
 
-        <div className="sb-home-sidebar">
-          <div style={{ ...sb.card, display: "flex", flexDirection: "column", gap: 16 }}>
+          <div className="sb-home-succession" style={{ ...sb.card, display: "flex", flexDirection: "column", gap: 16 }}>
           <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ alignItems: "baseline" }}>
             <div style={sb.cardTitle}>Succession Risk</div>
             <Link to="/succession" style={{ fontSize: 12, fontWeight: 700, color: sb.colors.red }}>View All →</Link>
           </div>
-          <div style={{ background: sb.colors.ink, color: "#fff", borderRadius: 12, padding: 18, display: "flex", flexDirection: "column", gap: 8 }}>
-            <span style={{ alignSelf: "flex-start", fontSize: 10, fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase", background: "#c81e1e", color: "#fff", padding: "3px 10px", borderRadius: 100 }}>
-              High Risk
-            </span>
-            <div style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>Automated Packaging Systems</div>
-            <div style={{ fontSize: 13, fontWeight: 700 }}>Only 2 experts</div>
-            <p style={{ fontSize: 12, opacity: 0.75, margin: 0 }}>
-              2 of 2 subject matter experts are eligible to retire within 3 years. No identified successors.
-            </p>
-            <button style={{ ...sb.primaryButton, marginTop: 4, width: "100%", background: sb.colors.red, whiteSpace: "nowrap", boxShadow: "none" }}>
-              Create Development Plan
-            </button>
-          </div>
-          <div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "rgba(10,10,10,.55)", marginBottom: 8 }}>Additional At-Risk Skills</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {[
-                { name: "Refrigeration Systems", experts: 3, risk: "High" as const },
-                { name: "Sanitation Validation", experts: 4, risk: "High" as const },
-                { name: "Demand Forecasting", experts: 5, risk: "Medium" as const },
-                { name: "SAP Supply Chain", experts: 4, risk: "Medium" as const },
-              ].map((r) => (
-                <div key={r.name} className="sb-fluid-row-between sb-fluid-row-wrap" style={{ alignItems: "center" }}>
-                  <div className="sb-wrap-text">
-                    <div style={{ fontSize: 13, fontWeight: 600 }}>{r.name}</div>
-                    <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)" }}>{r.experts} experts</div>
+          {featuredRisk && featuredStyle ? (
+            <>
+              <div style={{ background: sb.colors.ink, color: "#fff", borderRadius: 12, padding: 18, display: "flex", flexDirection: "column", gap: 8 }}>
+                <span style={{ alignSelf: "flex-start", fontSize: 10, fontWeight: 700, textTransform: "uppercase", background: featuredStyle.background, color: featuredStyle.color, padding: "3px 10px", borderRadius: 100 }}>
+                  {featuredStyle.label} Risk
+                </span>
+                <div className="sb-wrap-text" style={{ fontSize: 17, fontWeight: 700, marginTop: 2 }}>{featuredRisk.name}</div>
+                <div style={{ fontSize: 13, fontWeight: 700 }}>{countLabel(featuredRisk.experts, "expert")}</div>
+                <p style={{ fontSize: 12, opacity: 0.75, margin: 0 }}>
+                  Retirement horizon: {countLabel(featuredRisk.retireWithinYears, "year")}. {countLabel(featuredRisk.successors, "successor")} identified.
+                </p>
+                <Link to="/development" style={{ ...sb.primaryButton, marginTop: 4, width: "100%", background: sb.colors.red, whiteSpace: "normal", boxShadow: "none", textAlign: "center" }}>
+                  View Development Plans
+                </Link>
+              </div>
+              {additionalRisks.length > 0 && (
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "rgba(10,10,10,.55)", marginBottom: 8 }}>Additional Succession Risks</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {additionalRisks.map((risk) => {
+                      const colors = successionRiskStyle(risk.risk);
+                      return (
+                        <div key={risk.id} className="sb-home-risk-row sb-fluid-row-between sb-fluid-row-wrap" style={{ alignItems: "center" }}>
+                          <div className="sb-wrap-text">
+                            <div style={{ fontSize: 13, fontWeight: 600 }}>{risk.name}</div>
+                            <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)" }}>{countLabel(risk.experts, "expert")} · {countLabel(risk.successors, "successor")}</div>
+                          </div>
+                          <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: colors.background, color: colors.color }}>
+                            {colors.label}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
-                  <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: r.risk === "High" ? "#fdeceb" : "#fef3e0", color: r.risk === "High" ? "#c81e1e" : "#b45309" }}>
-                    {r.risk}
-                  </span>
                 </div>
-              ))}
-            </div>
-          </div>
+              )}
+            </>
+          ) : (
+            <p style={sb.cardSubtitle}>No succession risk profiles have been recorded.</p>
+          )}
           </div>
 
+        {/* Temporarily disabled: Process Improvement Finder.
         <div style={{ ...sb.card, display: "flex", flexDirection: "column", gap: 14 }}>
           <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ gap: 8 }}>
             <div style={sb.cardTitle}>Process Improvement Finder</div>
@@ -390,7 +419,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
             See All Ideas →
           </Link>
         </div>
-        </div>
+        */}
       </div>
     </div>
   );

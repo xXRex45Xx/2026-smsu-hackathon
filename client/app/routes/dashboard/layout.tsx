@@ -9,8 +9,8 @@ const NAV_ITEMS = [
   { to: "/succession", label: "Succession" },
   { to: "/learning", label: "Learning" },
   { to: "/use-cases", label: "Use Cases" },
-  { to: "/reports", label: "Reports" },
-  { to: "/admin", label: "Admin" },
+  // { to: "/reports", label: "Reports" },
+  // { to: "/admin", label: "Admin" },
 ];
 
 function initialsFromName(name: string | null | undefined): string {

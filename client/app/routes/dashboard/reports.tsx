@@ -1,3 +1,4 @@
+/* Temporarily disabled along with its route and navigation entry.
 import { useState } from "react";
 import * as sb from "../../styles/skillbridge";
 import { api, type ApiList } from "../../lib/api";
@@ -55,3 +56,4 @@ export default function Reports({ loaderData }: Route.ComponentProps) {
     </div>
   );
 }
+*/

@@ -1,3 +1,4 @@
+/* Temporarily disabled along with its route and navigation entry.
 import * as sb from "../../styles/skillbridge";
 import { api } from "../../lib/api";
 import type { Route } from "./+types/admin";
@@ -63,3 +64,4 @@ export default function Admin({ loaderData }: Route.ComponentProps) {
     </div>
   );
 }
+*/

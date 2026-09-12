@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { api } from "../../lib/api";
 import * as sb from "../../styles/skillbridge";
-import { FUTURE_SKILLS, riskColors } from "../../data/skillbridge";
+import type { FutureSkill } from "../../lib/future-skills";
 import type { Route } from "./+types/insights";
 
 type InsightsData = {
+  futureSkills: FutureSkill[];
   summary: { skillCount: number; averageProficiency: number };
   coverage: { department: string; skills: number; coverage: number }[];
   composition: { label: string; count: number }[];
@@ -22,7 +23,7 @@ export function meta({}: Route.MetaArgs) {
 const DEPARTMENT_COLORS = ["#2563EB", "#D97706", "#16A34A", "#7C3AED", "#DC2626"];
 
 export default function Insights({ loaderData }: Route.ComponentProps) {
-  const { summary, coverage, composition, trending } = loaderData.data;
+  const { summary, coverage, composition, trending, futureSkills } = loaderData.data;
   const [hoveredDept, setHoveredDept] = useState<string | null>(null);
   const COMPOSITION = composition.map((dept, index) => ({ ...dept, color: DEPARTMENT_COLORS[index % DEPARTMENT_COLORS.length] }));
   const totalEmployees = composition.reduce((sum, dept) => sum + dept.count, 0);
@@ -162,49 +163,42 @@ export default function Insights({ loaderData }: Route.ComponentProps) {
       <div style={sb.card}>
         <div style={{ ...sb.cardTitle, marginBottom: 4 }}>Future Strategy Skill Map</div>
         <div style={{ ...sb.cardSubtitle, marginBottom: 14 }}>
-          Skills needed to support AI-enabled operations, smart manufacturing, secure cloud platforms, and data-driven planning
+          Workforce scenario requirements, ordered by largest employee shortage
         </div>
         <div className="sb-table-card" style={{ boxShadow: "none", padding: 0, borderRadius: 12 }}>
           <table>
             <thead>
               <tr style={{ borderBottom: `1px solid ${sb.colors.border}` }}>
                 <th style={sb.th}>Future Skill</th>
-                <th style={sb.th}>Strategic Driver</th>
-                <th style={{ ...sb.th, textAlign: "right" }}>Today</th>
-                <th style={{ ...sb.th, textAlign: "right" }}>Needed</th>
-                <th style={{ ...sb.th, textAlign: "right" }}>Priority</th>
-                <th style={sb.th}>Recommended Actions</th>
+                <th style={sb.th}>Scenario</th>
+                <th style={sb.th}>Target Date</th>
+                <th style={sb.th}>Required Level</th>
+                <th style={sb.th}>Qualified / Required</th>
+                <th style={sb.th}>Staffing Coverage</th>
+                <th style={sb.th}>Shortage</th>
               </tr>
             </thead>
             <tbody>
-              {FUTURE_SKILLS.map((item) => {
-                const priority = riskColors(item.priority);
-                return (
-                  <tr key={item.skill} style={{ borderBottom: `1px solid ${sb.colors.border}` }}>
-                    <td style={{ ...sb.td, fontWeight: 700 }}>{item.skill}</td>
-                    <td style={{ ...sb.td, color: sb.colors.inkSoft }}>{item.strategy}</td>
-                    <td style={{ ...sb.td, textAlign: "right" }}>{item.current}%</td>
-                    <td style={{ ...sb.td, textAlign: "right", fontWeight: 700 }}>{item.target}%</td>
-                    <td style={{ ...sb.td, textAlign: "right" }}>
-                      <span style={{ ...sb.pill, background: priority.bg, color: priority.color }}>{item.priority}</span>
-                    </td>
-                    <td style={{ ...sb.td, minWidth: 260 }}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-                        {item.actions.map((action) => (
-                          <div key={action} className="sb-wrap-text" style={{ fontSize: 12, lineHeight: 1.35, color: sb.colors.inkSoft }}>
-                            {action}
-                          </div>
-                        ))}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+              {futureSkills.length === 0 && (
+                <tr><td colSpan={7} style={sb.td}>No future skill requirements have been configured.</td></tr>
+              )}
+              {futureSkills.map((item) => (
+                <tr key={`${item.scenarioId}:${item.skillId}`} style={{ borderBottom: `1px solid ${sb.colors.border}` }}>
+                  <td style={{ ...sb.td, fontWeight: 700 }}>{item.skill}</td>
+                  <td style={sb.td}>{item.scenario}</td>
+                  <td style={sb.td}>{item.targetDate ?? "Not set"}</td>
+                  <td style={sb.td}>{item.requiredLevel} of 5</td>
+                  <td style={sb.td}>{item.qualified} / {item.requiredPeople}</td>
+                  <td style={sb.td}>{item.coverage}%</td>
+                  <td style={sb.td}>{item.shortage > 0 ? `${item.shortage} employees` : "Target met"}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       </div>
 
+      {/* Temporarily disabled: Top Trending Skills.
       <div style={sb.card}>
         <div style={{ ...sb.cardTitle, marginBottom: 14 }}>Top Trending Skills</div>
         <div className="sb-grid sb-grid-cards">
@@ -216,6 +210,7 @@ export default function Insights({ loaderData }: Route.ComponentProps) {
           ))}
         </div>
       </div>
+      */}
     </div>
   );
 }

@@ -9,8 +9,10 @@ export default [
     route("succession", "routes/dashboard/succession.tsx"),
     route("learning", "routes/dashboard/learning.tsx"),
     route("use-cases", "routes/dashboard/use-cases.tsx"),
-    route("reports", "routes/dashboard/reports.tsx"),
-    route("admin", "routes/dashboard/admin.tsx"),
+    // Temporarily disabled: restore this route when the page is needed.
+    // route("reports", "routes/dashboard/reports.tsx"),
+    // Temporarily disabled: restore this route when the page is needed.
+    // route("admin", "routes/dashboard/admin.tsx"),
   ]),
   route("sign-in/*", "routes/sign-in.tsx"),
   route("sign-up/*", "routes/sign-up.tsx"),
