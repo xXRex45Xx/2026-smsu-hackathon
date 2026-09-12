@@ -55,16 +55,16 @@ export default function Lesson() {
     setSubmitted(false);
   };
 
-  const tabButtonStyle = (active: boolean, disabled: boolean): CSSProperties => ({
-    fontSize: 13,
-    fontWeight: 700,
-    padding: "10px 18px",
-    borderRadius: 10,
+  const crumbStyle = (active: boolean, disabled: boolean): CSSProperties => ({
+    fontSize: 14,
+    fontWeight: active ? 800 : 600,
+    background: "none",
     border: "none",
+    padding: 0,
     cursor: disabled ? "not-allowed" : "pointer",
-    background: active ? sb.colors.ink : "transparent",
-    color: disabled ? sb.colors.inkFainter : active ? "#fff" : sb.colors.inkSoft,
-    opacity: disabled ? 0.6 : 1,
+    color: disabled ? sb.colors.inkFainter : active ? sb.colors.ink : sb.colors.inkFaint,
+    textDecoration: active ? "underline" : "none",
+    textUnderlineOffset: 4,
   });
 
   return (
@@ -86,17 +86,18 @@ export default function Lesson() {
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: 8, borderBottom: `1px solid ${sb.colors.border}`, paddingBottom: 10 }}>
-        <button style={tabButtonStyle(tab === "content", false)} onClick={() => setTab("content")}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }} aria-label="Lesson sections">
+        <button style={crumbStyle(tab === "content", false)} onClick={() => setTab("content")}>
           Content{contentDone ? " ✓" : ""}
         </button>
+        <span style={{ color: sb.colors.inkFainter, fontSize: 13 }}>›</span>
         <button
-          style={tabButtonStyle(tab === "quiz", !quizUnlocked)}
+          style={crumbStyle(tab === "quiz", !quizUnlocked)}
           onClick={() => quizUnlocked && setTab("quiz")}
           disabled={!quizUnlocked}
           title={quizUnlocked ? undefined : "Finish the content first to unlock the quiz"}
         >
-          Quiz{submitted ? ` (${score}/${totalQuestions})` : ""}
+          Quiz{submitted ? ` (${score}/${totalQuestions})` : !quizUnlocked ? " 🔒" : ""}
         </button>
       </div>
 
