@@ -25,9 +25,9 @@ const HEATMAP: { skill: string; row: ("high" | "medium" | "low")[] }[] = [
 ];
 
 const heatStyles = {
-  high: { bg: "#86EFAC", border: "#22C55E", color: "#15803D" },
-  medium: { bg: "#FDE68A", border: "#F59E0B", color: "#A16207" },
-  low: { bg: "#FECACA", border: "#EF4444", color: "#B91C1C" },
+  high: { bg: sb.colors.redLight, border: "rgba(200, 30, 30, .26)", color: sb.colors.red },
+  medium: { bg: sb.colors.amberBg, border: "rgba(217, 119, 6, .28)", color: sb.colors.amberText },
+  low: { bg: sb.colors.surfaceSoft, border: sb.colors.borderStrong, color: sb.colors.inkFaint },
 };
 
 const GAPS = [
@@ -159,6 +159,10 @@ export default function DashboardHome() {
                   <span style={{ ...sb.pill, background: priority.bg, color: priority.color }}>{item.priority}</span>
                 </div>
                 <div style={{ fontSize: 12, color: sb.colors.inkSoft, lineHeight: 1.45, minHeight: 50 }}>{item.businessImpact}</div>
+                <div style={{ marginTop: 10, padding: "9px 10px", borderRadius: 10, background: sb.colors.surfaceSoft }}>
+                  <div style={{ fontSize: 10, fontWeight: 800, color: sb.colors.inkFaint, textTransform: "uppercase", letterSpacing: ".04em" }}>Recommended action</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: sb.colors.ink, marginTop: 3, lineHeight: 1.35 }}>{item.actions[0]}</div>
+                </div>
                 <div style={{ marginTop: 12 }}>
                   <div className="sb-fluid-row-between sb-fluid-row-wrap" style={{ fontSize: 11, fontWeight: 700, marginBottom: 5 }}>
                     <span>{item.current}% today</span>

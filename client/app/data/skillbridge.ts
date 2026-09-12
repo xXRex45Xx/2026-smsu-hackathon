@@ -37,6 +37,7 @@ export interface FutureSkillNeed {
   target: number;
   priority: Risk;
   businessImpact: string;
+  actions: string[];
 }
 
 export interface Course {
@@ -110,6 +111,7 @@ export const FUTURE_SKILLS: FutureSkillNeed[] = [
     target: 75,
     priority: "High",
     businessImpact: "Managers and frontline teams can use AI tools to summarize issues, spot patterns, and improve decisions.",
+    actions: ["Enroll supervisors in AI & Data Fluency for Ops", "Run monthly AI use-case labs", "Assign one AI-assisted improvement project per team"],
   },
   {
     skill: "Automation",
@@ -118,6 +120,7 @@ export const FUTURE_SKILLS: FutureSkillNeed[] = [
     target: 85,
     priority: "High",
     businessImpact: "Plants need more employees who can support automated packaging, controls, and line optimization.",
+    actions: ["Pair line operators with automation specialists", "Create packaging-line job rotations", "Certify maintenance leads on controls troubleshooting"],
   },
   {
     skill: "Predictive Maintenance",
@@ -126,6 +129,7 @@ export const FUTURE_SKILLS: FutureSkillNeed[] = [
     target: 80,
     priority: "High",
     businessImpact: "Maintenance teams need sensor, work-order, and failure-pattern skills to reduce unplanned downtime.",
+    actions: ["Train maintenance teams on sensor data analysis", "Launch a downtime prediction pilot", "Mentor technicians with reliability engineers"],
   },
   {
     skill: "Cloud Security",
@@ -134,6 +138,7 @@ export const FUTURE_SKILLS: FutureSkillNeed[] = [
     target: 70,
     priority: "Medium",
     businessImpact: "Technology teams need stronger cloud governance as more workforce and plant systems move online.",
+    actions: ["Assign Cloud Security Fundamentals", "Create cloud access review projects", "Build a security champion rotation across IT teams"],
   },
   {
     skill: "Data Analysis",
@@ -142,6 +147,7 @@ export const FUTURE_SKILLS: FutureSkillNeed[] = [
     target: 78,
     priority: "Medium",
     businessImpact: "Supply chain teams need stronger forecasting and dashboard skills to improve planning accuracy.",
+    actions: ["Certify planners on forecasting analytics", "Embed analysts in S&OP projects", "Build dashboards for demand and inventory decisions"],
   },
 ];
 
