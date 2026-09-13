@@ -7,7 +7,7 @@ export interface CourseCardProps {
   duration: string;
   format: string;
   count: number;
-  /** When set, renders a "Start Lesson" link to /lesson/:slug. */
+  /** When set, renders a "Start Lesson" link to /learning-catalogue/:slug. */
   lessonSlug?: string;
 }
 
@@ -28,7 +28,7 @@ export default function CourseCard({ title, provider, duration, format, count, l
       </div>
       <div style={{ fontSize: 11, color: "rgba(10,10,10,.45)" }}>{count} enrolled</div>
       {lessonSlug && (
-        <Link to={`/lesson/${lessonSlug}`} style={{ ...sb.primaryButton, marginTop: 10, textAlign: "center", width: "100%" }}>
+        <Link to={`/learning-catalogue/${lessonSlug}`} style={{ ...sb.primaryButton, marginTop: 10, textAlign: "center", width: "100%" }}>
           Start Lesson →
         </Link>
       )}
