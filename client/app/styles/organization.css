@@ -1,0 +1,24 @@
+.organization-tabs { display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid #cbd5e1; padding-bottom: 12px; }
+.organization-tabs a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 16px; border-radius: 10px; color: #334155; font-size: 14px; font-weight: 600; }
+.organization-tabs a:hover { background: #e2e8f0; }
+.organization-tabs a[aria-current="page"] { color: #fff; background: #111827; }
+.organization-tabs span { font-size: 12px; font-weight: 400; }
+.organization-directory { width: 100%; border-collapse: collapse; }
+.organization-directory th, .organization-directory td { text-align: left; }
+.organization-page .skill-table-wrap table { width: 100%; }
+.organization-page .skill-summary { margin: 0; border: 0; }
+.organization-page .skill-summary > div { min-width: 120px; }
+.organization-page .employee-row-actions { flex-wrap: wrap; }
+@media (max-width: 700px) {
+  .organization-tabs { gap: 4px; }
+  .organization-tabs a { flex: 1 1 40%; justify-content: space-between; }
+  .organization-page .sb-page-header { align-items: flex-start; flex-direction: column; }
+  .organization-page .skill-table-wrap table { min-width: 0; }
+  .organization-directory, .organization-directory tbody { display: block; }
+  .organization-directory thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .organization-directory tbody tr { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px 12px; padding: 18px 0; }
+  .organization-directory td { display: block; padding: 0 !important; overflow-wrap: anywhere; }
+  .organization-directory td:first-child, .organization-directory td:last-child { grid-column: 1 / -1; }
+  .organization-directory td[data-label]::before { content: attr(data-label); display: block; font-size: 11px; color: #64748b; margin-bottom: 5px; }
+  .organization-directory .employee-row-actions { justify-content: flex-start; }
+}

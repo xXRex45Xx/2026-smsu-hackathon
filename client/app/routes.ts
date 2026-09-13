@@ -8,6 +8,8 @@ export default [
     route("employees/:employeeId", "routes/dashboard/employee-detail.tsx"),
     route("skills", "routes/dashboard/skills.tsx"),
     route("skills/:skillId", "routes/dashboard/skill-detail.tsx"),
+    route("organization", "routes/dashboard/organization.tsx"),
+    route("organization/roles/:roleId", "routes/dashboard/role-detail.tsx"),
     route("development", "routes/dashboard/development.tsx"),
     route("succession", "routes/dashboard/succession.tsx"),
     route("learning", "routes/dashboard/learning.tsx"),

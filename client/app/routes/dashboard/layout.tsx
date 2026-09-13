@@ -24,6 +24,7 @@ const NAV_ITEMS = [
   { to: "/insights", label: "Talent Insights" },
   { to: "/employees", label: "Employees" },
   { to: "/skills", label: "Skills" },
+  { to: "/organization", label: "Organization" },
   { to: "/development", label: "Development" },
   { to: "/succession", label: "Succession" },
   { to: "/learning", label: "Learning" },
