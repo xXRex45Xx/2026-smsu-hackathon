@@ -1,3 +1,4 @@
+import { displayLabel } from "../../lib/display";
 import { Link, Form, useNavigation } from "react-router";
 import * as sb from "../../styles/skillbridge";
 import { api } from "../../lib/api";
@@ -117,7 +118,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
             {summary.scenarios.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
           </select>
           <button type="submit" style={sb.primaryButton} disabled={navigation.state !== "idle"}>{navigation.state !== "idle" ? "Applying…" : "Apply filters"}</button>
-          <Link to="/" style={{ color: sb.colors.red }}>Reset</Link>
+          <Link to="/" className="sb-reset-link" style={{ color: sb.colors.red }}>Reset</Link>
         </Form>
       </div>
 
@@ -166,7 +167,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
           </div>
           <div className="sb-metric-value">{summary.criticalSkillGaps}</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Critical Skill Gaps</div>
-          <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>{filters.departmentId ? "Selected department" : `Across ${summary.departments.length} departments`}</div>
+          <div style={{ fontSize: 11, color: sb.colors.inkFaint, marginTop: 2 }}>{filters.departmentId ? "Selected department" : `Across ${summary.departments.length} departments`}</div>
         </div>
 
         <div className="sb-card-hover" style={sb.card}>
@@ -177,7 +178,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
           </div>
           <div className="sb-metric-value">{summary.knowledgeConcentrationRisks}</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Knowledge Concentration Risks</div>
-          <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>High risk skills</div>
+          <div style={{ fontSize: 11, color: sb.colors.inkFaint, marginTop: 2 }}>High risk skills</div>
         </div>
 
         <div className="sb-card-hover" style={sb.card}>
@@ -191,7 +192,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
           </div>
           <div className="sb-metric-value">{summary.activeDevelopmentPlans}</div>
           <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Active Development Plans</div>
-          <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)", marginTop: 2 }}>{scoped ? "Selected workforce" : "Across all departments"}</div>
+          <div style={{ fontSize: 11, color: sb.colors.inkFaint, marginTop: 2 }}>{scoped ? "Selected workforce" : "Across all departments"}</div>
         </div>
       </div>
 
@@ -266,7 +267,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
                       <th scope="row" style={{ fontSize: 12, textAlign: "left", fontWeight: 600 }}>{row.skill}</th>
                       {row.cells.map((cell) => {
                         const colors = heatStyles[cell.level];
-                        const detail = cell.proficiency === null ? "No recorded assessments" : `${cell.proficiency}% average proficiency; ${cell.assessedEmployees} assessed employees`;
+                        const detail = cell.proficiency === null ? "No recorded assessments" : `${cell.proficiency}% average proficiency; ${cell.assessedEmployees} assessed employee${cell.assessedEmployees === 1 ? "" : "s"}`;
                         return (
                           <td key={cell.departmentId} title={detail} style={{ height: 28, borderRadius: 6, textAlign: "center", fontSize: 11, fontWeight: 700, color: colors.color, backgroundColor: colors.bg, border: `1px solid ${colors.border}` }}>
                             <span aria-label={detail}>{cell.proficiency === null ? "No data" : `${cell.proficiency}%`}</span>
@@ -323,7 +324,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
               <div style={{ margin: "18px 0", display: "grid", gap: 8 }}>
                 <div style={{ fontWeight: 700 }}>{plan.name} · {plan.currentRole}</div>
                 <div>{plan.title}</div>
-                <div style={sb.cardSubtitle}>Target role: {plan.targetRole ?? "Not assigned"} · {plan.status}</div>
+                <div style={sb.cardSubtitle}>Target role: {plan.targetRole ?? "Not assigned"} · {displayLabel(plan.status)}</div>
                 <div role="progressbar" aria-label="Development plan progress" aria-valuenow={plan.progress} aria-valuemin={0} aria-valuemax={100} style={sb.progressTrack}>
                   <div style={{ height: "100%", width: `${plan.progress}%`, background: sb.colors.ink, borderRadius: 999 }} />
                 </div>
@@ -333,7 +334,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
                 {plan.items.map((item) => (
                   <div key={item.skillId} style={{ padding: 14, border: `1px solid ${sb.colors.border}`, borderRadius: 12 }}>
                     <div style={{ fontWeight: 700 }}>{item.skill}</div>
-                    <div style={sb.cardSubtitle}>{item.type} · {item.status}</div>
+                    <div style={sb.cardSubtitle}>{displayLabel(item.type)} · {displayLabel(item.status)}</div>
                     <div>Level {item.currentLevel} of {item.targetLevel} required</div>
                   </div>
                 ))}
@@ -367,7 +368,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
               </div>
               {additionalRisks.length > 0 && (
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: "rgba(10,10,10,.55)", marginBottom: 8 }}>Additional Succession Risks</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: sb.colors.inkFaint, marginBottom: 8 }}>Additional Succession Risks</div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                     {additionalRisks.map((risk) => {
                       const colors = successionRiskStyle(risk.risk);
@@ -375,7 +376,7 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
                         <div key={risk.id} className="sb-home-risk-row sb-fluid-row-between sb-fluid-row-wrap" style={{ alignItems: "center" }}>
                           <div className="sb-wrap-text">
                             <div style={{ fontSize: 13, fontWeight: 600 }}>{risk.name}</div>
-                            <div style={{ fontSize: 11, color: "rgba(10,10,10,.5)" }}>{countLabel(risk.experts, "expert")} · {countLabel(risk.successors, "successor")}</div>
+                            <div style={{ fontSize: 11, color: sb.colors.inkFaint }}>{countLabel(risk.experts, "expert")} · {countLabel(risk.successors, "successor")}</div>
                           </div>
                           <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: colors.background, color: colors.color }}>
                             {colors.label}

@@ -36,18 +36,19 @@ export default function Skills({ loaderData }: Route.ComponentProps) {
         </select>
       </div>
 
-      <div className="sb-table-card">
+      <div className="sb-table-card" tabIndex={0} role="region" aria-label="Skills inventory">
         <table>
           <thead>
             <tr style={{ borderBottom: "1px solid rgba(10,10,10,.08)" }}>
-              <th style={sb.th}>Skill</th>
-              <th style={sb.th}>Category</th>
-              <th style={{ ...sb.th, textAlign: "right" }}>Employees</th>
-              <th style={{ ...sb.th, textAlign: "right" }}>Avg. Proficiency</th>
-              <th style={{ ...sb.th, textAlign: "right" }}>Level</th>
+              <th scope="col" style={sb.th}>Skill</th>
+              <th scope="col" style={sb.th}>Category</th>
+              <th scope="col" style={{ ...sb.th, textAlign: "right" }}>Employees</th>
+              <th scope="col" style={{ ...sb.th, textAlign: "right" }}>Avg. Proficiency</th>
+              <th scope="col" style={{ ...sb.th, textAlign: "right" }}>Level</th>
             </tr>
           </thead>
           <tbody>
+            {filtered.length === 0 && <tr><td colSpan={5} className="sb-empty-state">No skills match this category.</td></tr>}
             {filtered.map((row) => {
               const lvl = levelColors(row.level);
               return (

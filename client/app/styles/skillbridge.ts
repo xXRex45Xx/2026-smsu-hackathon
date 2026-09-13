@@ -90,7 +90,7 @@ export const select: CSSProperties = {
   appearance: "none",
   fontSize: 13,
   fontWeight: 600,
-  minHeight: 40,
+  minHeight: 44,
   padding: "9px 34px 9px 14px",
   border: `1px solid ${colors.borderStrong}`,
   borderRadius: 10,
@@ -110,7 +110,7 @@ export const th: CSSProperties = {
   fontSize: 11,
   textTransform: "uppercase",
   letterSpacing: ".06em",
-  color: colors.inkFainter,
+  color: colors.inkFaint,
   fontWeight: 800,
   whiteSpace: "nowrap",
   lineHeight: 1.25,
@@ -134,7 +134,7 @@ export const primaryButton: CSSProperties = {
   fontSize: 13,
   cursor: "pointer",
   lineHeight: 1,
-  minHeight: 40,
+  minHeight: 44,
   boxShadow: "0 12px 24px rgba(17,24,39,.16)",
   maxWidth: "100%",
 };
@@ -149,7 +149,7 @@ export const secondaryButton: CSSProperties = {
   fontSize: 13,
   cursor: "pointer",
   lineHeight: 1,
-  minHeight: 40,
+  minHeight: 44,
 };
 
 export const progressTrack: CSSProperties = {

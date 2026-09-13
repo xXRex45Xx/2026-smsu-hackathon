@@ -66,22 +66,9 @@ export default function DashboardLayout() {
         fontFamily: "'Inter',system-ui,sans-serif",
       }}
     >
-      <div style={{ position: "sticky", top: 0, zIndex: 10, padding: "18px 28px 0" }}>
-        <div
-          style={{
-            maxWidth: 1400,
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            gap: 20,
-            background: "#fff",
-            borderRadius: 100,
-            boxShadow: "0 8px 24px rgba(0,0,0,.08)",
-            padding: "10px 12px 10px 14px",
-            flexWrap: "wrap",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 9, flex: "none" }}>
+      <div className="sb-topbar-wrap">
+        <div className="sb-topbar">
+          <div className="sb-brand">
             <img
               src="/CJ_Schwans_logo.svg"
               alt="Schwan's"

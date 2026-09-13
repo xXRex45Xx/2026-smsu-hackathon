@@ -131,6 +131,7 @@ export default function Insights({ loaderData }: Route.ComponentProps) {
                     key={dept.label}
                     type="button"
                     onMouseEnter={() => setHoveredDept(dept.label)}
+                    onClick={() => setHoveredDept(dept.label)}
                     onFocus={() => setHoveredDept(dept.label)}
                     onBlur={() => setHoveredDept(null)}
                     style={{

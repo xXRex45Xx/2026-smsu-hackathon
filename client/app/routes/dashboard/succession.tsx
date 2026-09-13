@@ -22,6 +22,7 @@ export default function Succession({ loaderData }: Route.ComponentProps) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {loaderData.data.length === 0 && <div style={sb.card} className="sb-empty-state">No succession risk profiles have been recorded yet.</div>}
         {loaderData.data.map((row) => {
           const displayRisk = row.risk[0] + row.risk.slice(1).toLowerCase() as "High" | "Medium" | "Low";
           const rc = riskColors(displayRisk);
@@ -39,8 +40,8 @@ export default function Succession({ loaderData }: Route.ComponentProps) {
             >
               <div className="sb-wrap-text">
                 <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.35 }}>{row.name}</div>
-                <div style={{ fontSize: 12, color: "rgba(10,10,10,.55)", marginTop: 3 }}>
-                  {row.experts} experts · {row.successors} successors identified · retirement horizon: {row.retireWithinYears} yrs
+                <div style={{ fontSize: 12, color: sb.colors.inkFaint, marginTop: 3 }}>
+                  {row.experts} expert{row.experts === 1 ? "" : "s"} · {row.successors} successor{row.successors === 1 ? "" : "s"} identified · retirement horizon: {row.retireWithinYears} year{row.retireWithinYears === 1 ? "" : "s"}
                 </div>
               </div>
               <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 12px", borderRadius: 100, background: rc.bg, color: rc.color }}>
