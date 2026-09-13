@@ -1,9 +1,6 @@
 {
-<<<<<<< HEAD
-  "id": "c2f03682-8e11-4117-b5ac-d48c197eb215",
-=======
   "id": "3e044780-e0f6-4988-badb-b89b9d292b3e",
->>>>>>> 9c0dc16 (update client and server components)
+
   "prevId": "aaca83f4-a220-432e-ad18-1b9abaad5bb9",
   "version": "7",
   "dialect": "postgresql",
@@ -217,8 +214,6 @@
       },
       "isRLSEnabled": false
     },
-<<<<<<< HEAD
-=======
     "public.course_enrollments": {
       "name": "course_enrollments",
       "schema": "",
@@ -293,7 +288,7 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
->>>>>>> 9c0dc16 (update client and server components)
+
     "public.departments": {
       "name": "departments",
       "schema": "",
@@ -871,8 +866,6 @@
       },
       "isRLSEnabled": false
     },
-<<<<<<< HEAD
-=======
     "public.knowledge_assignments": {
       "name": "knowledge_assignments",
       "schema": "",
@@ -1208,7 +1201,7 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
->>>>>>> 9c0dc16 (update client and server components)
+
     "public.notifications": {
       "name": "notifications",
       "schema": "",
@@ -1702,8 +1695,5 @@
     "schemas": {},
     "tables": {}
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 9c0dc16 (update client and server components)
+

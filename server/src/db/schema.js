@@ -294,7 +294,6 @@ export const notifications = pgTable("notifications", {
   ...timestamps,
 });
 
-<<<<<<< HEAD
 export const successionRiskProfiles = pgTable(
   "succession_risk_profiles",
   {
@@ -314,19 +313,6 @@ export const successionRiskProfiles = pgTable(
     ),
   ],
 );
-=======
-export const successionRiskProfiles = pgTable("succession_risk_profiles", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  experts: integer("experts").notNull(),
-  successors: integer("successors").notNull(),
-  risk: text("risk").notNull(),
-  retireWithinYears: integer("retire_within_years").notNull(),
-}, (table) => [
-  check("succession_experts_check", sql`${table.experts} >= 0`),
-  check("succession_successors_check", sql`${table.successors} >= 0`),
-  check("succession_retirement_years_check", sql`${table.retireWithinYears} >= 0`),
-]);
 
 export const knowledgeModules = pgTable("knowledge_modules", {
   id: text("id").primaryKey(),
@@ -341,17 +327,21 @@ export const knowledgeModules = pgTable("knowledge_modules", {
   ...timestamps,
 });
 
-export const knowledgeAssignments = pgTable("knowledge_assignments", {
-  id: text("id").primaryKey(),
-  moduleId: text("module_id").notNull().references(() => knowledgeModules.id),
-  employeeId: text("employee_id").notNull().references(() => employees.id, { onDelete: "cascade" }),
-  planId: text("plan_id").notNull().references(() => developmentPlans.id, { onDelete: "cascade" }),
-  snapshot: jsonb("snapshot").notNull(),
-  status: text("status").default("ASSIGNED").notNull(),
-  evidence: text("evidence"),
-  completedAt: timestamp("completed_at", { withTimezone: true }),
-  ...timestamps,
-}, (table) => [uniqueIndex("knowledge_assignment_unique").on(table.moduleId, table.employeeId)]);
+export const knowledgeAssignments = pgTable(
+  "knowledge_assignments",
+  {
+    id: text("id").primaryKey(),
+    moduleId: text("module_id").notNull().references(() => knowledgeModules.id),
+    employeeId: text("employee_id").notNull().references(() => employees.id, { onDelete: "cascade" }),
+    planId: text("plan_id").notNull().references(() => developmentPlans.id, { onDelete: "cascade" }),
+    snapshot: jsonb("snapshot").notNull(),
+    status: text("status").default("ASSIGNED").notNull(),
+    evidence: text("evidence"),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    ...timestamps,
+  },
+  (table) => [uniqueIndex("knowledge_assignment_unique").on(table.moduleId, table.employeeId)],
+);
 
 export const knowledgeAudit = pgTable("knowledge_audit", {
   id: text("id").primaryKey(),
@@ -361,4 +351,3 @@ export const knowledgeAudit = pgTable("knowledge_audit", {
   details: jsonb("details").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
->>>>>>> 9c0dc16 (update client and server components)

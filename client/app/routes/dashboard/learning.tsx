@@ -1,22 +1,17 @@
-<<<<<<< HEAD
-=======
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@clerk/react-router";
 import { RefreshCw } from "lucide-react";
->>>>>>> 9c0dc16 (update client and server components)
 import * as sb from "../../styles/skillbridge";
-import { COURSES } from "../../data/skillbridge";
 import { getLessonByCourseTitle } from "../../data/lessons";
 import CourseCard from "../../components/CourseCard";
 import CareerAdvisor from "../../components/CareerAdvisor";
 import KnowledgeTransfer from "../../components/KnowledgeTransfer";
 import KnowledgeAssignments from "../../components/KnowledgeAssignments";
 import { Notice } from "../../components/KnowledgeShared";
+import { api, type ApiList } from "../../lib/api";
 import { useKnowledgeApi, errorMessage, fallbackContext, type Context, type AiStatus } from "../../lib/knowledge";
 import type { Route } from "./+types/learning";
 
-<<<<<<< HEAD
-=======
 type Course = { id: string; title: string; provider: string; duration: string; format: string; count: number };
 
 export async function loader() {
@@ -24,14 +19,10 @@ export async function loader() {
   catch { return { data: fallbackContext.courses, sample: true }; }
 }
 
->>>>>>> 9c0dc16 (update client and server components)
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Knowledge Transfer — SkillBridge" }];
 }
 
-<<<<<<< HEAD
-export default function Learning() {
-=======
 export default function Learning({ loaderData }: Route.ComponentProps) {
   const request = useKnowledgeApi();
   const { isLoaded, userId } = useAuth();
@@ -63,7 +54,6 @@ export default function Learning({ loaderData }: Route.ComponentProps) {
     finally { setEnrolling(null); }
   };
 
->>>>>>> 9c0dc16 (update client and server components)
   return (
     <div style={sb.page} className="kt-page">
       <div className="sb-page-header">
@@ -80,21 +70,6 @@ export default function Learning({ loaderData }: Route.ComponentProps) {
       <KnowledgeTransfer context={context} onRefresh={refresh} onGenerating={onGenerating} />
       <KnowledgeAssignments context={context} onRefresh={refresh} />
 
-<<<<<<< HEAD
-      <div className="sb-grid sb-grid-cards">
-        {COURSES.map((c) => (
-          <CourseCard
-            key={c.id}
-            title={c.title}
-            provider={c.provider}
-            duration={c.duration}
-            format={c.format}
-            count={c.count}
-            lessonSlug={getLessonByCourseTitle(c.title)?.slug}
-          />
-        ))}
-      </div>
-=======
       <section aria-labelledby="transfer-pathways-heading" style={sb.page}>
         <h2 id="transfer-pathways-heading" style={{ ...sb.cardTitle, fontSize: 20, margin: 0 }}>Transfer Pathways</h2>
         <div className="sb-grid sb-grid-cards">
@@ -106,6 +81,7 @@ export default function Learning({ loaderData }: Route.ComponentProps) {
               duration={c.duration}
               format={c.format}
               count={c.count}
+              lessonSlug={getLessonByCourseTitle(c.title)?.slug}
               enrolled={!!enrolled[c.id]}
               pending={enrolling === c.id}
               disabled={enrolling !== null}
@@ -115,7 +91,6 @@ export default function Learning({ loaderData }: Route.ComponentProps) {
         </div>
         {enrollmentError && <Notice error>{enrollmentError}</Notice>}
       </section>
->>>>>>> 9c0dc16 (update client and server components)
     </div>
   );
 }
