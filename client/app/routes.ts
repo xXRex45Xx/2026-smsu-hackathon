@@ -4,6 +4,7 @@ export default [
   layout("routes/dashboard/layout.tsx", [
     index("routes/dashboard/home.tsx"),
     route("insights", "routes/dashboard/insights.tsx"),
+    route("employees", "routes/dashboard/employees.tsx"),
     route("skills", "routes/dashboard/skills.tsx"),
     route("development", "routes/dashboard/development.tsx"),
     route("succession", "routes/dashboard/succession.tsx"),

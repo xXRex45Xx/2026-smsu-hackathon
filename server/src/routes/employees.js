@@ -5,13 +5,19 @@ import { db } from "../db/client.js";
 import { employeeSkills, employees } from "../db/schema.js";
 import { getSnapshot } from "../services/workforce.js";
 import { asyncRoute, paginate, queryFilters } from "./utils.js";
+import { createEmployeeInput, updateEmployeeInput } from "../lib/employee-input.js";
 
 const router = Router();
 
 router.get("/", asyncRoute(async (req, res) => {
   const snapshot = await getSnapshot(queryFilters(req));
   const search = req.query.search?.toString().toLowerCase();
-  const rows = search ? snapshot.employees.filter((employee) => employee.name.toLowerCase().includes(search) || employee.title.toLowerCase().includes(search)) : snapshot.employees;
+  const rows = snapshot.employees.filter((employee) =>
+    (!search || [employee.name, employee.title, employee.email].some((value) => value?.toLowerCase().includes(search))) &&
+    (!req.query.status || employee.employmentStatus === req.query.status) &&
+    (!req.query.teamId || employee.teamId === req.query.teamId) &&
+    (!req.query.roleId || employee.roleId === req.query.roleId)
+  ).sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
   res.json(paginate(rows, req.query.page, req.query.limit));
 }));
 
@@ -27,20 +33,27 @@ router.get("/:employeeId/skills", asyncRoute(async (req, res) => {
 }));
 
 router.post("/", asyncRoute(async (req, res) => {
-  const body = z.object({ name: z.string().min(1), title: z.string().min(1), email: z.string().email().optional(), teamId: z.string().optional(), roleId: z.string().optional(), managerId: z.string().optional(), departmentId: z.string().optional(), facilityId: z.string().optional(), hireDate: z.string().optional(), retirementDate: z.string().optional(), employmentStatus: z.string().default("ACTIVE") }).parse(req.body);
+  const body = createEmployeeInput.parse(req.body);
   const [employee] = await db.insert(employees).values({ id: crypto.randomUUID(), ...body }).returning();
   res.status(201).json({ data: employee });
 }));
 
 router.patch("/:employeeId", asyncRoute(async (req, res) => {
-  const body = z.object({ name: z.string().min(1).optional(), title: z.string().min(1).optional(), email: z.string().email().optional(), roleId: z.string().optional(), departmentId: z.string().optional(), facilityId: z.string().optional(), employmentStatus: z.string().optional() }).parse(req.body);
+  const body = updateEmployeeInput.parse(req.body);
+  const [existing] = await db.select().from(employees).where(eq(employees.id, req.params.employeeId));
+  if (!existing) return res.status(404).json({ error: "Employee not found" });
+  createEmployeeInput.parse({ ...existing, ...body });
+  if (body.managerId === req.params.employeeId) return res.status(400).json({ error: "An employee cannot be their own manager." });
   const [employee] = await db.update(employees).set({ ...body, updatedAt: new Date() }).where(eq(employees.id, req.params.employeeId)).returning();
   if (!employee) return res.status(404).json({ error: "Employee not found" });
   res.json({ data: employee });
 }));
 
 router.delete("/:employeeId", asyncRoute(async (req, res) => {
-  const result = await db.delete(employees).where(eq(employees.id, req.params.employeeId)).returning({ id: employees.id });
+  const result = await db.transaction(async (tx) => {
+    await tx.update(employees).set({ managerId: null, updatedAt: new Date() }).where(eq(employees.managerId, req.params.employeeId));
+    return tx.delete(employees).where(eq(employees.id, req.params.employeeId)).returning({ id: employees.id });
+  });
   if (!result.length) return res.status(404).json({ error: "Employee not found" });
   res.status(204).end();
 }));

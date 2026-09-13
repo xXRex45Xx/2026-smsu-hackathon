@@ -23,6 +23,7 @@ export async function loader() {
 const NAV_ITEMS = [
   { to: "/", label: "Home", end: true },
   { to: "/insights", label: "Talent Insights" },
+  { to: "/employees", label: "Employees" },
   { to: "/skills", label: "Skills" },
   { to: "/development", label: "Development" },
   { to: "/succession", label: "Succession" },

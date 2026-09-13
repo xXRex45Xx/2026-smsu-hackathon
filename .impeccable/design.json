@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-13T00:27:39.028628+00:00",
+  "title": "Design System: SkillBridge",
+  "extensions": {
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 14px 34px rgba(15,23,42,.07)",
+        "purpose": "Shared cards and Employees containers."
+      },
+      {
+        "name": "primary-action",
+        "value": "0 12px 24px rgba(17,24,39,.16)",
+        "purpose": "Primary and destructive buttons."
+      },
+      {
+        "name": "navigation-bar",
+        "value": "0 8px 24px rgba(0,0,0,0.08)",
+        "purpose": "Shared navigation surface."
+      },
+      {
+        "name": "active-navigation",
+        "value": "0 8px 20px rgba(17,24,39,0.16)",
+        "purpose": "Active navigation item."
+      },
+      {
+        "name": "shared-select",
+        "value": "0 10px 24px rgba(15,23,42,.06)",
+        "purpose": "Shared select control."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-transition",
+        "value": "160ms ease",
+        "purpose": "Navigation and Employees action state transitions; removed for reduced motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "shell-wrap",
+        "value": "1180px"
+      },
+      {
+        "name": "employee-filters",
+        "value": "1100px"
+      },
+      {
+        "name": "compact-spacing",
+        "value": "900px"
+      },
+      {
+        "name": "mobile",
+        "value": "700px"
+      },
+      {
+        "name": "small-mobile",
+        "value": "430px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Shared dashboard action with Employees hover behavior.",
+      "html": "<button class=\"ds-button-primary\">Primary action</button>",
+      "css": ".ds-button-primary{font-family:Inter,system-ui,sans-serif;background:#111827;color:#fff;padding:12px 16px;border:none;border-radius:10px;font-size:13px;font-weight:700;line-height:1;min-height:44px;box-shadow:0 12px 24px rgba(17,24,39,.16);cursor:pointer;transition:background-color 160ms ease,color 160ms ease;}.ds-button-primary:not(:disabled):hover{filter:brightness(.94);}.ds-button-primary:focus-visible{outline:3px solid #0e7490;outline-offset:3px;}.ds-button-primary:disabled{opacity:.6;cursor:wait;}@media(prefers-reduced-motion:reduce){.ds-button-primary{transition:none;}}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Shared dashboard action with Employees hover behavior.",
+      "html": "<button class=\"ds-button-secondary\">Secondary action</button>",
+      "css": ".ds-button-secondary{font-family:Inter,system-ui,sans-serif;background:#fff;color:#111827;padding:11px 16px;border:1px solid rgba(15,23,42,.13);border-radius:10px;font-size:13px;font-weight:700;line-height:1;min-height:44px;box-shadow:none;cursor:pointer;transition:background-color 160ms ease,color 160ms ease;}.ds-button-secondary:not(:disabled):hover{filter:brightness(.94);}.ds-button-secondary:focus-visible{outline:3px solid #0e7490;outline-offset:3px;}.ds-button-secondary:disabled{opacity:.6;cursor:wait;}@media(prefers-reduced-motion:reduce){.ds-button-secondary{transition:none;}}"
+    },
+    {
+      "name": "Destructive Button",
+      "kind": "button",
+      "refersTo": "button-destructive",
+      "description": "Shared dashboard action with Employees hover behavior.",
+      "html": "<button class=\"ds-button-destructive\">Destructive action</button>",
+      "css": ".ds-button-destructive{font-family:Inter,system-ui,sans-serif;background:#c81e1e;color:#fff;padding:12px 16px;border:none;border-radius:10px;font-size:13px;font-weight:700;line-height:1;min-height:44px;box-shadow:0 12px 24px rgba(17,24,39,.16);cursor:pointer;transition:background-color 160ms ease,color 160ms ease;}.ds-button-destructive:not(:disabled):hover{filter:brightness(.94);}.ds-button-destructive:focus-visible{outline:3px solid #0e7490;outline-offset:3px;}.ds-button-destructive:disabled{opacity:.6;cursor:wait;}@media(prefers-reduced-motion:reduce){.ds-button-destructive{transition:none;}}"
+    },
+    {
+      "name": "Employee Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Labeled field with the shipped focus and invalid state.",
+      "html": "<label class=\"ds-field\">Full name<input class=\"ds-input\" placeholder=\"Full name\" /></label>",
+      "css": ".ds-field{display:block;font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:600;color:#334155;}.ds-input{display:block;margin-top:7px;width:100%;font-family:Inter,system-ui,sans-serif;font-size:14px;color:#111827;background:#fff;border:1px solid rgba(15,23,42,.13);border-radius:10px;min-height:44px;padding:10px 12px;caret-color:#0e7490;}.ds-input::placeholder{color:#64748b;}.ds-input:focus-visible{outline:3px solid #0e7490;outline-offset:2px;}.ds-input[aria-invalid=\"true\"]{border-color:#c81e1e;}@media(max-width:700px){.ds-input{font-size:16px;}}"
+    },
+    {
+      "name": "Active Status",
+      "kind": "chip",
+      "refersTo": "pill-active",
+      "description": "Noninteractive status label, paired with semantic text.",
+      "html": "<span class=\"ds-pill\">Active</span>",
+      "css": ".ds-pill{font-family:Inter,system-ui,sans-serif;display:inline-flex;align-items:center;justify-content:center;background:#e6f7ea;color:#1a7a3c;font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;line-height:1.2;white-space:nowrap;}"
+    },
+    {
+      "name": "Shared Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Shared dashboard content container.",
+      "html": "<section class=\"ds-card\"><h2 class=\"ds-card-title\">Workforce skills</h2><p class=\"ds-card-subtitle\">Skills across the workforce</p></section>",
+      "css": ".ds-card{font-family:Inter,system-ui,sans-serif;background:#fff;border:1px solid rgba(15,23,42,.08);border-radius:14px;padding:clamp(16px,2vw,24px);box-shadow:0 14px 34px rgba(15,23,42,.07);min-width:0;}.ds-card-title{margin:0;font-size:clamp(16px,2vw,19px);font-weight:800;letter-spacing:0;line-height:1.2;color:#111827;overflow-wrap:anywhere;}.ds-card-subtitle{font-size:13px;color:#64748b;line-height:1.45;overflow-wrap:anywhere;}"
+    },
+    {
+      "name": "Dashboard Navigation",
+      "kind": "nav",
+      "description": "Shared scrollable navigation with active and hover states.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Preview navigation\"><a class=\"ds-nav-link\" href=\"#home\">Home</a><a class=\"ds-nav-link ds-active\" href=\"#employees\" aria-current=\"page\">Employees</a><a class=\"ds-nav-link\" href=\"#skills\">Skills</a></nav>",
+      "css": ".ds-nav{display:flex;gap:4px;overflow-x:auto;padding:3px;}.ds-nav-link{font-family:Inter,system-ui,sans-serif;display:flex;align-items:center;min-height:44px;font-size:13px;font-weight:650;line-height:1;padding:10px 13px;border-radius:10px;color:#64748b;cursor:pointer;white-space:nowrap;text-decoration:none;transition:background-color 160ms ease,color 160ms ease,box-shadow 160ms ease;}.ds-nav-link:hover{background:#f1f5f9;color:#111827;}.ds-active{background:#111827;color:#fff;box-shadow:0 8px 20px rgba(17,24,39,.16);}.ds-nav-link:focus-visible{outline:3px solid #0e7490;outline-offset:3px;}@media(max-width:700px){.ds-nav-link{font-size:12px;padding:9px 11px;}}@media(prefers-reduced-motion:reduce){.ds-nav-link{transition:none;}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The existing SkillBridge dashboard",
+    "overview": "This is an extraction of the incumbent interface, not a new visual direction. The dashboard pairs a warm neutral canvas with white rounded surfaces, dark primary actions, compact data typography, and quiet slate supporting text. The SkillBridge name and Schwan's logo remain the identity anchors confirmed in PRODUCT.md.\n\nThe source authority is `client/app/styles/skillbridge.ts`, `client/app/app.css`, and the active `client/app/routes/dashboard/layout.tsx`, sampled against `skills.tsx` and `employees.tsx`. Employees-specific field behavior comes from `client/app/styles/employees.css`. Page composition and CRUD workflow remain in the Employees surface brief.",
+    "keyCharacteristics": [
+      "Warm canvas and softly elevated white surfaces.",
+      "Inter headings and compact, tabular data.",
+      "Dark primary actions with explicit semantic status text.",
+      "Shared navigation and responsive content spacing."
+    ],
+    "rules": [
+      {
+        "name": "The Semantic Status Rule",
+        "body": "Pair colored status pills with readable status text, as the Skills and Employees tables do.",
+        "section": "colors"
+      },
+      {
+        "name": "The Shared Shell Rule",
+        "body": "Keep new dashboard surfaces inside the existing navigation and main-content shell.",
+        "section": "layout"
+      }
+    ],
+    "dos": [
+      "Do reuse the shared heading, button, card, and pill styles for dashboard extensions.",
+      "Do retain visible keyboard focus and textual status/error information.",
+      "Do preserve the SkillBridge name, Schwan's logo, and existing dashboard shell."
+    ],
+    "donts": [
+      "Don't replace the incumbent identity while extending dashboard functionality.",
+      "Don't treat Employees-specific composition or unused stylesheet declarations as global design requirements."
+    ]
+  }
+}

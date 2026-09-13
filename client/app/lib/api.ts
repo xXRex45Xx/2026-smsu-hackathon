@@ -1,5 +1,12 @@
 type ApiOptions = Omit<RequestInit, "body"> & { body?: unknown };
 
+export class ApiError extends Error {
+  constructor(message: string, public status: number, public details: { path?: (string | number)[]; message: string }[] = []) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 const apiBase = () => {
   if (typeof window === "undefined") return process.env.API_URL || "http://localhost:3001";
   return import.meta.env.VITE_API_URL || "http://localhost:3001";
@@ -18,7 +25,7 @@ export async function api<T>(path: string, options: ApiOptions = {}): Promise<T>
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.error || `API request failed: ${response.status}`);
+    throw new ApiError(error.error || `API request failed: ${response.status}`, response.status, error.details || []);
   }
 
   if (response.status === 204) return undefined as T;
