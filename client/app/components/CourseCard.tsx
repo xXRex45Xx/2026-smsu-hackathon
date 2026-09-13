@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import * as sb from "../styles/skillbridge";
 
 export interface CourseCardProps {
@@ -6,7 +7,11 @@ export interface CourseCardProps {
   duration: string;
   format: string;
   count: number;
+  /** When set, renders a "Start Lesson" link to /learning-catalogue/:slug. */
+  lessonSlug?: string;
   enrolled?: boolean;
+  pending?: boolean;
+  disabled?: boolean;
   onToggleEnroll?: () => void;
 }
 
@@ -16,7 +21,10 @@ export default function CourseCard({
   duration,
   format,
   count,
+  lessonSlug,
   enrolled = false,
+  pending = false,
+  disabled = false,
   onToggleEnroll,
 }: CourseCardProps) {
   return (
@@ -33,10 +41,17 @@ export default function CourseCard({
       <div className="sb-wrap-text" style={{ fontSize: 12, color: "rgba(10,10,10,.55)", lineHeight: 1.4 }}>
         {provider} · {duration} · {format}
       </div>
-      <div style={{ fontSize: 11, color: "rgba(10,10,10,.45)" }}>{count} enrolled</div>
+      <div style={{ fontSize: 11, color: "rgba(10,10,10,.45)" }}>{count} employees in pathway</div>
+      {lessonSlug && (
+        <Link to={`/learning-catalogue/${lessonSlug}`} style={{ ...sb.primaryButton, marginTop: 10, textAlign: "center", width: "100%" }}>
+          Start Lesson →
+        </Link>
+      )}
       {onToggleEnroll && (
         <button
           onClick={onToggleEnroll}
+          disabled={disabled || pending}
+          aria-busy={pending}
           style={{
             ...sb.primaryButton,
             marginTop: 10,
@@ -46,7 +61,7 @@ export default function CourseCard({
             width: "100%",
           }}
         >
-          {enrolled ? "Enrolled ✓" : "Enroll"}
+          {pending ? "Updating..." : enrolled ? "Added to Plan ✓" : "Add to Transfer Plan"}
         </button>
       )}
     </div>

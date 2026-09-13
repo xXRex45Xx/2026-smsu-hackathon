@@ -12,8 +12,12 @@ export default [
     route("organization/roles/:roleId", "routes/dashboard/role-detail.tsx"),
     route("development", "routes/dashboard/development.tsx"),
     route("development/:planId", "routes/dashboard/development-detail.tsx"),
+    route("advisor", "routes/dashboard/advisor.tsx"),
     route("succession", "routes/dashboard/succession.tsx"),
     route("learning", "routes/dashboard/learning.tsx"),
+    route("lesson/:slug", "routes/dashboard/lesson.tsx"),
+    route("learning-catalogue", "routes/dashboard/learning-catalogue-index.tsx"),
+    route("learning-catalogue/:slug", "routes/dashboard/learning-catalogue.tsx"),
     route("use-cases", "routes/dashboard/use-cases.tsx"),
     // Temporarily disabled: restore this route when the page is needed.
     // route("reports", "routes/dashboard/reports.tsx"),

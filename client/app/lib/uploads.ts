@@ -5,10 +5,12 @@
 //   const { getToken } = useAuth();
 //   const key = await uploadFile(file, await getToken());
 
+import { apiUrl } from "./api-url";
+
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
 
 export async function uploadFile(file: File, token: string | null): Promise<string> {
-  const presignRes = await fetch(`${API_URL}/api/uploads/presign`, {
+  const presignRes = await fetch(apiUrl(API_URL, "/api/uploads/presign"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -30,7 +32,7 @@ export async function uploadFile(file: File, token: string | null): Promise<stri
 }
 
 export async function getDownloadUrl(key: string, token: string | null): Promise<string> {
-  const res = await fetch(`${API_URL}/api/uploads/${encodeURIComponent(key)}/url`, {
+  const res = await fetch(apiUrl(API_URL, `/api/uploads/${encodeURIComponent(key)}/url`), {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
   if (!res.ok) throw new Error(`Failed to get download URL: ${res.status}`);

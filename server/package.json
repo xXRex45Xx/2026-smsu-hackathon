@@ -18,9 +18,14 @@
     "@aws-sdk/s3-request-presigner": "^3.1131.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "drizzle-orm": "^0.44.7",
+    "drizzle-orm": "^0.45.2",
     "express": "^4.21.2",
+    "jpeg-js": "^0.4.4",
+    "mammoth": "^1.12.3",
+    "multer": "^2.3.0",
+    "pdf-parse": "^2.4.5",
     "pg": "^8.16.3",
+    "yauzl": "^3.4.0",
     "zod": "^4.6.2"
   },
   "devDependencies": {

@@ -342,6 +342,9 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
               {plan.items.length === 0 && <p style={sb.cardSubtitle}>No activities have been added to this plan.</p>}
             </>
           ) : <p style={sb.cardSubtitle}>No development plans for the selected workforce.</p>}
+          <Link to="/advisor" style={{ ...sb.primaryButton, marginTop: 16, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+            Open AI Career Advisor
+          </Link>
         </div>
 
         </div>

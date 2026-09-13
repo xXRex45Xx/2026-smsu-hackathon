@@ -1,3 +1,5 @@
+import { apiUrl } from "./api-url";
+
 type ApiOptions = Omit<RequestInit, "body"> & { body?: unknown };
 
 export class ApiError extends Error {
@@ -8,7 +10,7 @@ export class ApiError extends Error {
 }
 
 const apiBase = () => {
-  if (typeof window === "undefined") return process.env.API_URL || "http://localhost:3001";
+  if (typeof window === "undefined") return process.env.API_URL || process.env.VITE_API_URL || "http://localhost:3001";
   return import.meta.env.VITE_API_URL || "http://localhost:3001";
 };
 
@@ -17,7 +19,7 @@ export async function api<T>(path: string, options: ApiOptions = {}): Promise<T>
   headers.set("Accept", "application/json");
   if (options.body !== undefined) headers.set("Content-Type", "application/json");
 
-  const response = await fetch(`${apiBase()}${path}`, {
+  const response = await fetch(apiUrl(apiBase(), path), {
     ...options,
     headers,
     body: options.body === undefined ? undefined : JSON.stringify(options.body),
