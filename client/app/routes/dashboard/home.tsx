@@ -309,6 +309,9 @@ export default function DashboardHome({ loaderData }: Route.ComponentProps) {
               </div>
             ))}
           </div>
+          <Link to="/learning#career-advisor" style={{ ...sb.primaryButton, marginTop: 16, alignSelf: "flex-start", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+            Open AI Career Advisor
+          </Link>
         </div>
         </div>
 

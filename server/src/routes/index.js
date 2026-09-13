@@ -14,8 +14,10 @@ import notifications from "./notifications.js";
 import successionRisks from "./succession-risks.js";
 import analytics from "./analytics.js";
 import admin from "./admin.js";
+import knowledge from "./knowledge.js";
 
 const router = Router();
+router.use("/knowledge", knowledge);
 router.use("/employees", employees);
 router.use("/skills", skills);
 router.use("/roles", roles);

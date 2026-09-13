@@ -7,7 +7,7 @@ const NAV_ITEMS = [
   { to: "/skills", label: "Skills" },
   { to: "/development", label: "Development" },
   { to: "/succession", label: "Succession" },
-  { to: "/learning", label: "Learning" },
+  { to: "/learning", label: "Knowledge Transfer" },
   { to: "/use-cases", label: "Use Cases" },
   { to: "/reports", label: "Reports" },
   { to: "/admin", label: "Admin" },

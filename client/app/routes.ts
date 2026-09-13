@@ -6,6 +6,7 @@ export default [
     route("insights", "routes/dashboard/insights.tsx"),
     route("skills", "routes/dashboard/skills.tsx"),
     route("development", "routes/dashboard/development.tsx"),
+    route("advisor", "routes/dashboard/advisor.tsx"),
     route("succession", "routes/dashboard/succession.tsx"),
     route("learning", "routes/dashboard/learning.tsx"),
     route("lesson/:slug", "routes/dashboard/lesson.tsx"),
