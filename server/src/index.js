@@ -1,9 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { clerkMiddleware } from "@clerk/express";
 import healthRouter from "./routes/health.js";
-import meRouter from "./routes/me.js";
 import uploadsRouter from "./routes/uploads.js";
 import { closeDatabase } from "./db/client.js";
 import notFound from "./middleware/not-found.js";
@@ -17,8 +15,7 @@ app.use(cors({ origin: process.env.CLIENT_ORIGIN || "http://localhost:5173" }));
 app.use(express.json());
 
 app.use("/api/health", healthRouter);
-app.use("/api/me", clerkMiddleware(), meRouter);
-app.use("/api/uploads", clerkMiddleware(), uploadsRouter);
+app.use("/api/uploads", uploadsRouter);
 app.use("/api/v1", apiRouter);
 app.use("/api", apiRouter);
 app.use(notFound);

@@ -41,13 +41,6 @@ export default function Admin({ loaderData }: Route.ComponentProps) {
         <div style={{ ...sb.cardTitle, marginBottom: 14 }}>Integrations</div>
         <div className="sb-grid sb-grid-cards">
           <div className="sb-card-hover" style={{ border: `1px solid ${sb.colors.border}`, borderRadius: 12, padding: 16, display: "flex", flexDirection: "column", gap: 8, background: sb.colors.surface }}>
-            <div className="sb-wrap-text" style={{ fontSize: 13.5, fontWeight: 700 }}>Clerk Authentication</div>
-            <span style={{ alignSelf: "flex-start", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: "#e6f7ea", color: "#1a7a3c" }}>
-              Connected
-            </span>
-            <div className="sb-wrap-text" style={{ fontSize: 11, color: "rgba(10,10,10,.5)", lineHeight: 1.45 }}>Sign-in, sign-up, and session middleware wired on client and server.</div>
-          </div>
-          <div className="sb-card-hover" style={{ border: `1px solid ${sb.colors.border}`, borderRadius: 12, padding: 16, display: "flex", flexDirection: "column", gap: 8, background: sb.colors.surface }}>
             <div className="sb-wrap-text" style={{ fontSize: 13.5, fontWeight: 700 }}>HRIS Sync</div>
             <span style={{ alignSelf: "flex-start", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: "#e6f7ea", color: "#1a7a3c" }}>
               Connected

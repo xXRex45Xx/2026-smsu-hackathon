@@ -5,7 +5,9 @@ export default [
     index("routes/dashboard/home.tsx"),
     route("insights", "routes/dashboard/insights.tsx"),
     route("employees", "routes/dashboard/employees.tsx"),
+    route("employees/:employeeId", "routes/dashboard/employee-detail.tsx"),
     route("skills", "routes/dashboard/skills.tsx"),
+    route("skills/:skillId", "routes/dashboard/skill-detail.tsx"),
     route("development", "routes/dashboard/development.tsx"),
     route("succession", "routes/dashboard/succession.tsx"),
     route("learning", "routes/dashboard/learning.tsx"),
@@ -15,6 +17,4 @@ export default [
     // Temporarily disabled: restore this route when the page is needed.
     // route("admin", "routes/dashboard/admin.tsx"),
   ]),
-  route("sign-in/*", "routes/sign-in.tsx"),
-  route("sign-up/*", "routes/sign-up.tsx"),
 ] satisfies RouteConfig;

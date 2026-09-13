@@ -34,3 +34,10 @@ export async function api<T>(path: string, options: ApiOptions = {}): Promise<T>
 }
 
 export type ApiList<T> = { data: T[]; meta: { page: number; limit: number; total: number } };
+
+export async function apiAll<T>(path: string): Promise<T[]> {
+  const join = path.includes("?") ? "&" : "?";
+  const first = await api<ApiList<T>>(`${path}${join}limit=100`);
+  const rest = await Promise.all(Array.from({ length: Math.max(0, Math.ceil(first.meta.total / 100) - 1) }, (_, i) => api<ApiList<T>>(`${path}${join}limit=100&page=${i + 2}`)));
+  return [...first.data, ...rest.flatMap((page) => page.data)];
+}

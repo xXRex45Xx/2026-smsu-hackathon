@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { and, eq } from "drizzle-orm";
-import { z } from "zod";
 import { db } from "../db/client.js";
-import { employeeSkills, employees } from "../db/schema.js";
+import { employeeSkills, employees, skills } from "../db/schema.js";
 import { getSnapshot } from "../services/workforce.js";
 import { asyncRoute, paginate, queryFilters } from "./utils.js";
 import { createEmployeeInput, updateEmployeeInput } from "../lib/employee-input.js";
+import { assessmentInput } from "../lib/skill-input.js";
 
 const router = Router();
 
@@ -28,8 +28,10 @@ router.get("/:employeeId", asyncRoute(async (req, res) => {
 }));
 
 router.get("/:employeeId/skills", asyncRoute(async (req, res) => {
-  const snapshot = await getSnapshot();
-  res.json({ data: snapshot.employeeSkills.filter((item) => item.employeeId === req.params.employeeId) });
+  const [employee] = await db.select({ id: employees.id }).from(employees).where(eq(employees.id, req.params.employeeId));
+  if (!employee) return res.status(404).json({ error: "Employee not found" });
+  const rows = await db.select({ employeeId: employeeSkills.employeeId, skillId: employeeSkills.skillId, name: skills.name, category: skills.category, proficiency: employeeSkills.proficiency, yearsExperience: employeeSkills.yearsExperience, verified: employeeSkills.verified }).from(employeeSkills).innerJoin(skills, eq(skills.id, employeeSkills.skillId)).where(eq(employeeSkills.employeeId, req.params.employeeId)).orderBy(skills.name);
+  res.json({ data: rows });
 }));
 
 router.post("/", asyncRoute(async (req, res) => {
@@ -59,13 +61,19 @@ router.delete("/:employeeId", asyncRoute(async (req, res) => {
 }));
 
 router.put("/:employeeId/skills/:skillId", asyncRoute(async (req, res) => {
-  const body = z.object({ proficiency: z.number().int().min(1).max(5), yearsExperience: z.number().nonnegative(), verified: z.boolean().default(false) }).parse(req.body);
+  const body = assessmentInput.parse(req.body);
+  const [[employee], [catalogSkill]] = await Promise.all([
+    db.select({ id: employees.id }).from(employees).where(eq(employees.id, req.params.employeeId)),
+    db.select({ id: skills.id }).from(skills).where(eq(skills.id, req.params.skillId)),
+  ]);
+  if (!employee || !catalogSkill) return res.status(404).json({ error: !employee ? "Employee not found" : "Skill not found" });
   const [skill] = await db.insert(employeeSkills).values({ employeeId: req.params.employeeId, skillId: req.params.skillId, ...body }).onConflictDoUpdate({ target: [employeeSkills.employeeId, employeeSkills.skillId], set: body }).returning();
   res.json({ data: skill });
 }));
 
 router.delete("/:employeeId/skills/:skillId", asyncRoute(async (req, res) => {
-  await db.delete(employeeSkills).where(and(eq(employeeSkills.employeeId, req.params.employeeId), eq(employeeSkills.skillId, req.params.skillId)));
+  const removed = await db.delete(employeeSkills).where(and(eq(employeeSkills.employeeId, req.params.employeeId), eq(employeeSkills.skillId, req.params.skillId))).returning({ skillId: employeeSkills.skillId });
+  if (!removed.length) return res.status(404).json({ error: "Assessment no longer exists. Refresh the page." });
   res.status(204).end();
 }));
 

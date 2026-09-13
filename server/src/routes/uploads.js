@@ -1,14 +1,10 @@
 import { randomUUID } from "node:crypto";
 import { Router } from "express";
-import { requireAuth } from "@clerk/express";
 import { PutObjectCommand, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { r2, R2_BUCKET } from "../lib/r2.js";
 
 const router = Router();
-
-// All uploads routes require a signed-in user.
-router.use(requireAuth());
 
 // POST /api/uploads/presign  { filename, contentType }
 // -> { key, uploadUrl }  — client PUTs the file bytes straight to R2 with this URL.

@@ -31,6 +31,14 @@ cp server/.env.example server/.env
 `client/.env` sets `API_URL` (where the React Router server calls the backend from loaders).
 `server/.env` sets `PORT` and `CLIENT_ORIGIN` (CORS).
 
+Authentication is not configured. The dashboard and API, including upload endpoints, run without sign-in. No Clerk keys are required.
+
+After changing dependencies or Docker configuration, rebuild the containers:
+
+```bash
+docker compose up --build
+```
+
 ### Development
 
 Run both servers together:

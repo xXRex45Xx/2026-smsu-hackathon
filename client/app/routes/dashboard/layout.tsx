@@ -2,7 +2,6 @@ import { NavLink, Outlet } from "react-router";
 
 /* Temporarily disabled notification loader and dynamic profile dependencies.
 import { NavLink, Outlet, useRevalidator } from "react-router";
-import { useUser } from "@clerk/react-router";
 
 import { api } from "../../lib/api";
 import type { Route } from "./+types/layout";
@@ -33,28 +32,11 @@ const NAV_ITEMS = [
   // { to: "/admin", label: "Admin" },
 ];
 
-/* Dynamic profile helper retained for restoration.
-function initialsFromName(name: string | null | undefined): string {
-  if (!name) return "—";
-  const parts = name.trim().split(/\s+/);
-  const initials = parts
-    .slice(0, 2)
-    .map((p) => p[0]?.toUpperCase() ?? "")
-    .join("");
-  return initials || "—";
-}
-
-*/
-
 export default function DashboardLayout() {
   /* Temporarily disabled notification and dynamic profile state.
   const revalidator = useRevalidator();
   const { notices, notificationError } = loaderData;
   const unread = notices.filter((notice) => !notice.readAt).length;
-  const { user, isLoaded } = useUser();
-  const initials = isLoaded
-    ? initialsFromName(user?.fullName ?? user?.primaryEmailAddress?.emailAddress)
-    : "—";
 
   */
 

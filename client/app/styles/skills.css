@@ -1,0 +1,49 @@
+.skills-page .skill-header-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.skill-header-actions a { display: inline-flex; align-items: center; justify-content: center; }
+.skill-toolbar { display: flex; gap: 16px; flex-wrap: wrap; align-items: end; }
+.skill-toolbar > div:first-child { flex: 1; min-width: min(240px,100%); }
+.skill-toolbar label { display: block; margin-bottom: 7px; font-size: 13px; color: #334155; font-weight: 600; }
+.skill-summary { display: flex; flex-wrap: wrap; gap: 16px 32px; padding: 20px 24px; border-bottom: 1px solid rgba(15,23,42,.08); }
+.skill-summary dt { color: #64748b; font-size: 12px; margin-bottom: 5px; }
+.skill-summary dd { margin: 0; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.skill-section-title { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 20px 24px; flex-wrap: wrap; }
+.skill-section-title h2, .skill-confirm-body h2 { margin: 0; font-size: 18px; font-weight: 750; }
+.skill-section-title p { margin: 5px 0 0; color: #64748b; font-size: 13px; }
+.skill-table-wrap { overflow: auto; padding: 0 24px 10px; scrollbar-width: thin; scrollbar-color: #94a3b8 #f1f5f9; }
+.skill-table-wrap table { min-width: 720px; }
+.skill-table-wrap tr { border-bottom: 1px solid rgba(15,23,42,.08); }
+.skill-table-wrap tbody tr:last-child { border-bottom: 0; }
+.skill-table-wrap tbody tr:hover { background: #f8fafc; }
+.skill-name-link { font-weight: 650; color: #111827; text-decoration: underline; text-decoration-color: #cbd5e1; text-underline-offset: 4px; }
+.skill-name-link:hover { text-decoration-color: #111827; }
+.skill-proficiency { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.skill-proficiency-track { display: inline-flex; gap: 3px; }
+.skill-proficiency-track i { display: block; width: 13px; height: 7px; border-radius: 2px; background: #e2e8f0; }
+.skill-proficiency-track .is-filled { background: #334155; }
+.skill-field-label { display: block; font-size: 13px; color: #334155; font-weight: 600; margin-bottom: 7px; }
+.skill-field-hint { display: block; font-size: 12px; color: #64748b; margin-top: 7px; line-height: 1.5; }
+.skills-page .skill-checkbox { display: flex; align-items: flex-start; gap: 10px; min-height: 44px; font-size: 14px; font-weight: 400; line-height: 1.6; cursor: pointer; }
+.skills-page .skill-checkbox input { min-height: 18px; width: 18px; height: 18px; flex: none; margin: 3px 0 0; accent-color: #111827; }
+.skill-confirm-body { padding: 24px; max-width: 80ch; }
+.skill-confirm-body p { font-size: 14px; color: #334155; line-height: 1.65; margin: 12px 0 20px; }
+.skill-confirm-body ul { font-size: 14px; padding-left: 20px; margin: 16px 0 20px; line-height: 1.8; color: #334155; }
+.skill-warning { padding: 14px 16px; background: #fef3e0; color: #92400e; border-radius: 10px; font-size: 14px; line-height: 1.6; margin-bottom: 18px; }
+.skill-notice-empty { padding: 28px 24px; color: #64748b; font-size: 14px; line-height: 1.65; }
+.skill-notice-empty a { color: #111827; text-decoration: underline; text-underline-offset: 3px; }
+.skill-catalog-form { max-width: 980px; }
+.skill-table-count { font-size: 13px; color: #64748b; font-weight: 400; margin-left: 10px; }
+@media (max-width: 700px) {
+  .skill-toolbar > div { width: 100%; }
+  .skill-section-title, .skill-summary { padding: 18px 16px; }
+  .skill-table-wrap { padding-inline: 16px; }
+  .skill-table-wrap .assessment-table { min-width: 0; }
+  .assessment-table, .assessment-table tbody { display: block; }
+  .assessment-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .assessment-table tbody tr { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px 12px; padding: 18px 0; }
+  .assessment-table td { display: block; padding: 0 !important; }
+  .assessment-table td:first-child { grid-column: 1 / -1; }
+  .assessment-table td::before { content: attr(data-label); display: block; font-size: 11px; color: #64748b; margin-bottom: 5px; }
+  .assessment-table td:last-child { grid-column: 1 / -1; }
+  .assessment-table .employee-row-actions { justify-content: flex-start; }
+  .skill-confirm-body { padding: 20px; }
+}

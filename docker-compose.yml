@@ -23,8 +23,6 @@ services:
     command: ["sh", "-c", "npm ci --no-audit --no-fund && exec npm run dev"]
     environment:
       DATABASE_URL: postgresql://skillbridge:skillbridge@postgres:5432/skillbridge
-      CLERK_PUBLISHABLE_KEY: ${VITE_CLERK_PUBLISHABLE_KEY:-}
-      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY:-}
       R2_ACCOUNT_ID: ${R2_ACCOUNT_ID:-}
       R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID:-}
       R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY:-}
@@ -50,12 +48,9 @@ services:
     build:
       context: ./client
       args:
-        VITE_CLERK_PUBLISHABLE_KEY: ${VITE_CLERK_PUBLISHABLE_KEY:-}
         VITE_API_URL: http://localhost:3001
     environment:
       API_URL: http://server:3001
-      VITE_CLERK_PUBLISHABLE_KEY: ${VITE_CLERK_PUBLISHABLE_KEY:-}
-      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY:-}
     ports:
       - "5173:3000"
     depends_on:
