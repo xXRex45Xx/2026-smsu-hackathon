@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { KnowledgeError, parseModelJson } from "./knowledge-schema.js";
 
-const base = () => (process.env.LM_STUDIO_BASE_URL || "http://127.0.0.1:1234/v1").replace(/\/$/, "");
+const base = () => (process.env.LM_STUDIO_BASE_URL || "http://10.14.241.2:1234/v1").replace(/\/$/, "");
 const headers = () => ({ "Content-Type": "application/json", Authorization: `Bearer ${process.env.LM_STUDIO_API_KEY || "lm-studio"}` });
 
 export async function aiStatus(fetcher = fetch) {

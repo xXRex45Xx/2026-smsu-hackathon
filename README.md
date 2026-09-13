@@ -67,7 +67,7 @@ Start LM Studio's local server with a chat model loaded. The backend defaults ar
 shown in `server/.env.lm-studio.example`:
 
 ```dotenv
-LM_STUDIO_BASE_URL=http://127.0.0.1:1234/v1
+LM_STUDIO_BASE_URL=http://10.14.241.2:1234/v1
 LM_STUDIO_API_KEY=lm-studio
 ```
 
