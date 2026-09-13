@@ -369,3 +369,13 @@ export const knowledgeAudit = pgTable("knowledge_audit", {
   details: jsonb("details").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+export const knowledgeLessons = pgTable("knowledge_lessons", {
+  id: text("id").primaryKey(),
+  moduleId: text("module_id").notNull().references(() => knowledgeModules.id),
+  title: text("title").notNull(),
+  sections: jsonb("sections").notNull(),
+  quiz: jsonb("quiz").notNull(),
+  generatedBy: text("generated_by").notNull(),
+  ...timestamps,
+});

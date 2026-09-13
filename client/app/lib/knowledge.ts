@@ -24,6 +24,10 @@ export type Context = {
   modules: Artifact<ModuleContent | CareerContent>[]; assignments: Assignment[]; history: Assignment[];
 };
 export type AiStatus = { state: "Connected" | "No model loaded" | "Generating" | "Disconnected" | "Error"; message?: string; model?: string };
+export type LessonSection = { heading: string; paragraphs: string[] };
+export type LessonQuizQuestion = { question: string; options: string[]; correctIndex: number };
+export type LessonSummary = { id: string; title: string; moduleId: string; createdAt: string };
+export type Lesson = LessonSummary & { sections: LessonSection[]; quiz: LessonQuizQuestion[] };
 
 export function useKnowledgeApi() {
   return useCallback(async <T,>(path: string, body?: unknown, method = body === undefined ? "GET" : "POST"): Promise<T> => {

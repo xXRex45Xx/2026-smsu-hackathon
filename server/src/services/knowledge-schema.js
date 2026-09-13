@@ -31,6 +31,12 @@ export const moduleSchema = z.object({
   audience: list,
 });
 
+export const lessonSchema = z.object({
+  title: short,
+  sections: z.array(z.object({ heading: short, paragraphs: list })).min(3).max(8),
+  quiz: z.array(z.object({ question: short, options: z.array(short).length(4), correctIndex: z.number().int().min(0).max(3) })).length(5),
+});
+
 export const careerSchema = z.object({
   title: short,
   summary: text,

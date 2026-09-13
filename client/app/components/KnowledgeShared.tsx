@@ -8,9 +8,6 @@ export function Notice({ children, error = false }: { children: ReactNode; error
 export function Busy({ label }: { label: string }) {
   return <div className="kt-busy" role="status"><LoaderCircle className="kt-spin" size={17} aria-hidden="true" /><span>{label}</span><progress aria-label={label} /></div>;
 }
-export function ReviewNotice() {
-  return <Notice>AI Generated. A manager or subject-matter expert must review this content before approval or changes to employee records.</Notice>;
-}
 export function TextList({ items, ordered = false }: { items: string[]; ordered?: boolean }) {
   const Tag = ordered ? "ol" : "ul";
   return <Tag className="kt-list">{items.map((item, i) => <li key={i}>{item}</li>)}</Tag>;

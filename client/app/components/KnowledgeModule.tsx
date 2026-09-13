@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Check, Download, Pencil, RefreshCw, Save, UserPlus, Users } from "lucide-react";
-import { errorMessage, exportArtifact, useKnowledgeApi, type Artifact, type Context, type ModuleContent } from "../lib/knowledge";
-import { Modal, Notice, ReviewNotice, Success, TextList } from "./KnowledgeShared";
+import { Link } from "react-router";
+import { BookOpen, Check, Download, Pencil, RefreshCw, Save, UserPlus, Users } from "lucide-react";
+import { errorMessage, exportArtifact, useKnowledgeApi, type Artifact, type Context, type Lesson, type ModuleContent } from "../lib/knowledge";
+import { Modal, Notice, Success, TextList } from "./KnowledgeShared";
 
 export const moduleSections = [
   ["tools", "Tools and technologies"], ["responsibilities", "Roles and responsibilities"], ["procedures", "Step-by-step procedures"],
@@ -18,6 +19,7 @@ export default function KnowledgeModule({ module, context, onChange, onRefresh, 
   const [success, setSuccess] = useState("");
   const [action, setAction] = useState<"approve" | "employees" | "team" | "skill" | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
+  const [lesson, setLesson] = useState<Lesson | null>(null);
   const [team, setTeam] = useState("");
   const [skillIndex, setSkillIndex] = useState(0);
   const [audit, setAudit] = useState<{ id: string; actorId: string; action: string; createdAt: string }[]>([]);
@@ -49,12 +51,19 @@ export default function KnowledgeModule({ module, context, onChange, onRefresh, 
     } catch (e) { setError(errorMessage(e)); } finally { setBusy(false); }
   };
   const mappingChange = (index: number, change: Partial<Artifact["mappings"][number]>) => setDraft((p) => ({ ...p, mappings: p.mappings.map((m, i) => i === index ? { ...m, ...change } : m) }));
+  const turnIntoLesson = async () => {
+    setBusy(true); setError(""); setSuccess(""); setLesson(null);
+    try {
+      const saved = await request<Lesson>(`/modules/${module.id}/lesson`, {});
+      setLesson(saved);
+      setSuccess("Lesson created with documentation and a 5-question quiz.");
+    } catch (e) { setError(errorMessage(e)); } finally { setBusy(false); }
+  };
 
   return <article className="kt-card kt-stack" aria-label="Generated knowledge module">
     <div className="kt-row"><span className="kt-tag kt-blue">AI Generated</span><span className={`kt-tag ${module.status === "APPROVED" ? "kt-green" : "kt-amber"}`}>{editing ? "Unsaved edits" : module.preview ? "Preview draft" : module.status === "APPROVED" ? "Approved" : "Draft"}</span></div>
     {editing ? <label className="kt-field">Module title<input maxLength={200} value={draft.content.title} onChange={(e) => update("title", e.target.value)} /></label> : <h3>{module.content.title}</h3>}
     <p className="kt-muted kt-small">Source: {module.source.name} · Revision {module.revision}</p>
-    <ReviewNotice />
     <div><h4>Executive summary</h4>{editing ? <textarea className="kt-input" rows={4} maxLength={2000} aria-label="Executive summary" value={draft.content.summary} onChange={(e) => update("summary", e.target.value)} /> : <p>{module.content.summary}</p>}</div>
     <details className="kt-detail" open>
       <summary>Skills and inventory mapping</summary>
@@ -80,10 +89,11 @@ export default function KnowledgeModule({ module, context, onChange, onRefresh, 
         <button className="kt-button kt-primary" disabled={!writeable || busy || module.status === "APPROVED" || module.mappings.some((s) => !s.skillId)} onClick={() => { setAction("approve"); setError(""); }}><Check size={16} />Approve</button>
         <button className="kt-button" disabled={!writeable || busy || module.status !== "APPROVED"} onClick={() => { setSelected([]); setAction("employees"); setError(""); }}><UserPlus size={16} />Assign to Employees</button>
         <button className="kt-button" disabled={!writeable || busy || module.status !== "APPROVED"} onClick={() => { setTeam(""); setAction("team"); setError(""); }}><Users size={16} />Assign to Team</button>
+        <button className="kt-button kt-primary" disabled={!writeable || busy || module.status !== "APPROVED"} onClick={turnIntoLesson}><BookOpen size={16} />Turn into Lesson</button>
       </>}
       <button className="kt-icon" title="Export module" aria-label="Export module" onClick={() => exportArtifact(visible)}><Download size={17} /></button>
     </div>
-    {error && !action && <Notice error>{error}</Notice>}{success && <Success>{success}</Success>}
+    {error && !action && <Notice error>{error}</Notice>}{success && <Success>{success} {lesson && <Link to={`/learning-catalogue/${lesson.id}`} style={{ fontWeight: 700 }}>View in Learning Catalogue →</Link>}</Success>}
     {!module.preview && <details className="kt-detail" onToggle={async (e) => { if (e.currentTarget.open) { try { setAudit(await request(`/modules/${module.id}/audit`)); } catch (err) { setError(errorMessage(err)); } } }}><summary>Review history</summary>{audit.map((event) => <p className="kt-small" key={event.id}>{event.action.replaceAll("_", " ")} · {event.actorId} · {new Date(event.createdAt).toLocaleString()}</p>)}</details>}
     {action && <Modal title={action === "approve" ? "Approve knowledge module" : action === "skill" ? "Create inventory skill" : action === "team" ? "Assign to team" : "Assign to employees"} onClose={() => !busy && setAction(null)}>
       {action === "approve" && <p>I have reviewed the content, skill mappings, and required proficiency for <strong>{module.content.title}</strong>.</p>}

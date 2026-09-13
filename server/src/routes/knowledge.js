@@ -8,6 +8,7 @@ import { KnowledgeError, sourceSchema, mappingSchema, levelSchema } from "../ser
 import { extractUpload, importGithub, MAX_VIDEO } from "../services/knowledge-sources.js";
 import { analyzeVideo, MAX_VIDEO_FRAMES, MAX_FRAME_SIZE } from "../services/knowledge-video.js";
 import { knowledgeContext, generateKnowledge, generateCareer, editModule, approveModule, createMappedSkill, assignModule, submitCompletion, verifyCompletion, moduleAudit } from "../services/knowledge.js";
+import { generateLesson, listLessons, getLesson } from "../services/knowledge-lesson.js";
 
 const router = Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_VIDEO, files: 1, fields: 0 } });
@@ -59,6 +60,9 @@ router.post("/modules/:id/assign", asyncRoute(async (req, res) => {
   res.json(await assignModule(req.actor, req.params.id, body));
 }));
 router.get("/modules/:id/audit", asyncRoute(async (req, res) => res.json(await moduleAudit(req.actor, req.params.id))));
+router.post("/modules/:id/lesson", generation((req) => generateLesson(req.actor, req.params.id)));
+router.get("/lessons", asyncRoute(async (_req, res) => res.json(await listLessons())));
+router.get("/lessons/:id", asyncRoute(async (req, res) => res.json(await getLesson(req.params.id))));
 router.post("/assignments/:id/submit", asyncRoute(async (req, res) => res.json(await submitCompletion(req.actor, req.params.id, z.object({ evidence: z.string().trim().min(20).max(3000) }).parse(req.body).evidence))));
 router.post("/assignments/:id/verify", asyncRoute(async (req, res) => res.json(await verifyCompletion(req.actor, req.params.id, z.object({ assessments: z.array(z.object({ skillId: z.string(), level: levelSchema })).min(1).max(12) }).parse(req.body).assessments))));
 router.use((error, req, res, _next) => {

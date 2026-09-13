@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Download, Pencil, RefreshCw, Save, Sparkles } from "lucide-react";
 import { useKnowledgeApi, errorMessage, exportArtifact, type Artifact, type CareerContent, type Context } from "../lib/knowledge";
-import { Busy, Modal, Notice, ReviewNotice, Success, TextList } from "./KnowledgeShared";
+import { Busy, Modal, Notice, Success, TextList } from "./KnowledgeShared";
 
 export default function CareerAdvisor({ context, onRefresh, onGenerating }: { context: Context; onRefresh: () => void; onGenerating: (value: boolean) => void }) {
   const request = useKnowledgeApi();
@@ -78,11 +78,10 @@ export default function CareerAdvisor({ context, onRefresh, onGenerating }: { co
           <details className="kt-detail" open><summary>Prioritized development steps</summary><TextList items={plan.content.steps} ordered /></details>
           <details className="kt-detail"><summary>Training and certifications</summary><h4>Training</h4><TextList items={plan.content.training} /><h4>Certifications</h4><TextList items={plan.content.certifications} /></details>
           <details className="kt-detail"><summary>Mentoring and practical experience</summary><p>{plan.content.mentor}</p><TextList items={plan.content.experience} /></details>
-          <ReviewNotice />
           <div className="kt-toolbar"><button className="kt-button kt-primary" disabled={busy || !!draft || plan.preview || !context.canManage} onClick={() => setConfirm(true)}><Save size={16} />Review & Save</button><button className="kt-icon" title="Edit plan" aria-label="Edit plan" onClick={() => setDraft(plan.content)} disabled={busy || !!draft}><Pencil size={17} /></button><button className="kt-icon" title="Regenerate plan" aria-label="Regenerate plan" onClick={generate} disabled={busy || !!draft}><RefreshCw size={17} /></button><button className="kt-icon" title="Export plan" aria-label="Export plan" onClick={() => exportArtifact(plan)}><Download size={17} /></button></div>
         </> : <div className="kt-empty"><Sparkles size={30} /><h4>{employee ? `${employee.name}'s next step` : "Development recommendations"}</h4><p className="kt-muted">No plan generated yet.</p></div>}
       </div>
     </div>
-    {confirm && plan && <Modal title="Approve development plan" onClose={() => !busy && setConfirm(false)}><p>Save this reviewed plan for {employee?.name}? This creates an assigned development pathway. Proficiency changes require a separate completion assessment.</p><ReviewNotice /><div className="kt-toolbar"><button className="kt-button" disabled={busy} onClick={() => setConfirm(false)}>Cancel</button><button className="kt-button kt-primary" disabled={busy} onClick={save}>Approve & Save</button></div>{error && <Notice error>{error}</Notice>}</Modal>}
+    {confirm && plan && <Modal title="Approve development plan" onClose={() => !busy && setConfirm(false)}><p>Save this reviewed plan for {employee?.name}? This creates an assigned development pathway. Proficiency changes require a separate completion assessment.</p><div className="kt-toolbar"><button className="kt-button" disabled={busy} onClick={() => setConfirm(false)}>Cancel</button><button className="kt-button kt-primary" disabled={busy} onClick={save}>Approve & Save</button></div>{error && <Notice error>{error}</Notice>}</Modal>}
   </section>;
 }

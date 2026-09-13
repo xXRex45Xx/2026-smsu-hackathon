@@ -1,12 +1,30 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useRouteError } from "react-router";
 import * as sb from "../../styles/skillbridge";
-import { getLessonBySlug } from "../../data/lessons";
+import { api } from "../../lib/api";
+import type { Lesson } from "../../lib/knowledge";
 import type { Route } from "./+types/learning-catalogue";
 
-export function meta({ params }: Route.MetaArgs) {
-  const lesson = getLessonBySlug(params.slug ?? "");
-  return [{ title: `${lesson?.title ?? "Lesson"} — SkillBridge` }];
+export async function loader({ params }: Route.LoaderArgs) {
+  return { lesson: await api<Lesson>(`/api/v1/knowledge/lessons/${encodeURIComponent(params.slug ?? "")}`) };
+}
+
+export function meta({ loaderData }: Route.MetaArgs) {
+  return [{ title: `${loaderData?.lesson.title ?? "Lesson"} — SkillBridge` }];
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  return (
+    <div style={sb.page}>
+      <div style={sb.card}>
+        <div style={sb.cardTitle}>Lesson not found</div>
+        <div style={{ ...sb.cardSubtitle, marginTop: 6 }}>
+          {error instanceof Error ? error.message : "This lesson could not be loaded."} <Link to="/learning" style={{ color: sb.colors.red, fontWeight: 700 }}>Back to Learning & Training</Link>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 type Tab = "content" | "quiz";
@@ -15,9 +33,8 @@ type Tab = "content" | "quiz";
 // scrollspy threshold both land below it instead of underneath it.
 const TOPBAR_OFFSET = 130;
 
-export default function Lesson() {
-  const { slug } = useParams();
-  const lesson = getLessonBySlug(slug ?? "");
+export default function LearningCatalogueLesson({ loaderData }: Route.ComponentProps) {
+  const lesson = loaderData.lesson;
 
   const [tab, setTab] = useState<Tab>("content");
   const [contentDone, setContentDone] = useState(false);
@@ -25,12 +42,12 @@ export default function Lesson() {
   const [submitted, setSubmitted] = useState(false);
 
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const [activeHeading, setActiveHeading] = useState<string | undefined>(lesson?.sections?.[0]?.heading);
+  const [activeHeading, setActiveHeading] = useState<string | undefined>(lesson.sections[0]?.heading);
 
   // Book-index scrollspy: track which section heading is currently at/above
   // the topbar offset, and highlight that one in the side panel.
   useEffect(() => {
-    if (tab !== "content" || lesson?.contentType !== "text" || !lesson.sections) return;
+    if (tab !== "content") return;
 
     const headings = lesson.sections.map((s) => s.heading);
     function onScroll() {
@@ -48,19 +65,6 @@ export default function Lesson() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [tab, lesson]);
-
-  if (!lesson) {
-    return (
-      <div style={sb.page}>
-        <div style={sb.card}>
-          <div style={sb.cardTitle}>Lesson not found</div>
-          <div style={{ ...sb.cardSubtitle, marginTop: 6 }}>
-            There's no lesson at "{slug}". <Link to="/learning" style={{ color: sb.colors.red, fontWeight: 700 }}>Back to Learning & Training</Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   const quizUnlocked = contentDone;
   const totalQuestions = lesson.quiz.length;
@@ -108,7 +112,7 @@ export default function Lesson() {
           <div>
             <h1 style={sb.pageHeading}>{lesson.title}</h1>
             <div style={sb.pageSubheading}>
-              {lesson.contentType === "video" ? "Video lesson" : "Text lesson"} · {totalQuestions}-question quiz
+              Text lesson · {totalQuestions}-question quiz
             </div>
           </div>
           {complete && (
@@ -136,44 +140,37 @@ export default function Lesson() {
 
       {tab === "content" && (
         <div className="sb-lesson-layout">
-          {lesson.contentType === "text" && lesson.sections && (
-            <nav className="sb-lesson-toc" aria-label="Table of contents">
-              {lesson.sections.map((section) => (
-                <button
-                  key={section.heading}
-                  className={
-                    activeHeading === section.heading ? "sb-lesson-toc-link sb-lesson-toc-link-active" : "sb-lesson-toc-link"
-                  }
-                  onClick={() => scrollToSection(section.heading)}
-                >
-                  {section.heading}
-                </button>
-              ))}
-            </nav>
-          )}
+          <nav className="sb-lesson-toc" aria-label="Table of contents">
+            {lesson.sections.map((section) => (
+              <button
+                key={section.heading}
+                className={
+                  activeHeading === section.heading ? "sb-lesson-toc-link sb-lesson-toc-link-active" : "sb-lesson-toc-link"
+                }
+                onClick={() => scrollToSection(section.heading)}
+              >
+                {section.heading}
+              </button>
+            ))}
+          </nav>
 
           <div style={sb.card}>
-            {lesson.contentType === "text" &&
-              lesson.sections?.map((section) => (
-                <div
-                  key={section.heading}
-                  ref={(el) => {
-                    sectionRefs.current[section.heading] = el;
-                  }}
-                  style={{ marginBottom: 22, scrollMarginTop: TOPBAR_OFFSET }}
-                >
-                  <div style={{ ...sb.cardTitle, fontSize: 16, marginBottom: 8 }}>{section.heading}</div>
-                  {section.paragraphs.map((p, i) => (
-                    <p key={i} style={{ fontSize: 14, color: sb.colors.inkSoft, lineHeight: 1.6, margin: "0 0 10px" }}>
-                      {p}
-                    </p>
-                  ))}
-                </div>
-              ))}
-
-            {lesson.contentType === "video" && lesson.videoUrl && (
-              <video controls style={{ width: "100%", borderRadius: 10 }} src={lesson.videoUrl} />
-            )}
+            {lesson.sections.map((section) => (
+              <div
+                key={section.heading}
+                ref={(el) => {
+                  sectionRefs.current[section.heading] = el;
+                }}
+                style={{ marginBottom: 22, scrollMarginTop: TOPBAR_OFFSET }}
+              >
+                <div style={{ ...sb.cardTitle, fontSize: 16, marginBottom: 8 }}>{section.heading}</div>
+                {section.paragraphs.map((p, i) => (
+                  <p key={i} style={{ fontSize: 14, color: sb.colors.inkSoft, lineHeight: 1.6, margin: "0 0 10px" }}>
+                    {p}
+                  </p>
+                ))}
+              </div>
+            ))}
 
             <div style={{ marginTop: 8, paddingTop: 18, borderTop: `1px solid ${sb.colors.border}`, display: "flex", justifyContent: "flex-end" }}>
               <button style={sb.primaryButton} onClick={takeQuiz}>

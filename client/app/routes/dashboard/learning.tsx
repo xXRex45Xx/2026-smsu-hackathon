@@ -1,21 +1,25 @@
 import { useCallback, useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import * as sb from "../../styles/skillbridge";
-import { getLessonByCourseTitle } from "../../data/lessons";
 import CourseCard from "../../components/CourseCard";
 import CareerAdvisor from "../../components/CareerAdvisor";
 import KnowledgeTransfer from "../../components/KnowledgeTransfer";
 import KnowledgeAssignments from "../../components/KnowledgeAssignments";
 import { Notice } from "../../components/KnowledgeShared";
 import { api, type ApiList } from "../../lib/api";
-import { useKnowledgeApi, errorMessage, fallbackContext, type Context, type AiStatus } from "../../lib/knowledge";
+import { useKnowledgeApi, errorMessage, fallbackContext, type Context, type AiStatus, type LessonSummary } from "../../lib/knowledge";
 import type { Route } from "./+types/learning";
 
 type Course = { id: string; title: string; provider: string; duration: string; format: string; count: number };
 
 export async function loader() {
-  try { return { ...(await api<ApiList<Course>>("/api/v1/courses?limit=100")), sample: false }; }
-  catch { return { data: fallbackContext.courses, sample: true }; }
+  try {
+    const [courses, lessons] = await Promise.all([
+      api<ApiList<Course>>("/api/v1/courses?limit=100"),
+      api<LessonSummary[]>("/api/v1/knowledge/lessons").catch(() => [] as LessonSummary[]),
+    ]);
+    return { ...courses, lessons, sample: false };
+  } catch { return { data: fallbackContext.courses, lessons: [] as LessonSummary[], sample: true }; }
 }
 
 export function meta({}: Route.MetaArgs) {
@@ -79,7 +83,7 @@ export default function Learning({ loaderData }: Route.ComponentProps) {
               duration={c.duration}
               format={c.format}
               count={c.count}
-              lessonSlug={getLessonByCourseTitle(c.title)?.slug}
+              lessonSlug={loaderData.lessons.find((l) => l.title.trim().toLowerCase() === c.title.trim().toLowerCase())?.id}
               enrolled={!!enrolled[c.id]}
               pending={enrolling === c.id}
               disabled={enrolling !== null}
