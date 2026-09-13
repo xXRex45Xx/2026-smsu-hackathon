@@ -12,13 +12,15 @@
     {
       "idx": 1,
       "version": "7",
-<<<<<<< HEAD
       "when": 1789253045458,
       "tag": "0001_clumsy_sunspot",
-=======
-      "when": 1789253671977,
-      "tag": "0001_dashing_dark_beast",
->>>>>>> 9c0dc16 (update client and server components)
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789260283189,
+      "tag": "0002_wandering_rage",
       "breakpoints": true
     }
   ]

@@ -294,27 +294,6 @@ export const notifications = pgTable("notifications", {
   ...timestamps,
 });
 
-<<<<<<< HEAD
-export const successionRiskProfiles = pgTable(
-  "succession_risk_profiles",
-  {
-    id: text("id").primaryKey(),
-    name: text("name").notNull(),
-    experts: integer("experts").notNull(),
-    successors: integer("successors").notNull(),
-    risk: text("risk").notNull(),
-    retireWithinYears: integer("retire_within_years").notNull(),
-  },
-  (table) => [
-    check("succession_experts_check", sql`${table.experts} >= 0`),
-    check("succession_successors_check", sql`${table.successors} >= 0`),
-    check(
-      "succession_retirement_years_check",
-      sql`${table.retireWithinYears} >= 0`,
-    ),
-  ],
-);
-=======
 export const successionRiskProfiles = pgTable("succession_risk_profiles", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -361,4 +340,3 @@ export const knowledgeAudit = pgTable("knowledge_audit", {
   details: jsonb("details").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
->>>>>>> 9c0dc16 (update client and server components)
