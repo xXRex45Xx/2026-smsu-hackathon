@@ -141,6 +141,24 @@ table {
   flex: none;
 }
 
+.sb-menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: #111827;
+  cursor: pointer;
+}
+
+.sb-menu-toggle:hover {
+  background: #e2e8f0;
+}
+
 .sb-main {
   width: 100%;
   max-width: 1400px;
@@ -404,8 +422,33 @@ ol.kt-list { list-style: decimal; }
   }
 
   .sb-nav {
+    display: none;
     order: 3;
     flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    max-height: calc(100dvh - 110px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: auto;
+  }
+
+  .sb-nav::-webkit-scrollbar {
+    display: block;
+  }
+
+  .sb-nav-open {
+    display: flex;
+  }
+
+  .sb-menu-toggle {
+    display: flex;
+  }
+
+  .sb-nav-link {
+    font-size: 15px;
+    white-space: normal;
+    line-height: 1.4;
   }
 
   .sb-grid-3,
@@ -470,7 +513,7 @@ ol.kt-list { list-style: decimal; }
   }
 
   .sb-nav-link {
-    font-size: 12px;
+    font-size: 15px;
     padding: 9px 11px;
   }
 

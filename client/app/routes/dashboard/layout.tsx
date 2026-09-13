@@ -1,4 +1,6 @@
-import { NavLink, Outlet } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { Menu, X } from "lucide-react";
+import { NavLink, Outlet, useLocation } from "react-router";
 
 /* Temporarily disabled notification loader and dynamic profile dependencies.
 import { NavLink, Outlet, useRevalidator } from "react-router";
@@ -35,6 +37,21 @@ const NAV_ITEMS = [
 ];
 
 export default function DashboardLayout() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location]);
+
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1181px)");
+    const closeMenu = () => setMenuOpen(false);
+    desktop.addEventListener("change", closeMenu);
+    return () => desktop.removeEventListener("change", closeMenu);
+  }, []);
+
   /* Temporarily disabled notification and dynamic profile state.
   const revalidator = useRevalidator();
   const { notices, notificationError } = loaderData;
@@ -52,7 +69,12 @@ export default function DashboardLayout() {
       }}
     >
       <div className="sb-topbar-wrap">
-        <div className="sb-topbar">
+        <div className="sb-topbar" onKeyDown={(event) => {
+          if (event.key === "Escape" && menuOpen) {
+            setMenuOpen(false);
+            menuToggleRef.current?.focus();
+          }
+        }}>
           <div className="sb-brand">
             <img
               src="/CJ_Schwans_logo.svg"
@@ -62,9 +84,9 @@ export default function DashboardLayout() {
             <span style={{ fontWeight: 850, fontSize: 16, letterSpacing: 0, color: "#111827" }}>SkillBridge</span>
           </div>
 
-          <nav className="sb-nav" aria-label="Primary navigation">
+          <nav id="primary-navigation" className={`sb-nav${menuOpen ? " sb-nav-open" : ""}`} aria-label="Primary navigation">
             {NAV_ITEMS.map((item) => (
-              <NavLink key={item.to} to={item.to} end={item.end}>
+              <NavLink key={item.to} to={item.to} end={item.end} onClick={() => setMenuOpen(false)}>
                 {({ isActive }) => (
                   <span className={isActive ? "sb-nav-link sb-nav-link-active" : "sb-nav-link"}>
                     {item.label}
@@ -75,6 +97,17 @@ export default function DashboardLayout() {
           </nav>
 
           <div className="sb-actions">
+            <button
+              ref={menuToggleRef}
+              type="button"
+              className="sb-menu-toggle"
+              aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={menuOpen}
+              aria-controls="primary-navigation"
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
+            </button>
             {/* Temporarily disabled: navbar notifications.
             <details style={{ position: "relative" }}>
               <summary aria-label="Organization notifications" style={{ cursor: "pointer", padding: "8px 12px", borderRadius: 12, background: "#f1f5f9", fontSize: 12 }}>
