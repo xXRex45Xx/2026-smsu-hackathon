@@ -18,15 +18,17 @@ The Skills page supports creating, updating, and deleting catalog skills, with s
 
 Organization groups Roles, Departments, Teams, and Facilities with create, update, and delete forms. Role detail manages required skills with proficiency and importance from 1 to 5. Removing a requirement preserves the skill catalog and employee assessments. Assigned employees, teams, or development plans prevent organization record deletion; deleting an unassigned role also removes its skill requirements. Optional team departments and facility locations can be cleared.
 
+Development supports plan create, update, and delete with employee assignment, optional target role, title, and status. Plan detail manages one activity per skill, including activity type, current and target proficiency, and item status. Removing an item recalculates progress without changing employee assessments. Deleting a plan removes its items. Progress retains the existing average current-to-target proficiency ratio, capped at 100%, independent of status.
+
 Deletion requires an explicit confirmation that explains the linked records removed. Optional assignments and dates can be cleared. Calculated workforce metrics remain derived from source records.
 
 ## Capabilities and Constraints
 
-The existing project uses React Router and an Express API backed by PostgreSQL. This addition covers employee records, the skill catalog, employee assessments, organizational records, and role requirements; other missing CRUD surfaces are outside its scope. Primary organizational users and a production permission model remain open product decisions. Authentication has been removed at the user’s request. Dashboard and API routes, including uploads, do not require sign-in.
+The existing project uses React Router and an Express API backed by PostgreSQL. This addition covers employee records, the skill catalog, employee assessments, organizational records, role requirements, development plans, and plan items; other missing CRUD surfaces are outside its scope. Primary organizational users and a production permission model remain open product decisions. Authentication has been removed at the user’s request. Dashboard and API routes, including uploads, do not require sign-in.
 
 ## Brand Commitments
 
-The user explicitly requires employee, Skills, and Organization pages to remain consistent with the existing dashboard design. The running dashboard, shared styles, SkillBridge name, and Schwan's logo are the incumbent authority. This work does not introduce a new visual identity.
+The user explicitly requires employee, Skills, Organization, and Development pages to remain consistent with the existing dashboard design. The running dashboard, shared styles, SkillBridge name, and Schwan's logo are the incumbent authority. This work does not introduce a new visual identity.
 
 ## Evidence on Hand
 

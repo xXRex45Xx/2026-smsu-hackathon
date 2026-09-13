@@ -11,6 +11,7 @@ export default function errorHandler(error, req, res, next) {
 
   const databaseError = error?.cause ?? error;
   if (databaseError?.code === "23505") {
+    if (databaseError.constraint === "development_plan_items_plan_id_skill_id_pk") return res.status(409).json({ error: "This skill already has an item in this plan. Edit the existing item instead.", details: [{ path: ["skillId"], message: "Choose a skill that is not already in this plan." }] });
     const emailConflict = databaseError.constraint === "employees_email_unique";
     const departmentConflict = databaseError.constraint === "departments_name_unique";
     const skillConflict = databaseError.constraint === "skills_name_unique";

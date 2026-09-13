@@ -11,6 +11,7 @@ export default [
     route("organization", "routes/dashboard/organization.tsx"),
     route("organization/roles/:roleId", "routes/dashboard/role-detail.tsx"),
     route("development", "routes/dashboard/development.tsx"),
+    route("development/:planId", "routes/dashboard/development-detail.tsx"),
     route("succession", "routes/dashboard/succession.tsx"),
     route("learning", "routes/dashboard/learning.tsx"),
     route("use-cases", "routes/dashboard/use-cases.tsx"),
