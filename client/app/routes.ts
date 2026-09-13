@@ -10,6 +10,7 @@ export default [
     route("succession", "routes/dashboard/succession.tsx"),
     route("learning", "routes/dashboard/learning.tsx"),
     route("lesson/:slug", "routes/dashboard/lesson.tsx"),
+    route("learning-catalogue", "routes/dashboard/learning-catalogue-index.tsx"),
     route("learning-catalogue/:slug", "routes/dashboard/learning-catalogue.tsx"),
     route("use-cases", "routes/dashboard/use-cases.tsx"),
     route("reports", "routes/dashboard/reports.tsx"),
