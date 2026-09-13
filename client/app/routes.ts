@@ -18,7 +18,8 @@ export default [
     route("lesson/:slug", "routes/dashboard/lesson.tsx"),
     route("learning-catalogue", "routes/dashboard/learning-catalogue-index.tsx"),
     route("learning-catalogue/:slug", "routes/dashboard/learning-catalogue.tsx"),
-    route("use-cases", "routes/dashboard/use-cases.tsx"),
+    // Temporarily disabled: restore this route when the page is needed.
+    // route("use-cases", "routes/dashboard/use-cases.tsx"),
     // Temporarily disabled: restore this route when the page is needed.
     // route("reports", "routes/dashboard/reports.tsx"),
     // Temporarily disabled: restore this route when the page is needed.

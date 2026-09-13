@@ -29,7 +29,7 @@ const NAV_ITEMS = [
   { to: "/succession", label: "Succession" },
   { to: "/learning", label: "Knowledge Transfer" },
   { to: "/learning-catalogue", label: "Learning Catalogue" },
-  { to: "/use-cases", label: "Use Cases" },
+  // { to: "/use-cases", label: "Use Cases" },
   // { to: "/reports", label: "Reports" },
   // { to: "/admin", label: "Admin" },
 ];
